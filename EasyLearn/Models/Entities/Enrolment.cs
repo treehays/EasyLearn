@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Models.Entities
+﻿using EasyLearn.Models.Contracts;
+
+namespace EasyLearn.Models.Entities
 {
-    public class Enrolment : BaseEntity
+    public class Enrolment : AuditableEntity
     {
         public string CompletionStatus { get; set; }
         public string Grade { get; set; }

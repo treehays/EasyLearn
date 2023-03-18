@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Models.Entities
+﻿using EasyLearn.Models.Contracts;
+
+namespace EasyLearn.Models.Entities
 {
-    public class User : BaseEntity
+    public class User : AuditableEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -14,7 +16,7 @@
         public Role Role { get; set; }
         public Student Student { get; set; }
         public Moderator Moderator { get; set; }
-        public SuperAdmin SuperAdmin { get; set; }
+        public Admin Admin { get; set; }
         public Instructor Instructor { get; set; }
         public Address Address { get; set; }
         public IEnumerable<Notification> Notifications { get; set; } = new HashSet<Notification>();

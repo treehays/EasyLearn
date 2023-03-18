@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Models.Entities
+﻿using EasyLearn.Models.Contracts;
+
+namespace EasyLearn.Models.Entities
 {
-    public class Payment : BaseEntity
+    public class Payment : AuditableEntity
     {
         public double PaymentAmount { get; set; }
         public string PaymentMethod { get; set; }

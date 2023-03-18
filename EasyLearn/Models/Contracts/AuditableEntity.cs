@@ -1,8 +1,7 @@
-﻿namespace EasyLearn.Models.Entities
+﻿namespace EasyLearn.Models.Contracts
 {
-    public abstract class BaseEntity
+    public class AuditableEntity : BaseEntity
     {
-        public string Id { get; set; }
         public string DeleteBy { get; set; }
         public DateTime DeleteOn { get; set; }
         public string LastModifiedBy { get; set; }

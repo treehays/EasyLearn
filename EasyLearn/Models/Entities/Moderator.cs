@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Models.Entities
+﻿using EasyLearn.Models.Contracts;
+
+namespace EasyLearn.Models.Entities
 {
-    public class Moderator : BaseEntity
+    public class Moderator : AuditableEntity
     {
 
         public User User { get; set; }

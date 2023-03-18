@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Models.Entities
+﻿using EasyLearn.Models.Contracts;
+
+namespace EasyLearn.Models.Entities
 {
-    public class CourseReview : BaseEntity
+    public class CourseReview : AuditableEntity
     {
         public string Rating { get; set; }
         public string Title { get; set; }

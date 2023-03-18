@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Models.Entities
+﻿using EasyLearn.Models.Contracts;
+
+namespace EasyLearn.Models.Entities
 {
-    public class Notification : BaseEntity
+    public class Notification : AuditableEntity
     {
         public string NotificationType { get; set; }
         public string Subject { get; set; }

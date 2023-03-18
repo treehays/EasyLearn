@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Models.Entities
+﻿using EasyLearn.Models.Contracts;
+
+namespace EasyLearn.Models.Entities
 {
-    public class Instructor : BaseEntity
+    public class Instructor : AuditableEntity
     {
         public string? VerifyBy { get; set; }
         public DateTime VerifyOn { get; set; }

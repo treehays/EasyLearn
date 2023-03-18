@@ -1,3 +1,6 @@
+using EasyLearn.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace EasyLearn
 {
     public class Program
@@ -8,6 +11,9 @@ namespace EasyLearn
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            var configuration = builder.Configuration.GetConnectionString("EasyLearnDbConnectionString");
+            builder.Services.AddDbContext<EasyLearnDbContext>(options => options.UseMySql(configuration, ServerVersion.AutoDetect(configuration)));
+
 
             var app = builder.Build();
 
@@ -25,6 +31,7 @@ namespace EasyLearn
             app.UseRouting();
 
             app.UseAuthorization();
+            EasyLearnDbInitializer.Seed(app);
 
             app.MapControllerRoute(
                 name: "default",
