@@ -8,7 +8,7 @@ namespace EasyLearn.Models.Entities
         public string AccountNumber { get; set; }
         public string AccountName { get; set; }
         public string AccountType { get; set; }
-        public Instructor Instructor { get; set; }
-        public string InstructorId { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
     }
 }

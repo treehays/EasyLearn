@@ -14,7 +14,6 @@ namespace EasyLearn.Models.Entities
         public string ModeratorId { get; set; }
         public Moderator Moderator { get; set; }
         public IEnumerable<Course> Courses { get; set; } = new HashSet<Course>();
-        public IEnumerable<PaymentDetails> PaymentDetails { get; set; } = new HashSet<PaymentDetails>();
         public IEnumerable<InstructorReview> InstructorReviews { get; set; } = new HashSet<InstructorReview>();
 
     }
