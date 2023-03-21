@@ -5,6 +5,7 @@ namespace EasyLearn.Data
 {
     public class EasyLearnDbInitializer
     {
+/*
         public static void Seed(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
@@ -14,7 +15,6 @@ namespace EasyLearn.Data
                 context.Database.Migrate();
                 //context.Database.EnsureDeleted();
                 //context.Database.EnsureCreated();
-/*
                 //Create Role
                 if (!context.Roles.Any())
                 {
@@ -53,8 +53,8 @@ namespace EasyLearn.Data
                     });
                     context.SaveChanges();
                 }
-                        */
             }
         }
+                        */
     }
 }

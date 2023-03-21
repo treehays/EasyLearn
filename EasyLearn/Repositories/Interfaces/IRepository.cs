@@ -8,7 +8,7 @@ namespace EasyLearn.Repositories.Interfaces
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync (T entity);
         Task<T> GetAsync (Expression<Func<T,bool>> expression);
-        Task<IEnumerable<T>> GetAllAsync (T entity);
+        Task<IEnumerable<T>> GetAllAsync ();
         Task DeleteAsync(T entity);
         Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> expression);
         Task<int> SaveChangesAsync();

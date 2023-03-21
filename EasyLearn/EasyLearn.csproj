@@ -2,8 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<Nullable>enable</Nullable>
+		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Title>ELearning Managment System</Title>
+		<Authors>S3m1c0lon</Authors>
+		<Description>developing a platform that offers a wide variety of online courses to learners around the world.</Description>
+		<Copyright>treehays</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>

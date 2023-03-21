@@ -33,7 +33,7 @@ public class BaseRepository <T> :  IRepository<T> where T : BaseEntity, new()
         return entity;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(T entity)
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
         var entities = await _context.Set<T>().AsNoTracking().ToListAsync();
         return entities;

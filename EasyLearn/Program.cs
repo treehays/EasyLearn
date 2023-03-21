@@ -1,4 +1,8 @@
 using EasyLearn.Data;
+using EasyLearn.Repositories.Implementations;
+using EasyLearn.Repositories.Interfaces;
+using EasyLearn.Services.Implementations;
+using EasyLearn.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyLearn
@@ -13,7 +17,17 @@ namespace EasyLearn
             builder.Services.AddControllersWithViews();
             var configuration = builder.Configuration.GetConnectionString("EasyLearnDbConnectionString");
             builder.Services.AddDbContext<EasyLearnDbContext>(options => options.UseMySql(configuration, ServerVersion.AutoDetect(configuration)));
-
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<ICourseService, CourseService>();
+            builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+            builder.Services.AddScoped<IInstructorService, InstructorService>();
+            builder.Services.AddScoped<IModeratorRepository, ModeratorRepository>();
+            builder.Services.AddScoped<IModeratorService, ModeratorService>();
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<IStudentService, StudentService>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
             var app = builder.Build();
 
@@ -31,7 +45,7 @@ namespace EasyLearn
             app.UseRouting();
 
             app.UseAuthorization();
-            EasyLearnDbInitializer.Seed(app);
+            // EasyLearnDbInitializer.Seed(app);
 
             app.MapControllerRoute(
                 name: "default",
