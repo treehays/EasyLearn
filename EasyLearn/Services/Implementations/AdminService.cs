@@ -106,6 +106,8 @@ public class AdminService : IAdminService
         admin.Interest = model.Interest;
         admin.PhoneNumber = model.PhoneNumber;
         admin.StudentshipStatus = model.StudentshipStatus;
+        admin.ModifiedOn = DateTime.Now;
+        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -130,7 +132,8 @@ public class AdminService : IAdminService
         admin.AccountNumber = model.AccountNumber;
         admin.AccountName = model.AccountName;
         admin.AccountType = model.AccountType;
-
+        admin.ModifiedOn = DateTime.Now;
+        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -155,7 +158,8 @@ public class AdminService : IAdminService
         admin.State = model.State;
         admin.City = model.City;
         admin.Language = model.Language;
-
+        admin.ModifiedOn = DateTime.Now;
+        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -177,7 +181,8 @@ public class AdminService : IAdminService
         }
 
         admin.Password = model.Password;
-
+        admin.ModifiedOn = DateTime.Now;
+        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -199,7 +204,8 @@ public class AdminService : IAdminService
         }
 
         admin.IsActive = model.IsActive == (int)boolOption.IsTrue;
-     
+        admin.ModifiedOn = DateTime.Now;
+        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
