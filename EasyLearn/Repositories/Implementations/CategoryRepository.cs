@@ -6,7 +6,6 @@ namespace EasyLearn.Repositories.Implementations;
 
 public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
 {
-    private readonly EasyLearnDbContext _context;
 
     public CategoryRepository(EasyLearnDbContext context)
     {

@@ -8,12 +8,13 @@ namespace EasyLearn.Repositories.Implementations;
 
 public class BaseRepository <T> :  IRepository<T> where T : BaseEntity, new()
 {
-    private readonly EasyLearnDbContext _context;
+    protected  EasyLearnDbContext _context;
     public async Task<T> AddAsync(T entity)
     {
+        var test = entity;
         await _context.Set<T>().AddAsync(entity);
         //await _context.SaveChangesAsync();
-        return entity;
+        return test;
     }
 
     /// <summary>

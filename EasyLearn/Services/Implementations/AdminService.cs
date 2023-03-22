@@ -45,6 +45,7 @@ public class AdminService : IAdminService
 
         var user = new User
         {
+            Id = Guid.NewGuid().ToString(),
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
@@ -53,6 +54,8 @@ public class AdminService : IAdminService
             StudentshipStatus = model.StudentshipStatus,
             RoleId = "Admin",
             UserName = userName,
+            CreatedOn = DateTime.Now,
+            IsActive = true,
         };
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();

@@ -8,8 +8,6 @@ namespace EasyLearn.Repositories.Implementations;
 
 public class AdminRepository : BaseRepository<Admin>, IAdminRepository
 {
-    private readonly EasyLearnDbContext _context;
-
     public AdminRepository(EasyLearnDbContext context)
     {
         _context = context;
@@ -24,6 +22,5 @@ public class AdminRepository : BaseRepository<Admin>, IAdminRepository
             .FirstOrDefaultAsync(x => x.Id == id);
         return admin;
     }
-    
     
 }

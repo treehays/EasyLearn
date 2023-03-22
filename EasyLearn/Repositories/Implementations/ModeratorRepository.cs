@@ -6,7 +6,6 @@ namespace EasyLearn.Repositories.Implementations;
 
 public class ModeratorRepository : BaseRepository<Moderator>, IModeratorRepository
 {
-    private readonly EasyLearnDbContext _context;
 
     public ModeratorRepository(EasyLearnDbContext context)
     {
