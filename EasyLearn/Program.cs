@@ -28,6 +28,10 @@ namespace EasyLearn
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<IStudentService, StudentService>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+            builder.Services.AddScoped<IPaymentDetailsRepository, PaymentDetailsRepository>();
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
