@@ -15,7 +15,8 @@ public class AdminController : Controller
     {
         return View();
     }
-    [Httpps]
+
+    [HttpPost]
     public IActionResult Create()
     {
         return View();
