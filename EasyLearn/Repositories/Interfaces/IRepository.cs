@@ -5,12 +5,13 @@ namespace EasyLearn.Repositories.Interfaces
 {
     public interface IRepository<T> where T : BaseEntity, new()
     {
-        Task<T> Create(T entity);
-        Task<T> Update (T entity);
-        Task<T> Get (Expression<Func<T,bool>> expression);
-        Task<IEnumerable<T>> GetAll (T entity);
-        Task<bool> Delete(T entity);
-        Task<IEnumerable<T>> GetList(Expression<Func<T, bool>> expression);
+        Task<T> AddAsync(T entity);
+        Task<T> UpdateAsync (T entity);
+        Task<T> GetAsync (Expression<Func<T,bool>> expression);
+        Task<IEnumerable<T>> GetAllAsync ();
+        Task DeleteAsync(T entity);
+        Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> expression);
+        Task<int> SaveChangesAsync();
 
 
     }
