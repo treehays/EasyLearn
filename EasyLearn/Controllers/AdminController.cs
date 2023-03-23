@@ -32,9 +32,28 @@ public class AdminController : Controller
         if (!createAdmin.Status)
         {
             TempData["failed"] = createAdmin.Message;
-            return View(model);
+        return RedirectToAction(nameof(Index),"Home");
+            //return View(model);
         }
         TempData["success"] = createAdmin.Message;
-        return View();
+        return RedirectToAction(nameof(Index),"Home");
+    }
+
+    public async Task<IActionResult> GetAllAdmin()
+    {
+        var admins = await _adminService.GetAll();
+        if (!admins.Status)
+        {
+            TempData["failed"] = admins.Message;
+            return RedirectToAction(nameof(Index),"Home");
+        }
+        TempData["success"] = admins.Message;
+        return View(admins);
+    }
+
+    public async Task<IActionResult> Detail(string id)
+    {
+        var admin = await _adminService.GetById(id);
+        return View(admin);
     }
 }

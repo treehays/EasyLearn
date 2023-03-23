@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EasyLearn.Migrations
 {
-    public partial class update : Migration
+    public partial class roleanduser : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -855,8 +855,7 @@ namespace EasyLearn.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
-                column: "RoleId",
-                unique: true);
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

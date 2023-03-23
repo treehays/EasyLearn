@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    [Migration("20230322134437_update")]
-    partial class update
+    [Migration("20230322180401_role and user")]
+    partial class roleanduser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -947,8 +947,7 @@ namespace EasyLearn.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -1127,8 +1126,8 @@ namespace EasyLearn.Migrations
             modelBuilder.Entity("EasyLearn.Models.Entities.User", b =>
                 {
                     b.HasOne("EasyLearn.Models.Entities.Role", "Role")
-                        .WithOne("User")
-                        .HasForeignKey("EasyLearn.Models.Entities.User", "RoleId");
+                        .WithMany("User")
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });

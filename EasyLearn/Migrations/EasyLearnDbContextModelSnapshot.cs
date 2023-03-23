@@ -945,8 +945,7 @@ namespace EasyLearn.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -1125,8 +1124,8 @@ namespace EasyLearn.Migrations
             modelBuilder.Entity("EasyLearn.Models.Entities.User", b =>
                 {
                     b.HasOne("EasyLearn.Models.Entities.Role", "Role")
-                        .WithOne("User")
-                        .HasForeignKey("EasyLearn.Models.Entities.User", "RoleId");
+                        .WithMany("User")
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });

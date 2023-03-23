@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.AdminDTOs;
 using EasyLearn.Models.Entities;
@@ -42,14 +42,14 @@ public class AdminService : IAdminService
 
         var truncUserName = model.Email.IndexOf('@');
         var userName = model.Email.Remove(truncUserName);
-
+        var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
         var user = new User
         {
             Id = Guid.NewGuid().ToString(),
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Password = model.Password,
+            Password = password,
             Gender = model.Gender,
             StudentshipStatus = model.StudentshipStatus,
             RoleId = "Admin",
