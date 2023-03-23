@@ -25,6 +25,7 @@ public class AdminController : Controller
         return View();
     }
 
+    [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> Create(CreateAdminRequestModel model)
     {
@@ -32,11 +33,11 @@ public class AdminController : Controller
         if (!createAdmin.Status)
         {
             TempData["failed"] = createAdmin.Message;
-        return RedirectToAction(nameof(Index),"Home");
+            return RedirectToAction(nameof(Index), "Home");
             //return View(model);
         }
         TempData["success"] = createAdmin.Message;
-        return RedirectToAction(nameof(Index),"Home");
+        return RedirectToAction(nameof(Index), "Home");
     }
 
     public async Task<IActionResult> GetAllAdmin()
@@ -45,7 +46,7 @@ public class AdminController : Controller
         if (!admins.Status)
         {
             TempData["failed"] = admins.Message;
-            return RedirectToAction(nameof(Index),"Home");
+            return RedirectToAction(nameof(Index), "Home");
         }
         TempData["success"] = admins.Message;
         return View(admins);
@@ -54,6 +55,33 @@ public class AdminController : Controller
     public async Task<IActionResult> Detail(string id)
     {
         var admin = await _adminService.GetById(id);
+        if (!admin.Status)
+        {
+            TempData["failed"] = admin.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+        TempData["success"] = admin.Message;
         return View(admin);
     }
+
+    public async Task<IActionResult> UpdateProfile(string id)
+    {
+        var admin = await _adminService.GetById(id);
+        if (!admin.Status)
+        {
+            TempData["failed"] = admin.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+        //TempData["success"] = admin.Message;
+        return View(admin);
+    }
+
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    public async Task<IActionResult> UpdateProfile(AdminResponseModel model)
+    {
+        _adminService.UpdateProfile(model);
+        return RedirectToAction(nameof(Index), "Home");
+    }
+
 }
