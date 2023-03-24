@@ -1,11 +1,13 @@
-﻿using System.Collections;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.AdminDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
+using Microsoft.Extensions.Hosting;
 
 namespace EasyLearn.Services.Implementations;
 
@@ -16,20 +18,75 @@ public class AdminService : IAdminService
     private readonly IPaymentDetailsRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
 
     public AdminService(IAdminRepository adminRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment)
     {
         _adminRepository = adminRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
+        _webHostEnvironment = webHostEnvironment;
     }
 
 
-    public async Task<BaseResponse> Create(CreateAdminRequestModel model)
+    public async Task<BaseResponse> Create(CreateUserRequestModel model)
     {
+
+
+        //var basePath = Path.Combine(_webHostEnvironment.WebRootPath, "Files", "Images", "ProfilPictures");
+        //Directory.CreateDirectory(basePath);
+        //var contentType = model.formFile.ContentType.Split('/')[1];
+        //var fileName = $"{Guid.NewGuid()}-{contentType}";
+        //var fullPath = Path.Combine(basePath, fileName);
+        //using (var fileStream = new FileStream(fullPath, FileMode.Create))
+        //{
+        //    model.formFile.CopyTo(fileStream);
+
+        //}
+        //model.formFile;
+        if (model.formFile == null || model.formFile.Length == 0)
+        {
+            return new BaseResponse
+            {
+                Status = false,
+                Message = "No image uploaded.",
+            };
+        }
+
+        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");//ppop
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
+
+
+
+        //var fileName1 = Path.GetFileName(model.formFile.FileName);
+        //var fileExtension = Path.GetExtension(model.formFile.FileName);
+
+
+
+
+        var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
+
+        var fileRelativePathx = "/uploads/profilePictures/" + fileName;
+
+
+
+
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await model.formFile.CopyToAsync(stream);
+        }
+
+
+
         var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
         if (emailExist)
         {
@@ -42,17 +99,21 @@ public class AdminService : IAdminService
 
         var truncUserName = model.Email.IndexOf('@');
         var userName = model.Email.Remove(truncUserName);
-
+        var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
         var user = new User
         {
+            Id = Guid.NewGuid().ToString(),
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Password = model.Password,
+            Password = password,
             Gender = model.Gender,
             StudentshipStatus = model.StudentshipStatus,
+            ProfilePicture = fileRelativePathx,
             RoleId = "Admin",
             UserName = userName,
+            CreatedOn = DateTime.Now,
+            IsActive = true,
         };
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
@@ -66,7 +127,7 @@ public class AdminService : IAdminService
 
     public async Task<BaseResponse> Delete(string id)
     {
-        var admin = await _adminRepository.GetAsync(x => x.Id == id);
+        var admin = await _userRepository.GetAsync(x => x.Id == id);
         if (admin == null)
         {
             return new BaseResponse
@@ -87,9 +148,9 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<BaseResponse> UpdateProfile(UpdateAdminProfileRequestModel model)
+    public async Task<BaseResponse> UpdateProfile(UpdateUserProfileRequestModel model)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == model.Id);
+        var admin = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted);
         if (admin == null)
         {
             return new BaseResponse
@@ -99,6 +160,7 @@ public class AdminService : IAdminService
             };
         }
 
+
         admin.FirstName = model.FirstName;
         admin.LastName = model.LastName;
         admin.ProfilePicture = model.ProfilePicture;
@@ -106,9 +168,9 @@ public class AdminService : IAdminService
         admin.Skill = model.Skill;
         admin.Interest = model.Interest;
         admin.PhoneNumber = model.PhoneNumber;
-        admin.StudentshipStatus = model.StudentshipStatus;
+        admin.StudentshipStatus = model.StudentshipStatus == 0 ? StudentshipStatus.Graduate : model.StudentshipStatus;
         admin.ModifiedOn = DateTime.Now;
-        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -117,9 +179,9 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<BaseResponse> UpdateBankDetail(UpdateAdminBankDetailRequestModel model)
+    public async Task<BaseResponse> UpdateBankDetail(UpdateUserBankDetailRequestModel model)
     {
-        var admin = await _paymentDetailsRepository.GetAsync(x => x.UserId == model.Id);
+        var admin = await _paymentDetailsRepository.GetAsync(x => x.UserId == model.Id && !x.IsDeleted);
         if (admin == null)
         {
             return new BaseResponse
@@ -134,7 +196,7 @@ public class AdminService : IAdminService
         admin.AccountName = model.AccountName;
         admin.AccountType = model.AccountType;
         admin.ModifiedOn = DateTime.Now;
-        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -143,9 +205,9 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<BaseResponse> UpdateAddress(UpdateAdminAddressRequestModel model)
+    public async Task<BaseResponse> UpdateAddress(UpdateUserAddressRequestModel model)
     {
-        var admin = await _addressRepository.GetAsync(x => x.UserId == model.Id);
+        var admin = await _addressRepository.GetAsync(x => x.UserId == model.Id && !x.IsDeleted);
         if (admin == null)
         {
             return new BaseResponse
@@ -160,7 +222,7 @@ public class AdminService : IAdminService
         admin.City = model.City;
         admin.Language = model.Language;
         admin.ModifiedOn = DateTime.Now;
-        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -169,9 +231,9 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<BaseResponse> UpdatePassword(UpdateAdminPasswordRequestModel model)
+    public async Task<BaseResponse> UpdatePassword(UpdateUserPasswordRequestModel model)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == model.Id);
+        var admin = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted);
         if (admin == null)
         {
             return new BaseResponse
@@ -183,7 +245,7 @@ public class AdminService : IAdminService
 
         admin.Password = model.Password;
         admin.ModifiedOn = DateTime.Now;
-        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -192,9 +254,9 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<BaseResponse> UpdateActiveStatus(UpdateAdminActiveStatusRequestModel model)
+    public async Task<BaseResponse> UpdateActiveStatus(UpdateUserActiveStatusRequestModel model)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == model.Id);
+        var admin = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted);
         if (admin == null)
         {
             return new BaseResponse
@@ -206,7 +268,7 @@ public class AdminService : IAdminService
 
         admin.IsActive = model.IsActive == (int)boolOption.IsTrue;
         admin.ModifiedOn = DateTime.Now;
-        admin.ModifiedBy =  _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -217,7 +279,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminResponseModel> GetById(string id)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == id);
+        var admin = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
         var adminModel = new AdminResponseModel
         {
             Status = true,
@@ -276,7 +338,7 @@ public class AdminService : IAdminService
     public async Task<AdminResponseModel> GetByEmail(string email)
     {
         // throw new NotImplementedException();
-        var admin = await _userRepository.GetAsync(x => x.Email == email);
+        var admin = await _userRepository.GetAsync(x => x.Email == email && x.IsActive && !x.IsDeleted);
         var adminModel = new AdminResponseModel
         {
             Status = true,
@@ -304,9 +366,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminsResponseModel> GetByName(string name)
     {
-        //throw new NotImplementedException();
-        // throw new NotImplementedException();
-        var admins = await _userRepository.GetListAsync(x => x.FirstName == name || x.LastName == name);
+        var admins = await _userRepository.GetListAsync(x => x.FirstName == name || x.LastName == name && x.IsActive && !x.IsDeleted);
         var adminModel = new AdminsResponseModel
         {
             Status = true,
@@ -361,7 +421,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminsResponseModel> GetAllActive()
     {
-        var admins = await _userRepository.GetListAsync(x => x.IsActive);
+        var admins = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
         var adminModel = new AdminsResponseModel
         {
             Status = true,
@@ -388,7 +448,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminsResponseModel> GetAllInActive()
     {
-        var admins = await _userRepository.GetListAsync(x => !x.IsActive);
+        var admins = await _userRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
         var adminModel = new AdminsResponseModel
         {
             Status = true,
@@ -412,4 +472,5 @@ public class AdminService : IAdminService
         };
         return adminModel;
     }
+
 }

@@ -6,7 +6,6 @@ namespace EasyLearn.Repositories.Implementations;
 
 public class CourseReviewRepository : BaseRepository<CourseReview>, ICourseReviewRepository
 {
-    private readonly EasyLearnDbContext _context;
 
     public CourseReviewRepository(EasyLearnDbContext context)
     {

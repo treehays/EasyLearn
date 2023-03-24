@@ -6,8 +6,6 @@ namespace EasyLearn.Repositories.Implementations;
 
 public class StudentRepository : BaseRepository<Student>, IStudentRepository
 {
-    private readonly EasyLearnDbContext _context;
-
     public StudentRepository(EasyLearnDbContext context)
     {
         _context = context;

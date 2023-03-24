@@ -6,8 +6,6 @@ namespace EasyLearn.Repositories.Implementations;
 
 public class RoleRepository : BaseRepository<Role>, IRoleRepository
 {
-    private readonly EasyLearnDbContext _context;
-
     public RoleRepository(EasyLearnDbContext context)
     {
         _context = context;
