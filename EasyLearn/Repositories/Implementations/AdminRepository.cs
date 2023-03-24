@@ -19,7 +19,7 @@ public class AdminRepository : BaseRepository<Admin>, IAdminRepository
         var admin = await _context.Admins
             .Include(a => a.User)
             .ThenInclude(b => b.Address)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         return admin;
     }
     

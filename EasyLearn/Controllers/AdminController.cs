@@ -1,11 +1,11 @@
 ﻿using EasyLearn.Models.DTOs.AdminDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyLearn.Controllers;
 
-public class AdminController : Controller
+public partial class AdminController : Controller
 {
     private readonly IAdminService _adminService;
 
@@ -27,8 +27,17 @@ public class AdminController : Controller
 
     [ValidateAntiForgeryToken]
     [HttpPost]
-    public async Task<IActionResult> Create(CreateAdminRequestModel model)
+    public async Task<IActionResult> Create(CreateUserRequestModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            TempData["failed"] = "Invalid inputs...";
+            return View(model);
+        }
+
+
+
+
         var createAdmin = await _adminService.Create(model);
         if (!createAdmin.Status)
         {
@@ -36,6 +45,7 @@ public class AdminController : Controller
             return RedirectToAction(nameof(Index), "Home");
             //return View(model);
         }
+
         TempData["success"] = createAdmin.Message;
         return RedirectToAction(nameof(Index), "Home");
     }
@@ -48,6 +58,33 @@ public class AdminController : Controller
             TempData["failed"] = admins.Message;
             return RedirectToAction(nameof(Index), "Home");
         }
+
+        TempData["success"] = admins.Message;
+        return View(admins);
+    }
+
+    public async Task<IActionResult> GetAllActiveAdmin()
+    {
+        var admins = await _adminService.GetAllActive();
+        if (!admins.Status)
+        {
+            TempData["failed"] = admins.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
+        TempData["success"] = admins.Message;
+        return View(admins);
+    }
+
+    public async Task<IActionResult> GetAllInActiveAdmin()
+    {
+        var admins = await _adminService.GetAllInActive();
+        if (!admins.Status)
+        {
+            TempData["failed"] = admins.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
         TempData["success"] = admins.Message;
         return View(admins);
     }
@@ -60,28 +97,30 @@ public class AdminController : Controller
             TempData["failed"] = admin.Message;
             return RedirectToAction(nameof(Index), "Home");
         }
+
         TempData["success"] = admin.Message;
         return View(admin);
     }
 
-    public async Task<IActionResult> UpdateProfile(string id)
+    public async Task<IActionResult> DeletePreview(string id)
     {
         var admin = await _adminService.GetById(id);
-        if (!admin.Status)
-        {
-            TempData["failed"] = admin.Message;
-            return RedirectToAction(nameof(Index), "Home");
-        }
-        //TempData["success"] = admin.Message;
-        return View(admin);
-    }
-
-    [ValidateAntiForgeryToken]
-    [HttpPost]
-    public async Task<IActionResult> UpdateProfile(AdminResponseModel model)
-    {
-        _adminService.UpdateProfile(model);
+        if (admin.Status) return View(admin);
+        TempData["failed"] = admin.Message;
         return RedirectToAction(nameof(Index), "Home");
+        //TempData["success"] = admin.Message;
     }
 
+    public async Task<IActionResult> Delete(string id)
+    {
+        var admin = await _adminService.Delete(id);
+        if (admin.Status)
+        {
+            TempData["success"] = admin.Message;
+            return RedirectToAction(nameof(GetAllAdmin));
+        }
+
+        TempData["failed"] = admin.Message;
+        return RedirectToAction(nameof(GetAllAdmin));
+    }
 }

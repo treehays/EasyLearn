@@ -36,6 +36,24 @@ public class AdminDtos
     public string Language { get; set; }
 }
 
+
+
+public class AdminResponseModel : BaseResponse
+{
+    public AdminDtos Data { get; set; }
+}
+
+public class AdminsResponseModel : BaseResponse
+{
+    public IEnumerable<AdminDtos> Data { get; set; }
+    //public AdminDtos Data { get; set; }
+}
+
+
+
+/// <summary>
+/// Zero refferemce
+/// </summary>
 public class CreateAdminRequestModel
 {
     [DisplayName("First Name")] public string FirstName { get; set; }
@@ -47,7 +65,7 @@ public class CreateAdminRequestModel
     public string Password { get; set; }
     [DataType(DataType.Password)]
     [DisplayName("Re-enter Password")]
-    [Compare(nameof(Password),ErrorMessage = "Password not match")]
+    [Compare(nameof(Password), ErrorMessage = "Password not match")]
     public string ConfirmPassword { get; set; }
     public Gender Gender { get; set; }
     public StudentshipStatus StudentshipStatus { get; set; }
@@ -100,15 +118,4 @@ public class UpdateAdminActiveStatusRequestModel
 {
     public string Id { get; set; }
     public int IsActive { get; set; }
-}
-
-public class AdminResponseModel : BaseResponse
-{
-    public AdminDtos Data { get; set; }
-}
-
-public class AdminsResponseModel : BaseResponse
-{
-    public IEnumerable<AdminDtos> Data { get; set; }
-    //public AdminDtos Data { get; set; }
 }
