@@ -1,0 +1,53 @@
+﻿@{
+    //if (TempData["Success"] != null)
+    //{
+    //    //<script src="~/lib/jquery/dist/jquery.min.js"> </script>
+    //    <script src="~/lib/jquery/dist/jquery.min.js"> </script>
+    //    <script src="~/js/toastr.min.js"></script>
+    //    <script type="text/javascript">toastr.success('@TempData["success"]')</script>
+    //}
+    
+    if (TempData.ContainsKey("Success"))
+    {
+        <h2>@TempData["success"]</h2>
+    }
+    if (TempData["failed"] != null)
+    {
+        <h2>@TempData["failed"]</h2>
+
+    }
+}
+
+
+
+@*
+@if (TempData["Success"] != null)
+{
+<h2>@TempData["success"]</h2>
+}
+@if (TempData["failed"] != null)
+{
+<h2>@TempData["failed"]</h2>
+}
+*@
+
+
+
+
+
+@*
+@{
+    if (TempData.ContainsKey("Success"))
+    {
+        <script src="~/lib/jquery/dist/jquery.min.js"> </script>
+        <script src="~/js/toastr.min.js"></script>
+        <script type="text/javascript">toastr.success('@TempData["success"]')</script>
+    }
+    if (TempData.ContainsKey("failed"))
+    {
+        <script src="~/lib/jquery/dist/jquery.min.js"> </script>
+        <script src="~/js/toastr.min.js"></script>
+        <script type="text/javascript">toastr.error('@TempData["failed"]')</script>
+    }
+}
+*@

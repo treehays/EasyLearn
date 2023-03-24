@@ -25,47 +25,39 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Language")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("State")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -82,31 +74,27 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -123,43 +111,36 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CategoryImage")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -176,58 +157,48 @@ namespace EasyLearn.Migrations
                         .HasColumnType("double");
 
                     b.Property<string>("CourseLanguage")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("DifficultyLevel")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("InstructorId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<double>("Price")
                         .HasColumnType("double");
 
                     b.Property<string>("Rating")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Requirement")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -243,35 +214,30 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CategoryId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CourseId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
@@ -289,71 +255,57 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CourseId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("InstructorFeedBack")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Rating")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Reported")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("StudentId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("UserFeedBack")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("VerifiedPurchase")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Visibility")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -374,63 +326,51 @@ namespace EasyLearn.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CertificateNumber")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CompletionStatus")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Coupon")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CourseId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Grade")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("InstructorFeedBack")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("PaymentStatus")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("StudentId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("UserFeedBack")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -447,42 +387,46 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Biography")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Interest")
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("LastModifiedOn")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("ModeratorId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Skill")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("VerifyBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("VerifyOn")
+                    b.Property<DateTime?>("VerifyOn")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
@@ -501,59 +445,48 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("InstructorId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Rating")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Reported")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("StudentId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Visibility")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -570,32 +503,37 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Biography")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Interest")
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Skill")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -612,73 +550,60 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CompletionStatus")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CourseId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("DifficultyLevel")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<double>("Duration")
                         .HasColumnType("double");
 
                     b.Property<string>("FeedBack")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Objective")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Prerequisites")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Resources")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("SequenceOfModule")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -694,51 +619,42 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Body")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("NotificationType")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Priority")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Subject")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -754,46 +670,39 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CouponUsed")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CourseId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<double>("PaymentAmount")
                         .HasColumnType("double");
 
                     b.Property<string>("PaymentMethod")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PaymentStatus")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -809,52 +718,44 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("AccountName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("AccountNumber")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("AccountType")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Bank")
-                        .IsRequired()
+                    b.Property<string>("BankName")
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("InstructorId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InstructorId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("PaymentDetails");
                 });
@@ -865,32 +766,31 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -903,31 +803,27 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -944,35 +840,30 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CourseId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("StudentId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -990,69 +881,71 @@ namespace EasyLearn.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Biography")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeleteBy")
-                        .IsRequired()
+                    b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DeleteOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
                     b.Property<string>("Interest")
-                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
+                    b.Property<string>("LastName")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("LastModifiedOn")
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
+                    b.Property<string>("Password")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
                     b.Property<string>("ProfilePicture")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("RoleId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Skill")
-                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("StudentshipStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -1061,9 +954,7 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.User", "User")
                         .WithOne("Address")
-                        .HasForeignKey("EasyLearn.Models.Entities.Address", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EasyLearn.Models.Entities.Address", "UserId");
 
                     b.Navigation("User");
                 });
@@ -1072,9 +963,7 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.User", "User")
                         .WithOne("Admin")
-                        .HasForeignKey("EasyLearn.Models.Entities.Admin", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EasyLearn.Models.Entities.Admin", "UserId");
 
                     b.Navigation("User");
                 });
@@ -1083,9 +972,7 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Instructor", "Instructor")
                         .WithMany("Courses")
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InstructorId");
 
                     b.Navigation("Instructor");
                 });
@@ -1094,15 +981,11 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Category", "Category")
                         .WithMany("CourseCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("EasyLearn.Models.Entities.Course", "Course")
                         .WithMany("CourseCategories")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.Navigation("Category");
 
@@ -1113,15 +996,11 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Course", "Course")
                         .WithMany("CourseReviews")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.HasOne("EasyLearn.Models.Entities.Student", "Student")
                         .WithMany("CourseReviews")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("Course");
 
@@ -1132,15 +1011,11 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Course", "Course")
                         .WithMany("Enrolments")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.HasOne("EasyLearn.Models.Entities.Student", "Student")
                         .WithMany("Enrolments")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("Course");
 
@@ -1151,15 +1026,11 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Moderator", "Moderator")
                         .WithMany("Instructors")
-                        .HasForeignKey("ModeratorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ModeratorId");
 
                     b.HasOne("EasyLearn.Models.Entities.User", "User")
                         .WithOne("Instructor")
-                        .HasForeignKey("EasyLearn.Models.Entities.Instructor", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EasyLearn.Models.Entities.Instructor", "UserId");
 
                     b.Navigation("Moderator");
 
@@ -1170,15 +1041,11 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Instructor", "Instructor")
                         .WithMany("InstructorReviews")
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InstructorId");
 
                     b.HasOne("EasyLearn.Models.Entities.Student", "Student")
                         .WithMany("InstructorReviews")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("Instructor");
 
@@ -1189,9 +1056,7 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.User", "User")
                         .WithOne("Moderator")
-                        .HasForeignKey("EasyLearn.Models.Entities.Moderator", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EasyLearn.Models.Entities.Moderator", "UserId");
 
                     b.Navigation("User");
                 });
@@ -1200,9 +1065,7 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Course", "Course")
                         .WithMany("Modules")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.Navigation("Course");
                 });
@@ -1211,9 +1074,7 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.User", "User")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -1222,31 +1083,25 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Course", "Course")
                         .WithMany("Payments")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.Navigation("Course");
                 });
 
             modelBuilder.Entity("EasyLearn.Models.Entities.PaymentDetails", b =>
                 {
-                    b.HasOne("EasyLearn.Models.Entities.Instructor", "Instructor")
+                    b.HasOne("EasyLearn.Models.Entities.User", "User")
                         .WithMany("PaymentDetails")
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Instructor");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EasyLearn.Models.Entities.Student", b =>
                 {
                     b.HasOne("EasyLearn.Models.Entities.User", "User")
                         .WithOne("Student")
-                        .HasForeignKey("EasyLearn.Models.Entities.Student", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EasyLearn.Models.Entities.Student", "UserId");
 
                     b.Navigation("User");
                 });
@@ -1255,15 +1110,11 @@ namespace EasyLearn.Migrations
                 {
                     b.HasOne("EasyLearn.Models.Entities.Course", "Course")
                         .WithMany("StudentCourses")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseId");
 
                     b.HasOne("EasyLearn.Models.Entities.Student", "Student")
                         .WithMany("StudentCourses")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("Course");
 
@@ -1273,10 +1124,8 @@ namespace EasyLearn.Migrations
             modelBuilder.Entity("EasyLearn.Models.Entities.User", b =>
                 {
                     b.HasOne("EasyLearn.Models.Entities.Role", "Role")
-                        .WithOne("User")
-                        .HasForeignKey("EasyLearn.Models.Entities.User", "RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("User")
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });
@@ -1306,8 +1155,6 @@ namespace EasyLearn.Migrations
                     b.Navigation("Courses");
 
                     b.Navigation("InstructorReviews");
-
-                    b.Navigation("PaymentDetails");
                 });
 
             modelBuilder.Entity("EasyLearn.Models.Entities.Moderator", b =>
@@ -1317,8 +1164,7 @@ namespace EasyLearn.Migrations
 
             modelBuilder.Entity("EasyLearn.Models.Entities.Role", b =>
                 {
-                    b.Navigation("User")
-                        .IsRequired();
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EasyLearn.Models.Entities.Student", b =>
@@ -1334,22 +1180,19 @@ namespace EasyLearn.Migrations
 
             modelBuilder.Entity("EasyLearn.Models.Entities.User", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
 
-                    b.Navigation("Admin")
-                        .IsRequired();
+                    b.Navigation("Admin");
 
-                    b.Navigation("Instructor")
-                        .IsRequired();
+                    b.Navigation("Instructor");
 
-                    b.Navigation("Moderator")
-                        .IsRequired();
+                    b.Navigation("Moderator");
 
                     b.Navigation("Notifications");
 
-                    b.Navigation("Student")
-                        .IsRequired();
+                    b.Navigation("PaymentDetails");
+
+                    b.Navigation("Student");
                 });
 #pragma warning restore 612, 618
         }
