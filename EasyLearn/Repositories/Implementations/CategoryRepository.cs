@@ -11,4 +11,10 @@ public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
         _context = context;
     }
+
+    public async Task<bool> ExistByCategoryNameAsync(string categoryName)
+    {
+        var categoryExist = _context.Categories.Any(x => x.Name == categoryName);
+        return categoryExist;
+    }
 }

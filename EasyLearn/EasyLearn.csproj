@@ -11,11 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Models\DTOs\CategoryDTOs" />
-		<Folder Include="Models\DTOs\CourseDTOs" />
 		<Folder Include="Models\Enums\" />
 		<Folder Include="Models\ViewModels\" />
-		<Folder Include="Repositories\Implementations\" />
 		<PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0" />

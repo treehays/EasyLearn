@@ -8,12 +8,13 @@ namespace EasyLearn.Models.Entities
         public string Description { get; set; }
         public string CourseLanguage { get; set; }
         public string DifficultyLevel { get; set; }
-        public string Rating { get; set; }
+        //public string Rating { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public double Price { get; set; }
-        public Instructor Instructor { get; set; }
         public string InstructorId { get; set; }
+
+        public Instructor Instructor { get; set; }
         public IEnumerable<StudentCourse> StudentCourses { get; set; } = new HashSet<StudentCourse>();
         public IEnumerable<Module> Modules { get; set; } = new HashSet<Module>();
         public IEnumerable<Enrolment> Enrolments { get; set; }

@@ -88,7 +88,7 @@ public class UpdateUserPasswordRequestModel
 public class UpdateUserActiveStatusRequestModel
 {
     public string Id { get; set; }
-    public int IsActive { get; set; }
+    public bool IsActive { get; set; }
 }
 
 
