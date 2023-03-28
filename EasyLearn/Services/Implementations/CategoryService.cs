@@ -31,20 +31,20 @@ namespace EasyLearn.Services.Implementations
                 };
             }
 
-            if (model.formFile != null && model.formFile.Length > 0)
+            if (model.FormFile != null && model.FormFile.Length > 0)
             {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "images");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
-                model.CategoryImage = "/uploads/profilePictures/" + fileName;
+                var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
+                model.CategoryImage = "/uploads/images/" + fileName;
                 var filePath = Path.Combine(uploadsFolder, fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await model.formFile.CopyToAsync(stream);
+                    await model.FormFile.CopyToAsync(stream);
                 }
             }
 
@@ -112,7 +112,7 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<CategoryResponseModel> GetById(string id)
         {
-            var category = await _categoryRepository.GetAsync(x => x.Id == id);
+            var category = await _categoryRepository.GetAsync(x => x.Id == id && x.IsAvailable && !x.IsDeleted);
             if (category == null)
             {
                 return new CategoryResponseModel
@@ -126,12 +126,13 @@ namespace EasyLearn.Services.Implementations
             {
                 Status = true,
                 Message = "Category retrieved successfully...",
-                Data =
+                Data = new CategoryDTOs
                 {
+                    Id = category.Id,
                     Name = category.Name,
                     Description = category.Description,
                     CategoryImage = category.CategoryImage,
-                },
+                }
             };
             return categoryModel;
         }
@@ -154,6 +155,7 @@ namespace EasyLearn.Services.Implementations
                 Message = "Categories successfully retrieved...",
                 Data = categories.Select(x => new CategoryDTOs
                 {
+                    Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
                     CategoryImage = x.CategoryImage,

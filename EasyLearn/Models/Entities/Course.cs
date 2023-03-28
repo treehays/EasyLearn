@@ -12,6 +12,7 @@ namespace EasyLearn.Models.Entities
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public double Price { get; set; }
+        public bool IsActive { get; set; }
         public string InstructorId { get; set; }
 
         public Instructor Instructor { get; set; }

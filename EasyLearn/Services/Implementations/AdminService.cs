@@ -2,6 +2,7 @@
 using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.AdminDTOs;
+using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
@@ -46,20 +47,20 @@ public class AdminService : IAdminService
 
         string fileRelativePathx = null;
 
-        if (model.formFile != null || model.formFile.Length > 0)
+        if (model.FormFile != null || model.FormFile.Length > 0)
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures"); //ppop
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
             fileRelativePathx = "/uploads/profilePictures/" + fileName;
             var filePath = Path.Combine(uploadsFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await model.formFile.CopyToAsync(stream);
+                await model.FormFile.CopyToAsync(stream);
             }
         }
 
@@ -80,8 +81,29 @@ public class AdminService : IAdminService
             UserName = userName,
             CreatedOn = DateTime.Now,
             IsActive = true,
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+
         };
+
+        var userAddress = new Address
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
+
+        var userPaymentDetail = new PaymentDetails
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
+
         await _userRepository.AddAsync(user);
+        await _userRepository.SaveChangesAsync();
+
+        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
+        await _userRepository.SaveChangesAsync();
+
+        await _addressRepository.AddAsync(userAddress);
         await _userRepository.SaveChangesAsync();
 
         return new BaseResponse
@@ -93,7 +115,7 @@ public class AdminService : IAdminService
 
     public async Task<BaseResponse> Delete(string id)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == id);
+        var admin = await _userRepository.GetAsync(x => x.Id == id && !x.IsDeleted && x.IsActive);
         if (admin == null)
         {
             return new BaseResponse
@@ -147,7 +169,7 @@ public class AdminService : IAdminService
 
     public async Task<BaseResponse> UpdateBankDetail(UpdateUserBankDetailRequestModel model)
     {
-        var admin = await _paymentDetailsRepository.GetAsync(x => x.UserId == model.Id && !x.IsDeleted);
+        var admin = await _paymentDetailsRepository.GetAsync(x => x.Id == model.Id && !x.IsDeleted);
         if (admin == null)
         {
             return new BaseResponse
@@ -176,6 +198,7 @@ public class AdminService : IAdminService
         var admin = await _addressRepository.GetAsync(x => x.UserId == model.Id && !x.IsDeleted);
         if (admin == null)
         {
+
             return new BaseResponse
             {
                 Message = "User not found.",
@@ -246,7 +269,7 @@ public class AdminService : IAdminService
     public async Task<AdminResponseModel> GetById(string id)
     {
         var admin = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
-        
+
         if (admin == null)
         {
             return new AdminResponseModel
@@ -282,8 +305,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminResponseModel> GetFullDetailById(string id)
     {
-        var admin = await _adminRepository.GetFullDetailByIdAsync(id);
-
+        var admin = await _adminRepository.GetFullDetailByIdAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
         if (admin == null)
         {
             return new AdminResponseModel
@@ -300,22 +322,30 @@ public class AdminService : IAdminService
             Data = new AdminDtos
             {
                 Id = admin.Id,
-                FirstName = admin.User.FirstName,
-                LastName = admin.User.LastName,
-                Email = admin.User.Email,
-                Password = admin.User.Password,
-                ProfilePicture = admin.User.ProfilePicture,
-                Biography = admin.User.Biography,
-                Skill = admin.User.Skill,
-                Interest = admin.User.Interest,
-                PhoneNumber = admin.User.PhoneNumber,
-                Gender = admin.User.Gender,
-                StudentshipStatus = admin.User.StudentshipStatus,
-                RoleId = admin.User.RoleId,
-                Language = admin.User.Address.Language,
-                City = admin.User.Address.City,
-                State = admin.User.Address.State,
-                Country = admin.User.Address.Country,
+                FirstName = admin.FirstName,
+                LastName = admin.LastName,
+                Email = admin.Email,
+                Password = admin.Password,
+                ProfilePicture = admin.ProfilePicture,
+                Biography = admin.Biography,
+                Skill = admin.Skill,
+                Interest = admin.Interest,
+                PhoneNumber = admin.PhoneNumber,
+                Gender = admin.Gender,
+                StudentshipStatus = admin.StudentshipStatus,
+                RoleId = admin.RoleId,
+
+                Language = admin.Address.Language,
+                City = admin.Address.City,
+                State = admin.Address.State,
+                Country = admin.Address.Country,
+                PaymentDetailData = admin.PaymentDetails.Select(x => new PaymentDetailDTO
+                {
+                    AccountName = x.AccountName,
+                    BankName = x.BankName,
+                    AccountNumber = x.AccountNumber,
+                    AccountType = x.AccountType,
+                }),
             }
         };
         return adminModel;
@@ -363,7 +393,7 @@ public class AdminService : IAdminService
     public async Task<AdminsResponseModel> GetByName(string name)
     {
         var admins = await _userRepository.GetListAsync(x =>
-            x.FirstName == name || x.LastName == name && x.IsActive && !x.IsDeleted);
+           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && !x.IsDeleted);
 
         if (admins == null)
         {
@@ -393,7 +423,36 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
+        };
+        return adminModel;
+    }
+    
+    public async Task<PaymentsDetailRequestModel> GetListOfAdminBankDetails(string userId)
+    {
+        var admins = await _paymentDetailsRepository.GetListAsync(x => x.UserId == userId && !x.IsDeleted);
+
+        if (admins == null)
+        {
+            return new PaymentsDetailRequestModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var adminModel = new PaymentsDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = admins.Select(x => new PaymentDetailDTO
+            {
+                Id = x.Id,
+                BankName = x.BankName,
+                AccountName= x.AccountName,
+                AccountNumber=x.AccountNumber,
+                AccountType=x.AccountType,
+            }),
         };
         return adminModel;
     }
@@ -431,7 +490,7 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
         };
         return adminModel;
     }
@@ -468,7 +527,7 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
         };
         return adminModel;
     }
@@ -505,7 +564,7 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
         };
         return adminModel;
     }

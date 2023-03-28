@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.Enums;
 using Microsoft.Build.Framework;
 
@@ -21,13 +22,14 @@ public class AdminDtos
     public StudentshipStatus StudentshipStatus { get; set; }
     public string RoleId { get; set; }
     public bool IsActive { get; set; }
+    public IEnumerable<PaymentDetailDTO> PaymentDetailData { get; set; }
 
     //Bank Detail
-    public string BankName { get; set; }
-    public string AccountNumber { get; set; }
-    public string AccountName { get; set; }
+    //public string BankName { get; set; }
+    //public string AccountNumber { get; set; }
+    //public string AccountName { get; set; }
 
-    public string AccountType { get; set; }
+    //public string AccountType { get; set; }
 
     //Address
     public string Country { get; set; }

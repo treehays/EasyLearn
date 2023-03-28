@@ -7,7 +7,7 @@
         public string Description { get; set; }
         public string CourseLanguage { get; set; }
         public string DifficultyLevel { get; set; }
-        public string Rating { get; set; }
+        //public string Rating { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public double Price { get; set; }
@@ -25,6 +25,8 @@
         public double CourseDuration { get; set; }
         public string InstructorId { get; set; }
         public string CategoryId { get; set; }
+        public double Price { get; set; }
+        public IFormFile FormFile { get; set; }
     }
 
     public class UpdateCourseRequestModel
@@ -36,6 +38,7 @@
         public string DifficultyLevel { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
+        public double Price { get; set; }
 
     }
 

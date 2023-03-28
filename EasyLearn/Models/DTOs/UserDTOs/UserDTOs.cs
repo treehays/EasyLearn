@@ -17,8 +17,10 @@ public class UserDTOs
 
 public class CreateUserRequestModel
 {
-    [DisplayName("First Name")] public string FirstName { get; set; }
-    [DisplayName("Last Name")] public string LastName { get; set; }
+    [DisplayName("First Name")]
+    public string FirstName { get; set; }
+    [DisplayName("Last Name")]
+    public string LastName { get; set; }
 
     [EmailAddress(ErrorMessage = "Enter a valid email..")]
     public string Email { get; set; }
@@ -30,7 +32,7 @@ public class CreateUserRequestModel
     public string ConfirmPassword { get; set; }
     public Gender Gender { get; set; }
     public StudentshipStatus StudentshipStatus { get; set; }
-    public IFormFile formFile { get; set; }
+    public IFormFile FormFile { get; set; }
 }
 
 

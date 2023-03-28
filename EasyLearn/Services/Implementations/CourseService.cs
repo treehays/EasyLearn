@@ -61,41 +61,245 @@ public class CourseService : ICourseService
 
     public async Task<BaseResponse> Delete(string id)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetAsync(x => x.Id == id);
+        if (course == null)
+        {
+            return new BaseResponse
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        course.IsDeleted = true;
+        course.DeletedOn = DateTime.Now;
+        course.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await _courseRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "Course successfully deleted...",
+            Status = true,
+        };
+
     }
 
     public async Task<CoursesRequestModel> GetAll()
     {
-        throw new NotImplementedException();
+        var courses = await _courseRepository.GetAllAsync();
+        if (courses == null)
+        {
+            return new CoursesRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTOs
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                CourseLanguage = x.CourseLanguage,
+                DifficultyLevel = x.DifficultyLevel,
+                Requirement = x.Requirement,
+                CourseDuration = x.CourseDuration,
+                InstructorId = x.InstructorId,
+                Price = x.Price,
+            })
+        };
+        return coursesModel;
     }
 
     public async Task<CoursesRequestModel> GetAllActive()
     {
-        throw new NotImplementedException();
+        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTOs
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                CourseLanguage = x.CourseLanguage,
+                DifficultyLevel = x.DifficultyLevel,
+                Requirement = x.Requirement,
+                CourseDuration = x.CourseDuration,
+                InstructorId = x.InstructorId,
+                Price = x.Price,
+            })
+        };
+        return coursesModel;
+
     }
 
     public async Task<CoursesRequestModel> GetAllInActive()
     {
-        throw new NotImplementedException();
+        var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTOs
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                CourseLanguage = x.CourseLanguage,
+                DifficultyLevel = x.DifficultyLevel,
+                Requirement = x.Requirement,
+                CourseDuration = x.CourseDuration,
+                InstructorId = x.InstructorId,
+                Price = x.Price,
+            })
+        };
+        return coursesModel;
     }
 
     public async Task<CourseRequestModel> GetById(string id)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetAsync(x => x.Id == id);
+
+        if (course == null)
+        {
+            return new CourseRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var courseModel = new CourseRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = new CourseDTOs
+            {
+                Id = course.Id,
+                Title = course.Title,
+                Description = course.Description,
+                CourseLanguage = course.CourseLanguage,
+                DifficultyLevel = course.DifficultyLevel,
+                Requirement = course.Requirement,
+                CourseDuration = course.CourseDuration,
+                InstructorId = course.InstructorId,
+                Price = course.Price,
+            },
+        };
+        return courseModel;
     }
 
     public async Task<CoursesRequestModel> GetByName(string name)
     {
-        throw new NotImplementedException();
+        var courses = await _courseRepository.GetListAsync(x => x.Title == name && x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTOs
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                CourseLanguage = x.CourseLanguage,
+                DifficultyLevel = x.DifficultyLevel,
+                Requirement = x.Requirement,
+                CourseDuration = x.CourseDuration,
+                InstructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                Price = x.Price,
+            })
+        };
+        return coursesModel;
     }
 
     public async Task<BaseResponse> Update(UpdateCourseRequestModel model)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetAsync(x => x.Id == model.Id);
+
+        if (course == null)
+        {
+            return new CourseRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        course.Title = model.Title;
+        course.Description = model.Description;
+        course.CourseLanguage = model.CourseLanguage;
+        course.DifficultyLevel = model.DifficultyLevel;
+        course.Requirement = model.Requirement;
+        course.CourseDuration = model.CourseDuration;
+        course.Price = model.Price;
+        course.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        course.ModifiedOn = DateTime.Now;
+        await _courseRepository.SaveChangesAsync();
+
+        return new CourseRequestModel
+        {
+            Message = "Course updated successfully...",
+            Status = true,
+        };
+
     }
 
     public async Task<BaseResponse> UpdateActiveStatus(UpdateCourseActiveStatusRequestModel model)
     {
-        throw new NotImplementedException();
+        var course = await _courseRepository.GetAsync(x => x.Id == model.Id);
+
+        if (course == null)
+        {
+            return new CourseRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        course.IsActive = model.IsActive;
+        course.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        course.ModifiedOn = DateTime.Now;
+        await _courseRepository.SaveChangesAsync();
+
+        return new CourseRequestModel
+        {
+            Message = "Course updated successfully...",
+            Status = true,
+        };
     }
 }
+

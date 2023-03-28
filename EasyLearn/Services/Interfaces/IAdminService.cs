@@ -1,11 +1,13 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.AdminDTOs;
+using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 
 namespace EasyLearn.Services.Interfaces;
 
 public interface IAdminService
 {
+    Task<PaymentsDetailRequestModel> GetListOfAdminBankDetails(string UserId);
     Task<BaseResponse> Create(CreateUserRequestModel model);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateUserProfileRequestModel model);

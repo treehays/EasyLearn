@@ -46,10 +46,12 @@ public class CreateInstructorRequestModel
     public string Password { get; set; }
     [DataType(DataType.Password)]
     [DisplayName("Re-enter Password")]
-    [Compare(nameof(Password),ErrorMessage = "Password not match")]
+    [Compare(nameof(Password), ErrorMessage = "Password not match")]
     public string ConfirmPassword { get; set; }
     public Gender Gender { get; set; }
     public StudentshipStatus StudentshipStatus { get; set; }
+    public IFormFile formFile { get; set; }
+
 }
 
 public class UpdateInstructorProfileRequestModel
@@ -98,7 +100,7 @@ public class UpdateInstructorPasswordRequestModel
 public class UpdateInstructorActiveStatusRequestModel
 {
     public string Id { get; set; }
-    public int IsActive { get; set; }
+    public bool IsActive { get; set; }
 }
 
 public class InstructorResponseModel : BaseResponse

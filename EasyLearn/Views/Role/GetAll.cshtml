@@ -1,0 +1,63 @@
+﻿@model EasyLearn.Models.DTOs.RoleDTOs.RolesResponseModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<div class="row">
+    <div class="col-sm-11">
+        <h2>
+            <a asp-action="Create">Create Role</a>
+        </h2>
+        <div class="table-responsive">
+
+            <table class="table table-hover table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Role Name</th>
+                        <th scope="col">Descrition</th>
+
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var serialNumber = 1;
+                    }
+                    @foreach (var item in Model.Data)
+                    {
+                        <tr>
+                            <th scope="row">@serialNumber </th>
+                            <td>@item.Id</td>
+                            <td>@item.RoleName</td>
+                            <td>@item.Description</td>
+
+                            <td>
+                                <a asp-action="" asp-route-id="@item.Id" class="btn btn-success">Details</a>
+                            </td>
+                            <td>
+                                <a asp-action="" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                            </td>
+
+                            <td>
+                                <a asp-action="" asp-route-id="@item.Id" class="btn btn-info">Update</a>
+                            </td>
+
+                           
+                        </tr>
+
+                        serialNumber++;
+                    }
+
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>

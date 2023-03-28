@@ -14,16 +14,18 @@ public class StudentService : IStudentService
     private readonly IStudentRepository _studentRepository;
     private readonly IPaymentDetailsRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IAddressRepository _addressRepository;
 
     public StudentService(IStudentRepository studentRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
     {
         _studentRepository = studentRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public async Task<BaseResponse> Create(CreateStudentRequestModel model)
@@ -37,6 +39,26 @@ public class StudentService : IStudentService
                 Message = "Email already exist.",
             };
         }
+
+        string fileRelativePathx = null;
+
+        if (model.formFile != null || model.formFile.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures"); //ppop
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
+            fileRelativePathx = "/uploads/profilePictures/" + fileName;
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.formFile.CopyToAsync(stream);
+            }
+        }
+
 
         var truncUserName = model.Email.IndexOf('@');
         var userName = model.Email.Remove(truncUserName);
@@ -55,7 +77,35 @@ public class StudentService : IStudentService
             CreatedOn = DateTime.Now,
             IsActive = true,
         };
+
+        var userAddress = new Address
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
+
+        var userPaymentDetail = new PaymentDetails
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
+        
+        var studentDetail = new Student
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
         await _userRepository.AddAsync(user);
+        await _userRepository.SaveChangesAsync();
+        
+        await _studentRepository.AddAsync(studentDetail);
+        await _userRepository.SaveChangesAsync();
+        
+
+        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
+        await _userRepository.SaveChangesAsync();
+
+        await _addressRepository.AddAsync(userAddress);
         await _userRepository.SaveChangesAsync();
 
         return new BaseResponse
@@ -117,24 +167,93 @@ public class StudentService : IStudentService
 
     }
 
-    public Task<StudentsResponseModel> GetAllActive()
+    public async Task<StudentsResponseModel> GetAllActive()
     {
-        throw new NotImplementedException();
+        var student = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+
+        if (student == null)
+        {
+            return new StudentsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var studentModel = new StudentsResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = student.Select(x => new StudentDtos
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                Password = x.Password,
+                ProfilePicture = x.ProfilePicture,
+                Biography = x.Biography,
+                Skill = x.Skill,
+                Interest = x.Interest,
+                PhoneNumber = x.PhoneNumber,
+                Gender = x.Gender,
+                StudentshipStatus = x.StudentshipStatus,
+                RoleId = x.RoleId,
+            }),
+        };
+        return studentModel;
     }
 
-    public Task<StudentsResponseModel> GetAllInActive()
+    public async Task<StudentsResponseModel> GetAllInActive()
     {
-        throw new NotImplementedException();
+        var student = await _userRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+
+        if (student == null)
+        {
+            return new StudentsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var studentModel = new StudentsResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = student.Select(x => new StudentDtos
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                Password = x.Password,
+                ProfilePicture = x.ProfilePicture,
+                Biography = x.Biography,
+                Skill = x.Skill,
+                Interest = x.Interest,
+                PhoneNumber = x.PhoneNumber,
+                Gender = x.Gender,
+                StudentshipStatus = x.StudentshipStatus,
+                RoleId = x.RoleId,
+            }),
+        };
+        return studentModel;
     }
 
-    public Task<StudentResponseModel> GetByEmail(string email)
+    public async Task<StudentResponseModel> GetByEmail(string email)
     {
-        throw new NotImplementedException();
-    }
+        var student = await _userRepository.GetAsync(x => x.Email == email && x.IsActive && !x.IsDeleted);
 
-    public async Task<StudentResponseModel> GetById(string id)
-    {
-        var student = await _userRepository.GetAsync(x => x.Id == id);
+        if (student == null)
+        {
+            return new StudentResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var studentModel = new StudentResponseModel
         {
             Status = true,
@@ -160,24 +279,165 @@ public class StudentService : IStudentService
 
     }
 
-    public Task<StudentsResponseModel> GetByName(string name)
+    public async Task<StudentResponseModel> GetById(string id)
     {
-        throw new NotImplementedException();
+        var student = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+
+        if (student == null)
+        {
+            return new StudentResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var studentModel = new StudentResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new StudentDtos
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                Password = student.Password,
+                ProfilePicture = student.ProfilePicture,
+                Biography = student.Biography,
+                Skill = student.Skill,
+                Interest = student.Interest,
+                PhoneNumber = student.PhoneNumber,
+                Gender = student.Gender,
+                StudentshipStatus = student.StudentshipStatus,
+                RoleId = student.RoleId,
+            }
+        };
+        return studentModel;
+
     }
 
-    public Task<StudentResponseModel> GetFullDetailById(string id)
+    public async Task<StudentsResponseModel> GetByName(string name)
     {
-        throw new NotImplementedException();
+        var student = await _userRepository.GetListAsync(x => (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && !x.IsDeleted);
+
+        if (student == null)
+        {
+            return new StudentsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var studentModel = new StudentsResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = student.Select(x => new StudentDtos
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                Password = x.Password,
+                ProfilePicture = x.ProfilePicture,
+                Biography = x.Biography,
+                Skill = x.Skill,
+                Interest = x.Interest,
+                PhoneNumber = x.PhoneNumber,
+                Gender = x.Gender,
+                StudentshipStatus = x.StudentshipStatus,
+                RoleId = x.RoleId,
+            }),
+        };
+        return studentModel;
     }
 
-    public Task<BaseResponse> UpdateActiveStatus(UpdateStudentActiveStatusRequestModel model)
+    public async Task<StudentResponseModel> GetFullDetailById(string id)
     {
-        throw new NotImplementedException();
+        var student = await _studentRepository.GetFullDetailByIdAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+
+        if (student == null)
+        {
+            return new StudentResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var studentModel = new StudentResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new StudentDtos
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                Password = student.Password,
+                ProfilePicture = student.ProfilePicture,
+                Biography = student.Biography,
+                Skill = student.Skill,
+                Interest = student.Interest,
+                PhoneNumber = student.PhoneNumber,
+                Gender = student.Gender,
+                StudentshipStatus = student.StudentshipStatus,
+                RoleId = student.RoleId,
+            }
+        };
+        return studentModel;
     }
 
-    public Task<BaseResponse> UpdateAddress(UpdateStudentAddressRequestModel model)
+    public async Task<BaseResponse> UpdateActiveStatus(UpdateStudentActiveStatusRequestModel model)
     {
-        throw new NotImplementedException();
+        var student = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted);
+        if (student == null)
+        {
+            return new BaseResponse
+            {
+                Message = "User not found.",
+                Status = false,
+            };
+        }
+
+        student.IsActive = model.IsActive;
+        student.ModifiedOn = DateTime.Now;
+        student.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "User updated successfully..",
+            Status = true,
+        };
+    }
+
+    public async Task<BaseResponse> UpdateAddress(UpdateStudentAddressRequestModel model)
+    {
+        var student = await _addressRepository.GetAsync(x => x.UserId == model.Id && !x.IsDeleted);
+        if (student == null)
+        {
+            return new BaseResponse
+            {
+                Message = "User not found.",
+                Status = false,
+            };
+        }
+
+        student.Country = model.Country ?? student.Country;
+        student.State = model.State ?? student.State;
+        student.City = model.City ?? student.City;
+        student.Language = model.Language ?? student.Language;
+        student.ModifiedOn = DateTime.Now;
+        student.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "User updated successfully..",
+            Status = true,
+        };
     }
 
     public async Task<BaseResponse> UpdateBankDetail(UpdateStudentBankDetailRequestModel model)
@@ -207,9 +467,27 @@ public class StudentService : IStudentService
 
     }
 
-    public Task<BaseResponse> UpdatePassword(UpdateStudentPasswordRequestModel model)
+    public async Task<BaseResponse> UpdatePassword(UpdateStudentPasswordRequestModel model)
     {
-        throw new NotImplementedException();
+        var student = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted);
+        if (student == null)
+        {
+            return new BaseResponse
+            {
+                Message = "User not found.",
+                Status = false,
+            };
+        }
+
+        student.Password = model.Password ?? student.Password;
+        student.ModifiedOn = DateTime.Now;
+        student.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "User updated successfully..",
+            Status = true,
+        };
     }
 
     public async Task<BaseResponse> UpdateProfile(UpdateStudentProfileRequestModel model)
