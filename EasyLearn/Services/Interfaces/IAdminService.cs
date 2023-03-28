@@ -16,6 +16,7 @@ public interface IAdminService
     Task<BaseResponse> UpdatePassword(UpdateUserPasswordRequestModel model);
     Task<BaseResponse> UpdateActiveStatus(UpdateUserActiveStatusRequestModel model);
     Task<AdminResponseModel> GetById(string id);
+    Task<PaymentDetailRequestModel> GetBankDetail(string id);
     Task<AdminResponseModel> GetFullDetailById(string id);
     Task<AdminResponseModel> GetByEmail(string email);
     Task<AdminsResponseModel> GetByName(string name);

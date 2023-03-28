@@ -15,5 +15,9 @@
     {
         public IEnumerable<PaymentDetailDTO> Data { get; set; }
     }
+    public class PaymentDetailRequestModel : BaseResponse
+    {
+        public PaymentDetailDTO Data { get; set; }
+    }
 
 }

@@ -302,6 +302,35 @@ public class AdminService : IAdminService
         };
         return adminModel;
     }
+    
+    public async Task<PaymentDetailRequestModel> GetBankDetail(string id)
+    {
+        var admin = await _paymentDetailsRepository.GetAsync(x => x.Id == id  && !x.IsDeleted);
+
+        if (admin == null)
+        {
+            return new PaymentDetailRequestModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var adminModel = new PaymentDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new PaymentDetailDTO
+            {
+                Id = admin.Id,
+                AccountName = admin.AccountName,
+                AccountNumber = admin.AccountNumber,
+                AccountType = admin.AccountType,
+                BankName = admin.BankName,
+            }
+        };
+        return adminModel;
+    }
 
     public async Task<AdminResponseModel> GetFullDetailById(string id)
     {

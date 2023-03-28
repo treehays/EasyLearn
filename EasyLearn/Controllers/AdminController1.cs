@@ -50,7 +50,7 @@ namespace EasyLearn.Controllers
 
         public async Task<IActionResult> UpdateBankDetail(string id)
         {
-            var admin = await _adminService.GetFullDetailById(id);
+            var admin = await _adminService.GetBankDetail(id);
             if (admin.Status) return View(admin);
             TempData["failed"] = admin.Message;
             return RedirectToAction(nameof(Index), "Home");

@@ -1,0 +1,59 @@
+﻿@model EasyLearn.Models.DTOs.CourseDTOs.UpdateCourseRequestModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+<br>
+<div class="row row-content d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <h3 class="card-header bg-black text-center"><strong>Update Admin Details</strong></h3>
+            <div class="card-body">
+                <form method="POST">
+                    <p>Check the details carefully before clicking on the Update button</p>
+                    <input name="Id" value="@Model.Id" type="hidden" />
+                    <div>
+                        <label asp-for="Title" class="control-label"></label>
+                        <input name="Title" value="@Model.Title" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="Description" class="control-label"></label>
+                        <input name="Description" value="@Model.Description" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="CourseLanguage" class="control-label"></label>
+                        <input name="CourseLanguage" value="@Model.CourseLanguage" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="DifficultyLevel" class="control-label"></label>
+                        <input name="DifficultyLevel" value="@Model.DifficultyLevel" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="Requirement" class="control-label"></label>
+                        <input name="Requirement" value="@Model.Requirement" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="CourseDuration" class="control-label"></label>
+                        <input name="CourseDuration" value="@Model.CourseDuration" type="tel" class="form-control" required />
+                    </div>
+                    
+                    <div>
+                        <label asp-for="Price" class="control-label"></label>
+                        <input name="Price" value="@Model.Price" type="tel" class="form-control" required />
+                    </div>
+
+                    <br />
+                    <button type="submit">Update</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

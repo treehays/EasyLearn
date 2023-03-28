@@ -133,7 +133,7 @@ namespace EasyLearn.Controllers
             {
                 TempData["failed"] = "Invalid detail...";
 
-                return View();
+                return View(model);
             }
 
             var update = await _courseService.Update(model);
@@ -144,7 +144,8 @@ namespace EasyLearn.Controllers
             }
 
             TempData["failed"] = update.Message;
-            return RedirectToAction(nameof(Index), "Home");
+            return View(model);
+
         }
 
 
