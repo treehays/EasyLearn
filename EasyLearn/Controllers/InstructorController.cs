@@ -1,4 +1,5 @@
 ﻿using EasyLearn.Models.DTOs.InstructorDTOs;
+using EasyLearn.Services.Implementations;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,10 +8,12 @@ namespace EasyLearn.Controllers
     public class InstructorController : Controller
     {
         private readonly IInstructorService _instructorService;
+        //private readonly IPaymentDetailService _paymentDetailService;
 
         public InstructorController(IInstructorService instructorService)
         {
             _instructorService = instructorService;
+            //_paymentDetailService = paymentDetailService;
         }
 
         public IActionResult Index()
@@ -44,7 +47,8 @@ namespace EasyLearn.Controllers
             }
 
             TempData["success"] = create.Message;
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("GetAllActive");
+
         }
 
         public async Task<IActionResult> Detail(string id)
@@ -126,36 +130,36 @@ namespace EasyLearn.Controllers
         }
 
 
-        public async Task<IActionResult> Update(string id)
-        {
-            var instructors = await _instructorService.GetById(id);
-            if (instructors.Status) return View(instructors);
-            TempData["failed"] = instructors.Message;
-            return RedirectToAction(nameof(Index), "Home");
-        }
+        //public async Task<IActionResult> Update(string id)
+        //{
+        //    var instructors = await _instructorService.GetById(id);
+        //    if (instructors.Status) return View(instructors);
+        //    TempData["failed"] = instructors.Message;
+        //    return RedirectToAction(nameof(Index), "Home");
+        //}
 
 
-        [ValidateAntiForgeryToken]
-        [HttpPost]
-        public async Task<IActionResult> Update(UpdateInstructorProfileRequestModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData["failed"] = "Invalid detail...";
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //public async Task<IActionResult> Update(UpdateInstructorProfileRequestModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        TempData["failed"] = "Invalid detail...";
 
-                return View();
-            }
+        //        return View();
+        //    }
 
-            var update = await _instructorService.UpdateProfile(model);
-            if (update.Status)
-            {
-                TempData["success"] = update.Message;
-                return RedirectToAction(nameof(Index), "Home");
-            }
+        //    var update = await _instructorService.UpdateProfile(model);
+        //    if (update.Status)
+        //    {
+        //        TempData["success"] = update.Message;
+        //        return RedirectToAction(nameof(Index), "Home");
+        //    }
 
-            TempData["failed"] = update.Message;
-            return RedirectToAction(nameof(Index), "Home");
-        }
+        //    TempData["failed"] = update.Message;
+        //    return RedirectToAction(nameof(Index), "Home");
+        //}
 
 
 
@@ -190,9 +194,23 @@ namespace EasyLearn.Controllers
         }
 
 
+        public async Task<IActionResult> ListOfBankDetail(string id)
+        {
+            var instructor = await _instructorService.GetListOfInstructorBankDetails(id);
+            if (instructor.Status)
+            {
+                TempData["Success"] = instructor.Message;
+                return View(instructor);
+            }
+            TempData["failed"] = instructor.Message;
+            return RedirectToAction(nameof(Index), "Home");
+            //TempData["success"] = admin.Message;
+        }
+
+
         public async Task<IActionResult> UpdateBankDetail(string id)
         {
-            var admin = await _instructorService.GetById(id);
+            var admin = await _instructorService.GetByPaymentDetail(id);
             if (admin.Status) return View(admin);
             TempData["failed"] = admin.Message;
             return RedirectToAction(nameof(Index), "Home");
@@ -214,5 +232,9 @@ namespace EasyLearn.Controllers
             return RedirectToAction(nameof(Index), "Home");
         }
 
+        public IActionResult UpdateAddressDetail()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

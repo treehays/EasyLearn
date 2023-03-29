@@ -97,6 +97,7 @@
                             <td>@item.Gender</td>
                             <td>@item.StudentshipStatus</td>
                             <td>@item.Password</td>
+                          
                             <td>
                                 <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-success">Detail</a>
                             </td>
@@ -106,8 +107,9 @@
                             <td>
                                 <a asp-action="UpdateProfile" asp-route-id="@item.Id" class="btn btn-info">Profile</a>
                                 <a asp-action="UpdateAddressDetail" asp-route-id="@item.Id" class="btn btn-info">Address</a>
-                                <a asp-action="UpdateBankDetail" asp-route-id="@item.Id" class="btn btn-info">Bank</a>
+                                <a asp-action="ListOfBankDetail" asp-route-id="@item.Id" class="btn btn-info">Bank</a>
                             </td>
+
                         </tr>
 
                         serialNumber++;

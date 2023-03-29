@@ -3,6 +3,7 @@ using EasyLearn.Repositories.Implementations;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Implementations;
 using EasyLearn.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyLearn
@@ -45,9 +46,18 @@ namespace EasyLearn
 
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
-            builder.Services.AddScoped<IPaymentDetailsRepository, PaymentDetailsRepository>();
+            builder.Services.AddScoped<IPaymentDetailRepository, PaymentDetailRepository>();
+            builder.Services.AddScoped<IPaymentDetailService, PaymentDetailService>();
             builder.Services.AddHttpContextAccessor();
-
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
+                configuration =>
+                {
+                    configuration.LoginPath = "/Home/Login";
+                    configuration.LogoutPath = "/Home/Login";
+                    configuration.Cookie.Name = "EasyLearn2.0";
+                    configuration.Cookie.Expiration = TimeSpan.FromHours(18);
+                    configuration.Cookie.MaxAge = TimeSpan.FromDays(1);
+                });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -63,6 +73,7 @@ namespace EasyLearn
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
             // EasyLearnDbInitializer.Seed(app);
 

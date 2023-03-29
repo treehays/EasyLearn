@@ -13,14 +13,14 @@ public class ModeratorService : IModeratorService
 {
     private readonly IUserRepository _userRepository;
     private readonly IModeratorRepository _moderatorRepository;
-    private readonly IPaymentDetailsRepository _paymentDetailsRepository;
+    private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
 
     public ModeratorService(IModeratorRepository moderatorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
     {
         _moderatorRepository = moderatorRepository;
         _userRepository = userRepository;

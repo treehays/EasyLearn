@@ -5,6 +5,7 @@ using EasyLearn.Models.DTOs.AdminDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
+using EasyLearn.Models.Enums;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 
@@ -14,14 +15,14 @@ public class AdminService : IAdminService
 {
     private readonly IUserRepository _userRepository;
     private readonly IAdminRepository _adminRepository;
-    private readonly IPaymentDetailsRepository _paymentDetailsRepository;
+    private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
 
     public AdminService(IAdminRepository adminRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository,
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository,
         IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment)
     {
         _adminRepository = adminRepository;
@@ -49,7 +50,7 @@ public class AdminService : IAdminService
 
         if (model.FormFile != null || model.FormFile.Length > 0)
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures"); //ppop
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
@@ -88,6 +89,7 @@ public class AdminService : IAdminService
         var userAddress = new Address
         {
             Id = Guid.NewGuid().ToString(),
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             UserId = user.Id,
         };
 
@@ -95,12 +97,28 @@ public class AdminService : IAdminService
         {
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
+
+        };
+
+
+        var userAdmin = new Admin
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
+
         };
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
 
         await _paymentDetailsRepository.AddAsync(userPaymentDetail);
+        await _userRepository.SaveChangesAsync();
+
+        await _adminRepository.AddAsync(userAdmin);
         await _userRepository.SaveChangesAsync();
 
         await _addressRepository.AddAsync(userAddress);
@@ -115,7 +133,7 @@ public class AdminService : IAdminService
 
     public async Task<BaseResponse> Delete(string id)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == id && !x.IsDeleted && x.IsActive);
+        var admin = await _adminRepository.GetFullDetailByIdAsync(x => x.Id == id && !x.IsDeleted && x.IsActive);
         if (admin == null)
         {
             return new BaseResponse
@@ -125,9 +143,22 @@ public class AdminService : IAdminService
             };
         }
 
+        var date = DateTime.Now;
+        var deletedby = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         admin.IsDeleted = true;
-        admin.DeletedOn = DateTime.Now;
-        admin.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        admin.DeletedOn = date;
+        admin.DeletedBy = deletedby;
+
+        admin.Address.IsDeleted = true;
+        admin.Address.DeletedOn = date;
+        admin.Address.DeletedBy = deletedby;
+
+
+        admin.Admin.IsDeleted = true;
+        admin.Admin.DeletedOn = date;
+        admin.Admin.DeletedBy = deletedby;
+
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -156,7 +187,7 @@ public class AdminService : IAdminService
         admin.Skill = model.Skill ?? admin.Skill;
         admin.Interest = model.Interest ?? admin.Interest;
         admin.PhoneNumber = model.PhoneNumber ?? admin.PhoneNumber;
-        admin.StudentshipStatus = model.StudentshipStatus;
+        admin.StudentshipStatus = model.StudentshipStatus != 0 ? StudentshipStatus.Student : StudentshipStatus.Graduate;
         admin.ModifiedOn = DateTime.Now;
         admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
@@ -302,35 +333,36 @@ public class AdminService : IAdminService
         };
         return adminModel;
     }
-    
-    public async Task<PaymentDetailRequestModel> GetBankDetail(string id)
-    {
-        var admin = await _paymentDetailsRepository.GetAsync(x => x.Id == id  && !x.IsDeleted);
 
-        if (admin == null)
-        {
-            return new PaymentDetailRequestModel
-            {
-                Message = "User not found..",
-                Status = false,
-            };
-        }
 
-        var adminModel = new PaymentDetailRequestModel
-        {
-            Status = true,
-            Message = "Details successfully retrieved...",
-            Data = new PaymentDetailDTO
-            {
-                Id = admin.Id,
-                AccountName = admin.AccountName,
-                AccountNumber = admin.AccountNumber,
-                AccountType = admin.AccountType,
-                BankName = admin.BankName,
-            }
-        };
-        return adminModel;
-    }
+    //public async Task<PaymentDetailRequestModel> GetBankDetail(string id)
+    //{
+    //    var admin = await _paymentDetailsRepository.GetAsync(x => x.UserId == id && !x.IsDeleted);
+
+    //    if (admin == null)
+    //    {
+    //        return new PaymentDetailRequestModel
+    //        {
+    //            Message = "User not found..",
+    //            Status = false,
+    //        };
+    //    }
+
+    //    var adminModel = new PaymentDetailRequestModel
+    //    {
+    //        Status = true,
+    //        Message = "Details successfully retrieved...",
+    //        Data = new PaymentDetailDTO
+    //        {
+    //            Id = admin.Id,
+    //            AccountName = admin.AccountName,
+    //            AccountNumber = admin.AccountNumber,
+    //            AccountType = admin.AccountType,
+    //            BankName = admin.BankName,
+    //        }
+    //    };
+    //    return adminModel;
+    //}
 
     public async Task<AdminResponseModel> GetFullDetailById(string id)
     {
@@ -383,7 +415,7 @@ public class AdminService : IAdminService
     public async Task<AdminResponseModel> GetByEmail(string email)
     {
         // throw new NotImplementedException();
-        var admin = await _userRepository.GetAsync(x => x.Email == email && x.IsActive && !x.IsDeleted);
+        var admin = await _userRepository.GetAsync(x => x.Email == email && x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
 
         if (admin == null)
         {
@@ -419,10 +451,43 @@ public class AdminService : IAdminService
     }
 
 
+
+
+    public async Task<PaymentDetailRequestModel> GetByPaymentDetail(string id)
+    {
+        var instructor = await _paymentDetailsRepository.GetAsync(x => x.Id == id && !x.IsDeleted);
+
+        if (instructor == null)
+        {
+            return new PaymentDetailRequestModel
+            {
+                Status = false,
+                Message = "No bank account found",
+            };
+        }
+        var instructorModel = new PaymentDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new PaymentDetailDTO
+            {
+                Id = instructor.Id,
+                AccountName = instructor.AccountName,
+                AccountNumber = instructor.AccountNumber,
+                AccountType = instructor.AccountType,
+                BankName = instructor.BankName,
+                UserId = instructor.UserId,
+            }
+        };
+        return instructorModel;
+    }
+
+
+
     public async Task<AdminsResponseModel> GetByName(string name)
     {
         var admins = await _userRepository.GetListAsync(x =>
-           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && !x.IsDeleted);
+           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && x.RoleId == "Admin" && !x.IsDeleted);
 
         if (admins == null)
         {
@@ -456,7 +521,7 @@ public class AdminService : IAdminService
         };
         return adminModel;
     }
-    
+
     public async Task<PaymentsDetailRequestModel> GetListOfAdminBankDetails(string userId)
     {
         var admins = await _paymentDetailsRepository.GetListAsync(x => x.UserId == userId && !x.IsDeleted);
@@ -478,9 +543,9 @@ public class AdminService : IAdminService
             {
                 Id = x.Id,
                 BankName = x.BankName,
-                AccountName= x.AccountName,
-                AccountNumber=x.AccountNumber,
-                AccountType=x.AccountType,
+                AccountName = x.AccountName,
+                AccountNumber = x.AccountNumber,
+                AccountType = x.AccountType,
             }),
         };
         return adminModel;
@@ -489,7 +554,7 @@ public class AdminService : IAdminService
     public async Task<AdminsResponseModel> GetAll()
     {
         //throw new NotImplementedException();
-        var admins = await _userRepository.GetAllAsync();
+        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin");
 
         if (admins == null)
         {
@@ -526,7 +591,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminsResponseModel> GetAllActive()
     {
-        var admins = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
 
         if (admins == null)
         {
@@ -563,7 +628,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminsResponseModel> GetAllInActive()
     {
-        var admins = await _userRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && !x.IsActive && !x.IsDeleted);
 
         if (admins == null)
         {

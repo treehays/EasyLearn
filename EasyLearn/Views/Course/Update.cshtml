@@ -1,4 +1,4 @@
-﻿@model EasyLearn.Models.DTOs.CourseDTOs.UpdateCourseRequestModel
+﻿@model EasyLearn.Models.DTOs.CourseDTOs.CourseRequestModel
 
 @{
     //ViewBag.Title = "title";
@@ -15,38 +15,38 @@
             <div class="card-body">
                 <form method="POST">
                     <p>Check the details carefully before clicking on the Update button</p>
-                    <input name="Id" value="@Model.Id" type="hidden" />
+                    <input name="Id" value="@Model.Data.Id" type="hidden" />
                     <div>
-                        <label asp-for="Title" class="control-label"></label>
-                        <input name="Title" value="@Model.Title" type="text" class="form-control" required />
+                        <label asp-for="Data.Title" class="control-label"></label>
+                        <input name="Title" value="@Model.Data.Title" type="text" class="form-control" required />
                     </div>
                     <div>
-                        <label asp-for="Description" class="control-label"></label>
-                        <input name="Description" value="@Model.Description" type="text" class="form-control" required />
+                        <label asp-for="Data.Description" class="control-label"></label>
+                        <input name="Description" value="@Model.Data.Description" type="text" class="form-control" required />
                     </div>
                     <div>
-                        <label asp-for="CourseLanguage" class="control-label"></label>
-                        <input name="CourseLanguage" value="@Model.CourseLanguage" type="text" class="form-control" required />
-                    </div>
-
-                    <div>
-                        <label asp-for="DifficultyLevel" class="control-label"></label>
-                        <input name="DifficultyLevel" value="@Model.DifficultyLevel" type="text" class="form-control" required />
+                        <label asp-for="Data.CourseLanguage" class="control-label"></label>
+                        <input name="CourseLanguage" value="@Model.Data.CourseLanguage" type="text" class="form-control" required />
                     </div>
 
                     <div>
-                        <label asp-for="Requirement" class="control-label"></label>
-                        <input name="Requirement" value="@Model.Requirement" type="text" class="form-control" required />
+                        <label asp-for="Data.DifficultyLevel" class="control-label"></label>
+                        <input name="DifficultyLevel" value="@Model.Data.DifficultyLevel" type="text" class="form-control" required />
                     </div>
 
                     <div>
-                        <label asp-for="CourseDuration" class="control-label"></label>
-                        <input name="CourseDuration" value="@Model.CourseDuration" type="tel" class="form-control" required />
+                        <label asp-for="Data.Requirement" class="control-label"></label>
+                        <input name="Requirement" value="@Model.Data.Requirement" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="Data.CourseDuration" class="control-label"></label>
+                        <input name="CourseDuration" value="@Model.Data.CourseDuration" type="tel" class="form-control" required />
                     </div>
                     
                     <div>
-                        <label asp-for="Price" class="control-label"></label>
-                        <input name="Price" value="@Model.Price" type="tel" class="form-control" required />
+                        <label asp-for="Data.Price" class="control-label"></label>
+                        <input name="Price" value="@Model.Data.Price" type="tel" class="form-control" required />
                     </div>
 
                     <br />

@@ -41,16 +41,19 @@ namespace EasyLearn.Controllers
         public async Task<IActionResult> ListOfBankDetail(string id)
         {
             var admin = await _adminService.GetListOfAdminBankDetails(id);
-            if (admin.Status) return View(admin);
+            if (admin.Status)
+            {
+                TempData["Success"] = admin.Message;
+                return View(admin);
+            }
             TempData["failed"] = admin.Message;
             return RedirectToAction(nameof(Index), "Home");
-            //TempData["success"] = admin.Message;
         }
 
 
         public async Task<IActionResult> UpdateBankDetail(string id)
         {
-            var admin = await _adminService.GetBankDetail(id);
+            var admin = await _adminService.GetByPaymentDetail(id);
             if (admin.Status) return View(admin);
             TempData["failed"] = admin.Message;
             return RedirectToAction(nameof(Index), "Home");

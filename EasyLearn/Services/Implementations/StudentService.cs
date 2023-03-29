@@ -12,13 +12,13 @@ public class StudentService : IStudentService
 {
     private readonly IUserRepository _userRepository;
     private readonly IStudentRepository _studentRepository;
-    private readonly IPaymentDetailsRepository _paymentDetailsRepository;
+    private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IAddressRepository _addressRepository;
 
     public StudentService(IStudentRepository studentRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
     {
         _studentRepository = studentRepository;
         _userRepository = userRepository;

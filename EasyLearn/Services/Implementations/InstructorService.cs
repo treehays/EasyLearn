@@ -1,9 +1,8 @@
 ﻿using BCrypt.Net;
 using EasyLearn.Models.DTOs;
-using EasyLearn.Models.DTOs.AdminDTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
+using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.Entities;
-using EasyLearn.Repositories.Implementations;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -16,12 +15,12 @@ public class InstructorService : IInstructorService
     private readonly IUserRepository _userRepository;
     private readonly IInstructorRepository _instructorRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IPaymentDetailsRepository _paymentDetailsRepository;
+    private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IAddressRepository _addressRepository;
 
     public InstructorService(IInstructorRepository instructorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
     {
         _instructorRepository = instructorRepository;
         _userRepository = userRepository;
@@ -45,7 +44,7 @@ public class InstructorService : IInstructorService
 
         if (model.formFile != null || model.formFile.Length > 0)
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures"); //ppop
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
@@ -72,41 +71,50 @@ public class InstructorService : IInstructorService
             Password = password,
             Gender = model.Gender,
             StudentshipStatus = model.StudentshipStatus,
+            ProfilePicture = fileRelativePathx,
             RoleId = "Instructor",
             UserName = userName,
             CreatedOn = DateTime.Now,
             IsActive = true,
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
         };
 
         var userAddress = new Address
         {
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
         };
 
         var userPaymentDetail = new PaymentDetails
         {
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
         };
 
         var instrDetail = new Instructor
         {
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
         };
 
         await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
-        
-        await _instructorRepository.AddAsync(instrDetail);
         await _userRepository.SaveChangesAsync();
 
         await _paymentDetailsRepository.AddAsync(userPaymentDetail);
         await _userRepository.SaveChangesAsync();
 
+        await _instructorRepository.AddAsync(instrDetail);
+        await _userRepository.SaveChangesAsync();
+
         await _addressRepository.AddAsync(userAddress);
         await _userRepository.SaveChangesAsync();
+
 
         return new BaseResponse
         {
@@ -117,7 +125,7 @@ public class InstructorService : IInstructorService
 
     public async Task<BaseResponse> Delete(string id)
     {
-        var instructor = await _instructorRepository.GetAsync(x => x.Id == id && !x.IsDeleted);
+        var instructor = await _instructorRepository.GetFullDetailByIdAsync(x => x.Id == id && !x.IsDeleted);
         if (instructor == null)
         {
             return new BaseResponse
@@ -127,9 +135,23 @@ public class InstructorService : IInstructorService
             };
         }
 
+
+        var date = DateTime.Now;
+        var deletedby = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         instructor.IsDeleted = true;
-        instructor.DeletedOn = DateTime.Now;
-        instructor.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        instructor.DeletedOn = date;
+        instructor.DeletedBy = deletedby;
+
+        instructor.Address.IsDeleted = true;
+        instructor.Address.DeletedOn = date;
+        instructor.Address.DeletedBy = deletedby;
+
+
+        instructor.Instructor.IsDeleted = true;
+        instructor.Instructor.DeletedOn = date;
+        instructor.Instructor.DeletedBy = deletedby;
+
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -139,9 +161,40 @@ public class InstructorService : IInstructorService
 
     }
 
+
+    public async Task<PaymentsDetailRequestModel> GetListOfInstructorBankDetails(string userId)
+    {
+        var admins = await _paymentDetailsRepository.GetListAsync(x => x.UserId == userId && !x.IsDeleted);
+
+        if (admins == null)
+        {
+            return new PaymentsDetailRequestModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var adminModel = new PaymentsDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = admins.Select(x => new PaymentDetailDTO
+            {
+                Id = x.Id,
+                BankName = x.BankName,
+                AccountName = x.AccountName,
+                AccountNumber = x.AccountNumber,
+                AccountType = x.AccountType,
+            }),
+        };
+        return adminModel;
+    }
+
+
     public async Task<InstructorsResponseModel> GetAll()
     {
-        var instructors = await _userRepository.GetAllAsync();
+        var instructors = await _userRepository.GetListAsync(x => x.RoleId == "Instructor");
         var instructorModel = new InstructorsResponseModel
         {
             Status = true,
@@ -169,7 +222,7 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorsResponseModel> GetAllActive()
     {
-        var instructor = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        var instructor = await _userRepository.GetListAsync(x => x.RoleId == "Instructor" && x.IsActive && !x.IsDeleted);
 
         if (instructor == null)
         {
@@ -207,7 +260,7 @@ public class InstructorService : IInstructorService
     public async Task<InstructorsResponseModel> GetAllInActive()
     {
 
-        var instructor = await _userRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        var instructor = await _userRepository.GetListAsync(x => x.RoleId == "Instructor" && !x.IsActive && !x.IsDeleted);
 
         if (instructor == null)
         {
@@ -244,7 +297,7 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorResponseModel> GetByEmail(string email)
     {
-        var instructor = await _userRepository.GetAsync(x => x.Email == email && x.IsActive && !x.IsDeleted);
+        var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Email == email && x.IsActive && !x.IsDeleted);
         var instructorModel = new InstructorResponseModel
         {
             Status = true,
@@ -272,7 +325,7 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorResponseModel> GetById(string id)
     {
-        var instructor = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+        var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == id && x.IsActive && !x.IsDeleted);
         var instructorModel = new InstructorResponseModel
         {
             Status = true,
@@ -298,10 +351,42 @@ public class InstructorService : IInstructorService
 
     }
 
+
+
+    public async Task<PaymentDetailRequestModel> GetByPaymentDetail(string id)
+    {
+        var instructor = await _paymentDetailsRepository.GetAsync(x => x.Id == id && !x.IsDeleted);
+
+        if (instructor == null)
+        {
+            return new PaymentDetailRequestModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+        var instructorModel = new PaymentDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new PaymentDetailDTO
+            {
+                Id = instructor.Id,
+                AccountName = instructor.AccountName,
+                AccountNumber = instructor.AccountNumber,
+                AccountType = instructor.AccountType,
+                BankName = instructor.BankName,
+                UserId = instructor.UserId,
+            }
+        };
+        return instructorModel;
+
+    }
+
     public async Task<InstructorsResponseModel> GetByName(string name)
     {
         var instructor = await _userRepository.GetListAsync(x =>
-           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && !x.IsDeleted);
+           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && x.RoleId == "Instructor" && !x.IsActive && !x.IsDeleted);
 
         if (instructor == null)
         {
@@ -338,7 +423,7 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorResponseModel> GetFullDetailById(string id)
     {
-        var instructor = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+        var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == id && x.IsActive && !x.IsDeleted);
         var instructorModel = new InstructorResponseModel
         {
             Status = true,
@@ -366,7 +451,7 @@ public class InstructorService : IInstructorService
 
     public async Task<BaseResponse> UpdateActiveStatus(UpdateInstructorActiveStatusRequestModel model)
     {
-        var instructor = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted);
+        var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == model.Id && x.IsActive && !x.IsDeleted);
         if (instructor == null)
         {
             return new BaseResponse
@@ -445,7 +530,7 @@ public class InstructorService : IInstructorService
 
     public async Task<BaseResponse> UpdatePassword(UpdateInstructorPasswordRequestModel model)
     {
-        var instructor = await _userRepository.GetAsync(x => x.Id == model.Id);
+        var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == model.Id);
         if (instructor == null)
         {
             return new BaseResponse
@@ -469,7 +554,7 @@ public class InstructorService : IInstructorService
 
     public async Task<BaseResponse> UpdateProfile(UpdateInstructorProfileRequestModel model)
     {
-        var instructor = await _userRepository.GetAsync(x => x.Id == model.Id);
+        var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == model.Id);
         if (instructor == null)
         {
             return new BaseResponse
