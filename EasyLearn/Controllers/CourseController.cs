@@ -1,21 +1,43 @@
 ﻿using EasyLearn.Models.DTOs.CourseDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Org.BouncyCastle.Utilities;
 
 namespace EasyLearn.Controllers
 {
     public class CourseController : Controller
     {
         private readonly ICourseService _courseService;
+        private readonly ICategoryService _categoryService;
+
+
+        public CourseController(ICourseService courseService, ICategoryService categoryService)
+        {
+            _courseService = courseService;
+            _categoryService = categoryService;
+        }
+
         public IActionResult Index()
         {
             return View();
         }
 
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var categoryList = await _categoryService.GetAll();
+
+            var multiSelectList = new MultiSelectList(categoryList.Data, "Id", "Name");
+
+            ViewData["Category"] = new SelectList(categoryList.Data, "Id", "Name");
+
+
+            var createDetail = new CreateCourseRequestModel
+            {
+                multiSelectList = multiSelectList,
+            };
+            return View(createDetail);
         }
 
         [ValidateAntiForgeryToken]
@@ -89,6 +111,38 @@ namespace EasyLearn.Controllers
         }
 
 
+        public async Task<IActionResult> GetByStatus(bool status)
+        {
+            var courses = await _courseService.GetAllInActive();
+            if (!courses.Status)
+            {
+                TempData["failed"] = courses.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = courses.Message;
+            return View(courses);
+        }
+
+
+
+
+        public async Task<IActionResult> GetByCategorys(bool status)
+        {
+            var courses = await _courseService.GetAllInActive();
+            if (!courses.Status)
+            {
+                TempData["failed"] = courses.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = courses.Message;
+            return View(courses);
+        }
+
+
+
+
         public async Task<IActionResult> GetAllActive()
         {
             var courses = await _courseService.GetAllActive();
@@ -114,7 +168,6 @@ namespace EasyLearn.Controllers
             TempData["success"] = courses.Message;
             return View(courses);
         }
-
 
         public async Task<IActionResult> Update(string id)
         {

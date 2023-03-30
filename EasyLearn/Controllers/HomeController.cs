@@ -33,7 +33,7 @@ namespace EasyLearn.Controllers
             return View();
         }
 
-
+        [HttpPost]
         public async Task<IActionResult> Login(LoginRequestModel model)
         {
             if (!ModelState.IsValid)

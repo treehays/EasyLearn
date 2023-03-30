@@ -1,4 +1,8 @@
-﻿namespace EasyLearn.Models.DTOs.CourseDTOs
+﻿using EasyLearn.Models.DTOs.CategoryDTOs;
+using EasyLearn.Models.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace EasyLearn.Models.DTOs.CourseDTOs
 {
     public class CourseDTOs
     {
@@ -24,9 +28,10 @@
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public string InstructorId { get; set; }
-        public string CategoryId { get; set; }
+        public List<string> CourseCategories { get; set; } = new List<string>();
         public double Price { get; set; }
         public IFormFile FormFile { get; set; }
+        public MultiSelectList multiSelectList { get; set; }
     }
 
     public class UpdateCourseRequestModel

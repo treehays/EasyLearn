@@ -1,6 +1,6 @@
 ﻿namespace EasyLearn.Models.DTOs.CategoryDTOs
 {
-    public class CategoryDTOs
+    public class CategoryDTO
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -29,14 +29,14 @@
     public class CategoriesResponseModel : BaseResponse
     {
 
-        public IEnumerable<CategoryDTOs> Data { get; set; }
+        public IEnumerable<CategoryDTO> Data { get; set; }
     }
 
 
     public class CategoryResponseModel : BaseResponse
     {
 
-        public CategoryDTOs Data { get; set; }
+        public CategoryDTO Data { get; set; }
     }
 
 

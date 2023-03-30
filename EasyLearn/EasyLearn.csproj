@@ -11,6 +11,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Views\Admin\CreateC.cshtml~RF4cc05c7.TMP" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Folder Include="Models\Enums\" />
 		<Folder Include="Models\ViewModels\" />
 		<PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />

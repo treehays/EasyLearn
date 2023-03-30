@@ -1,105 +1,216 @@
 ﻿@model EasyLearn.Models.DTOs.CourseDTOs.CreateCourseRequestModel
 
-@{
-    //ViewBag.Title = "EasyLearn || Register new admin";
-    Layout = "_Layout";
-}
 
 <partial name="_Notification" />
 
-<h2>title</h2>
+
+@{
+    ViewData["Title"] = "Create New Course";
+}
+
+<h1>Create New Course</h1>
+
+<h4>Add course</h4>
+<hr />
 <div class="row">
-    <div class="col-md-4 text-center">
-        @using (Html.BeginForm("Create", "Course", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            <div class="form-group">
-                @Html.LabelFor(x => x.Title, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
-            </div>
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                @Html.LabelFor(x => x.Description, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-                @Html.LabelFor(x => x.CourseLanguage, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.CourseLanguage, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.CourseLanguage, "", new { @class = "text-danger" })
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-
-            
             <div class="form-group">
-                @Html.LabelFor(x => x.DifficultyLevel, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.DifficultyLevel, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.DifficultyLevel, "", new { @class = "text-danger" })
+                <label asp-for="CourseLanguage" class="control-label"></label>
+                <input asp-for="CourseLanguage" class="form-control" />
+                <span asp-validation-for="CourseLanguage" class="text-danger"></span>
             </div>
-            
-            
             <div class="form-group">
-                @Html.LabelFor(x => x.Requirement, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.Requirement, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.Requirement, "", new { @class = "text-danger" })
+                <label asp-for="DifficultyLevel" class="control-label"></label>
+                <input asp-for="DifficultyLevel" class="form-control" />
+                <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
             </div>
-            
-            
             <div class="form-group">
-                @Html.LabelFor(x => x.CourseDuration, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.CourseDuration, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.CourseDuration, "", new { @class = "text-danger" })
+                <label asp-for="Requirement" class="control-label"></label>
+                <input asp-for="Requirement" class="form-control" />
+                <span asp-validation-for="Requirement" class="text-danger"></span>
             </div>
-
-            
-            
             <div class="form-group">
-                @Html.LabelFor(x => x.InstructorId, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.InstructorId, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.InstructorId, "", new { @class = "text-danger" })
-            </div>
-
-            
-            
-            
-            <div class="form-group">
-                @Html.LabelFor(x => x.CategoryId, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.CategoryId, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.CategoryId, "", new { @class = "text-danger" })
-            </div>
-
-             
-            
-            
-            <div class="form-group">
-                @Html.LabelFor(x => x.Price, new { @class = "form-label" })
-                @Html.TextBoxFor(x => x.Price, new { @class = "form-control", @placeholder = "Real Name" })
-                @Html.ValidationMessageFor(x => x.Price, "", new { @class = "text-danger" })
+                <label asp-for="CourseDuration" class="control-label"></label>
+                <input asp-for="CourseDuration" class="form-control"></input>
+                <span asp-validation-for="CourseDuration" class="text-danger"></span>
             </div>
 
 
             <div class="form-group">
-                @Html.LabelFor(x => x.FormFile, new { @class = "" })
-                @*<label for="file">Choose file</label>*@
+                @Html.LabelFor(x => x.CourseCategories, new {@class = "control-label"})
+                <br />
+
+
+
+                <select asp-for="CourseCategories" asp-items="ViewBag.Category" required multiple>
+                    <option value="" selected>--Select Category--</option>
+                </select>
+
+
+                @*@Html.DropDownListFor(x => x.CourseCategories, new SelectList(Model.PCategory,"Data.CategoryCode","Data.Name"),"Select Category" ,new {@class = "form-control"})*@
+                @*
+                @Html.DropDownListFor(x => x.CourseCategories, Model.multiSelectList, new {@class = "form-control", @multiple = "multiple"})*@
+                @Html.ValidationMessageFor(x => x.CourseCategories,"", new {@class="text-danger"})
+            </div>
+
+
+
+            @*  <div class="form-group">
+            <label asp-for="CategoryId" class="control-label"></label>
+            <input asp-for="CategoryId" class="form-control"></input>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>*@
+
+
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control"></input>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="file">Choose file</label>
                 <input type="file" name="formFile" id="formFile" />
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn btn-danger">Reset</button>
-        }
-
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-
-    <div class="col-md-6">
-        @* <h2></h2> *@
-
-    </div>
-
 </div>
 
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}
+
+
+
+@{
+            /*
+           *
+           *
+           //ViewBag.Title = "EasyLearn || Register new admin";
+       Layout = "_Layout";
+       }
+
+       <partial name="_Notification" />
+
+               <h2>title</h2>
+           <div class="row">
+           <div class="col-md-4 text-center">
+       @using (Html.BeginForm("Create", "Course", FormMethod.Post, new { enctype = "multipart/form-data" }))
+       {
+       <div class="form-group">
+       @Html.LabelFor(x => x.Title, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+       </div>
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.Description, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+       </div>
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.CourseLanguage, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.CourseLanguage, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.CourseLanguage, "", new { @class = "text-danger" })
+       </div>
+
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.DifficultyLevel, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.DifficultyLevel, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.DifficultyLevel, "", new { @class = "text-danger" })
+       </div>
+
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.Requirement, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.Requirement, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.Requirement, "", new { @class = "text-danger" })
+       </div>
+
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.CourseDuration, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.CourseDuration, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.CourseDuration, "", new { @class = "text-danger" })
+       </div>
+
+
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.InstructorId, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.InstructorId, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.InstructorId, "", new { @class = "text-danger" })
+       </div>
+
+
+
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.CategoryId, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.CategoryId, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.CategoryId, "", new { @class = "text-danger" })
+       </div>
+
+
+
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.Price, new { @class = "form-label" })
+       @Html.TextBoxFor(x => x.Price, new { @class = "form-control", @placeholder = "Real Name" })
+       @Html.ValidationMessageFor(x => x.Price, "", new { @class = "text-danger" })
+       </div>
+
+
+       <div class="form-group">
+       @Html.LabelFor(x => x.FormFile, new { @class = "" })
+       @*<label for="file">Choose file</label>*@
+       <input type="file" name="formFile" id="formFile" />
+           </div>
+
+           <button type="submit" class="btn btn-primary">Submit</button>
+           <button type="reset" class="btn btn-danger">Reset</button>
+       }
+
+       </div>
+
+               <div class="col-md-6">
+           @* <h2></h2> *@
+
+       </div>
+
+               </div>
+
+
+       @section Scripts {
+       @{
+       await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+
+    */
 }

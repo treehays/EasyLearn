@@ -3,6 +3,7 @@ using EasyLearn.Models.DTOs.CourseDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
@@ -10,25 +11,61 @@ namespace EasyLearn.Services.Implementations;
 public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICourseCategoryRepository _courseCategoryRepository;
+    private readonly ICategoryRepository _CategoryRepository;
 
 
-    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, ICourseCategoryRepository courseCategoryRepository)
+    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, ICourseCategoryRepository courseCategoryRepository, IWebHostEnvironment webHostEnvironment)
     {
         _courseRepository = courseRepository;
         _httpContextAccessor = httpContextAccessor;
         _courseCategoryRepository = courseCategoryRepository;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     /// <summary>
     /// Same instructor can not create course with exactly the saqme name
-    /// </summary>
-    /// <param name="model"></param>
-    /// <returns></returns>
     public async Task<BaseResponse> Create(CreateCourseRequestModel model)
     {
         var courseInstructor = await _courseRepository.GetAsync(x => x.Title == model.Title && x.InstructorId == model.InstructorId);
+        if (courseInstructor != null)
+        {
+            return new BaseResponse
+            {
+                Status = false,
+                Message = "Course course with same name already exist...",
+            };
+        }
+
+        string fileRelativePathx = null;
+
+        if (model.FormFile != null || model.FormFile.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
+            fileRelativePathx = "/uploads/profilePictures/" + fileName;
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.FormFile.CopyToAsync(stream);
+            }
+        }
+        //var category = new List<Category>();
+        //foreach (var item in model.CourseCategories)
+        //{
+        //    //var get = await _CategoryRepository.GetAsync(x => x.Id == item);
+
+        //    //category.Add(get);
+        //}
+
+        var cate = model.CourseCategories.Select(async (y) => await _courseCategoryRepository.GetAsync((x => x.Id == y)));
         var course = new Course
         {
             Id = Guid.NewGuid().ToString(),
@@ -39,17 +76,30 @@ public class CourseService : ICourseService
             DifficultyLevel = model.DifficultyLevel,
             Requirement = model.Requirement,
             CourseDuration = model.CourseDuration,
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            CreatedOn = DateTime.Now,
+            //CourseCategories = courseCategory,
         };
+        foreach (var item in model.CourseCategories)
+        {
+            var courseCategory = new CourseCategory
+            {
+                Id = Guid.NewGuid().ToString(),
+                CourseId = course.Id,
+                CategoryId = item,
+            };
+            course.CourseCategories.Add(courseCategory);
+        }
+
         await _courseRepository.AddAsync(course);
         await _courseRepository.SaveChangesAsync();
+        var cc = new List<CourseCategory>();
 
-        var courseCategory = new CourseCategory
-        {
-            CourseId = course.Id,
-            CategoryId = model.CategoryId,
-        };
-        await _courseCategoryRepository.AddAsync(courseCategory);
-        await _courseRepository.SaveChangesAsync();
+
+
+        //await _courseCategoryRepository.AddAsync(courseCategory);
+        //await _courseRepository.SaveChangesAsync();
+
 
         return new BaseResponse
         {

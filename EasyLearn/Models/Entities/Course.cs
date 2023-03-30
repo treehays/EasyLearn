@@ -19,7 +19,7 @@ namespace EasyLearn.Models.Entities
         public IEnumerable<StudentCourse> StudentCourses { get; set; } = new HashSet<StudentCourse>();
         public IEnumerable<Module> Modules { get; set; } = new HashSet<Module>();
         public IEnumerable<Enrolment> Enrolments { get; set; }
-        public IEnumerable<CourseCategory> CourseCategories { get; set; }
+        public List<CourseCategory> CourseCategories { get; set; } = new List<CourseCategory>();
         public IEnumerable<CourseReview> CourseReviews { get; set; } = new HashSet<CourseReview>();
         public IEnumerable<Payment> Payments { get; set; } = new HashSet<Payment>();
 

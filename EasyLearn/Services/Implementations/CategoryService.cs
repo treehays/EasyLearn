@@ -3,7 +3,6 @@ using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
-using Microsoft.VisualBasic;
 
 namespace EasyLearn.Services.Implementations
 {
@@ -11,7 +10,6 @@ namespace EasyLearn.Services.Implementations
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
 
         public CategoryService(ICategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironment)
         {
@@ -126,7 +124,7 @@ namespace EasyLearn.Services.Implementations
             {
                 Status = true,
                 Message = "Category retrieved successfully...",
-                Data = new CategoryDTOs
+                Data = new CategoryDTO
                 {
                     Id = category.Id,
                     Name = category.Name,
@@ -153,7 +151,7 @@ namespace EasyLearn.Services.Implementations
             {
                 Status = true,
                 Message = "Categories successfully retrieved...",
-                Data = categories.Select(x => new CategoryDTOs
+                Data = categories.Select(x => new CategoryDTO
                 {
                     Id = x.Id,
                     Name = x.Name,
