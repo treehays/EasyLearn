@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Models\DTOs\Modules\" />
 		<Folder Include="Models\Enums\" />
 		<Folder Include="Models\ViewModels\" />
 		<PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />

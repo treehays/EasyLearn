@@ -58,6 +58,7 @@ namespace EasyLearn.Controllers
             {
                 new Claim(ClaimTypes.Role,getEmail.RoleId),
                 new Claim(ClaimTypes.NameIdentifier,getEmail.Id),
+                new Claim(ClaimTypes.Actor, getEmail.Id),
                 new Claim(ClaimTypes.Name,getEmail.FirstName),
             };
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

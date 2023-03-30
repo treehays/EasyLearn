@@ -90,7 +90,7 @@ public class RoleService : IRoleService
         {
             Message = "role retrieved succssfully",
             Status = true,
-            Data = new RoleDTOs
+            Data = new RoleDTO
             {
                 RoleName = role.RoleName,
                 Description = role.Description,
@@ -117,7 +117,7 @@ public class RoleService : IRoleService
         {
             Message = "role retrieved succssfully",
             Status = true,
-            Data = role.Select(x => new RoleDTOs
+            Data = role.Select(x => new RoleDTO
             {
                 Id = x.Id,
                 RoleName = x.RoleName,

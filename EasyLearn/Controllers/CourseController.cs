@@ -58,7 +58,7 @@ namespace EasyLearn.Controllers
             }
 
             TempData["success"] = createCourse.Message;
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetAll));
         }
 
         public async Task<IActionResult> Detail(string id)
