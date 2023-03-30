@@ -1,0 +1,45 @@
+﻿@model EasyLearn.Models.DTOs.PaymentDetailDTOs.PaymentDetailRequestModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+<br>
+<div class="row row-content d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <h3 class="card-header bg-black text-center"><strong>Update Admin Bank Details</strong></h3>
+            <div class="card-body">
+                <form method="POST">
+                    <p>Check the details carefully before clicking on the Update button</p>
+                    <input name="Id" value="@Model.Data.Id" type="hidden" />
+                    <div>
+                        @Html.DisplayNameFor(x => x.Data.BankName)
+                        <input name="BankName" value="@Model.Data.BankName" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="Data.AccountNumber" class="control-label"></label>
+                        <input name="AccountNumber" value="@Model.Data.AccountNumber" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="Data.AccountName" class="control-label"></label>
+                        <input name="AccountName" value="@Model.Data.AccountName" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="Data.AccountType" class="control-label"></label>
+                        <input name="AccountType" value="@Model.Data.AccountType" type="text" class="form-control" required />
+                    </div>
+
+
+                    <br />
+                    <button type="submit">Update</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

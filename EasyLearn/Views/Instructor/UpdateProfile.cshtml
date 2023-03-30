@@ -1,0 +1,54 @@
+﻿@model EasyLearn.Models.DTOs.InstructorDTOs.InstructorResponseModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+<br>
+<div class="row row-content d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <h3 class="card-header bg-black text-center"><strong>Update Admin Details</strong></h3>
+            <div class="card-body">
+                <form method="POST">
+                    <p>Check the details carefully before clicking on the Update button</p>
+                    <input name="Id" value="@Model.Data.Id" type="hidden" />
+                    <div>
+                        <label asp-for="Data.FirstName" class="control-label"></label>
+                        <input name="FirstName" value="@Model.Data.FirstName" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="Data.LastName" class="control-label"></label>
+                        <input name="LastName" value="@Model.Data.LastName" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="Data.Biography" class="control-label"></label>
+                        <input name="Biography" value="@Model.Data.Biography" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="Data.Skill" class="control-label"></label>
+                        <input name="Skill" value="@Model.Data.Skill" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="Data.Interest" class="control-label"></label>
+                        <input name="Interest" value="@Model.Data.Interest" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="Data.PhoneNumber" class="control-label"></label>
+                        <input name="PhoneNumber" value="@Model.Data.PhoneNumber" type="tel" class="form-control" required />
+                    </div>
+
+                    <br />
+                    <button type="submit">Update</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

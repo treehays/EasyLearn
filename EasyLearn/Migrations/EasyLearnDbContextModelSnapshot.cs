@@ -128,6 +128,9 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -138,9 +141,6 @@ namespace EasyLearn.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Status")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -180,6 +180,9 @@ namespace EasyLearn.Migrations
                     b.Property<string>("InstructorId")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -191,9 +194,6 @@ namespace EasyLearn.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("double");
-
-                    b.Property<string>("Rating")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Requirement")
                         .HasColumnType("longtext");
@@ -275,10 +275,16 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("InstructorFeedBack")
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsReported")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsVerifiedPurchase")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsVisibile")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ModifiedBy")
@@ -290,22 +296,10 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Rating")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Reported")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("StudentId")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserFeedBack")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VerifiedPurchase")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Visibility")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

@@ -1,0 +1,45 @@
+﻿@model EasyLearn.Models.DTOs.AdminDTOs.AdminResponseModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+<br>
+<div class="row row-content d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <h3 class="card-header bg-black text-center"><strong>Update Admin Address</strong></h3>
+            <div class="card-body">
+                <form method="POST">
+                    <p>Check the details carefully before clicking on the Update button</p>
+                    <input name="Id" value="@Model.Data.Id" type="hidden" />
+                    <div>
+                        <label asp-for="Data.Country" class="control-label"></label>
+                        <input name="Country" value="@Model.Data.Country" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="Data.State" class="control-label"></label>
+                        <input name="State" value="@Model.Data.State" type="text" class="form-control" required />
+                    </div>
+                    <div>
+                        <label asp-for="Data.City" class="control-label"></label>
+                        <input name="City" value="@Model.Data.City" type="text" class="form-control" required />
+                    </div>
+
+                    <div>
+                        <label asp-for="Data.Language" class="control-label"></label>
+                        <input name="Language" value="@Model.Data.Language" type="text" class="form-control" required />
+                    </div>
+
+
+                    <br />
+                    <button type="submit">Update</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

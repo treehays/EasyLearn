@@ -1,6 +1,8 @@
-﻿namespace EasyLearn.Repositories.Interfaces;
+﻿using EasyLearn.Models.Entities;
 
-public interface ICourseRepository
+namespace EasyLearn.Repositories.Interfaces;
+
+public interface ICourseRepository : IRepository<Course>
 {
-    
+
 }

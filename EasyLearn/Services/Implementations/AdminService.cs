@@ -2,12 +2,12 @@
 using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.AdminDTOs;
+using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
-using Microsoft.Extensions.Hosting;
 
 namespace EasyLearn.Services.Implementations;
 
@@ -15,14 +15,15 @@ public class AdminService : IAdminService
 {
     private readonly IUserRepository _userRepository;
     private readonly IAdminRepository _adminRepository;
-    private readonly IPaymentDetailsRepository _paymentDetailsRepository;
+    private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
 
     public AdminService(IAdminRepository adminRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository,
+        IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment)
     {
         _adminRepository = adminRepository;
         _userRepository = userRepository;
@@ -35,58 +36,6 @@ public class AdminService : IAdminService
 
     public async Task<BaseResponse> Create(CreateUserRequestModel model)
     {
-
-
-        //var basePath = Path.Combine(_webHostEnvironment.WebRootPath, "Files", "Images", "ProfilPictures");
-        //Directory.CreateDirectory(basePath);
-        //var contentType = model.formFile.ContentType.Split('/')[1];
-        //var fileName = $"{Guid.NewGuid()}-{contentType}";
-        //var fullPath = Path.Combine(basePath, fileName);
-        //using (var fileStream = new FileStream(fullPath, FileMode.Create))
-        //{
-        //    model.formFile.CopyTo(fileStream);
-
-        //}
-        //model.formFile;
-        if (model.formFile == null || model.formFile.Length == 0)
-        {
-            return new BaseResponse
-            {
-                Status = false,
-                Message = "No image uploaded.",
-            };
-        }
-
-        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");//ppop
-        if (!Directory.Exists(uploadsFolder))
-        {
-            Directory.CreateDirectory(uploadsFolder);
-        }
-
-
-
-        //var fileName1 = Path.GetFileName(model.formFile.FileName);
-        //var fileExtension = Path.GetExtension(model.formFile.FileName);
-
-
-
-
-        var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
-
-        var fileRelativePathx = "/uploads/profilePictures/" + fileName;
-
-
-
-
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await model.formFile.CopyToAsync(stream);
-        }
-
-
-
         var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
         if (emailExist)
         {
@@ -95,6 +44,25 @@ public class AdminService : IAdminService
                 Status = false,
                 Message = "Email already exist.",
             };
+        }
+
+        string fileRelativePathx = null;
+
+        if (model.FormFile != null || model.FormFile.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
+            fileRelativePathx = "/uploads/profilePictures/" + fileName;
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.FormFile.CopyToAsync(stream);
+            }
         }
 
         var truncUserName = model.Email.IndexOf('@');
@@ -114,8 +82,46 @@ public class AdminService : IAdminService
             UserName = userName,
             CreatedOn = DateTime.Now,
             IsActive = true,
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+
         };
+
+        var userAddress = new Address
+        {
+            Id = Guid.NewGuid().ToString(),
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            UserId = user.Id,
+        };
+
+        var userPaymentDetail = new PaymentDetails
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
+
+        };
+
+
+        var userAdmin = new Admin
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
+
+        };
+
         await _userRepository.AddAsync(user);
+        await _userRepository.SaveChangesAsync();
+
+        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
+        await _userRepository.SaveChangesAsync();
+
+        await _adminRepository.AddAsync(userAdmin);
+        await _userRepository.SaveChangesAsync();
+
+        await _addressRepository.AddAsync(userAddress);
         await _userRepository.SaveChangesAsync();
 
         return new BaseResponse
@@ -127,7 +133,7 @@ public class AdminService : IAdminService
 
     public async Task<BaseResponse> Delete(string id)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == id);
+        var admin = await _adminRepository.GetFullDetailByIdAsync(x => x.Id == id && !x.IsDeleted && x.IsActive);
         if (admin == null)
         {
             return new BaseResponse
@@ -137,9 +143,22 @@ public class AdminService : IAdminService
             };
         }
 
+        var date = DateTime.Now;
+        var deletedby = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         admin.IsDeleted = true;
-        admin.DeletedOn = DateTime.Now;
-        admin.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        admin.DeletedOn = date;
+        admin.DeletedBy = deletedby;
+
+        admin.Address.IsDeleted = true;
+        admin.Address.DeletedOn = date;
+        admin.Address.DeletedBy = deletedby;
+
+
+        admin.Admin.IsDeleted = true;
+        admin.Admin.DeletedOn = date;
+        admin.Admin.DeletedBy = deletedby;
+
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -161,14 +180,14 @@ public class AdminService : IAdminService
         }
 
 
-        admin.FirstName = model.FirstName;
-        admin.LastName = model.LastName;
-        admin.ProfilePicture = model.ProfilePicture;
-        admin.Biography = model.Biography;
-        admin.Skill = model.Skill;
-        admin.Interest = model.Interest;
-        admin.PhoneNumber = model.PhoneNumber;
-        admin.StudentshipStatus = model.StudentshipStatus == 0 ? StudentshipStatus.Graduate : model.StudentshipStatus;
+        admin.FirstName = model.FirstName ?? admin.FirstName;
+        admin.LastName = model.LastName ?? admin.LastName;
+        admin.ProfilePicture = model.ProfilePicture ?? admin.ProfilePicture;
+        admin.Biography = model.Biography ?? admin.Biography;
+        admin.Skill = model.Skill ?? admin.Skill;
+        admin.Interest = model.Interest ?? admin.Interest;
+        admin.PhoneNumber = model.PhoneNumber ?? admin.PhoneNumber;
+        admin.StudentshipStatus = model.StudentshipStatus != 0 ? StudentshipStatus.Student : StudentshipStatus.Graduate;
         admin.ModifiedOn = DateTime.Now;
         admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
@@ -181,7 +200,7 @@ public class AdminService : IAdminService
 
     public async Task<BaseResponse> UpdateBankDetail(UpdateUserBankDetailRequestModel model)
     {
-        var admin = await _paymentDetailsRepository.GetAsync(x => x.UserId == model.Id && !x.IsDeleted);
+        var admin = await _paymentDetailsRepository.GetAsync(x => x.Id == model.Id && !x.IsDeleted);
         if (admin == null)
         {
             return new BaseResponse
@@ -191,10 +210,10 @@ public class AdminService : IAdminService
             };
         }
 
-        admin.BankName = model.BankName;
-        admin.AccountNumber = model.AccountNumber;
-        admin.AccountName = model.AccountName;
-        admin.AccountType = model.AccountType;
+        admin.BankName = model.BankName ?? admin.BankName;
+        admin.AccountNumber = model.AccountNumber ?? admin.AccountNumber;
+        admin.AccountName = model.AccountName ?? admin.AccountName;
+        admin.AccountType = model.AccountType ?? admin.AccountType;
         admin.ModifiedOn = DateTime.Now;
         admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
@@ -210,6 +229,7 @@ public class AdminService : IAdminService
         var admin = await _addressRepository.GetAsync(x => x.UserId == model.Id && !x.IsDeleted);
         if (admin == null)
         {
+
             return new BaseResponse
             {
                 Message = "User not found.",
@@ -217,10 +237,10 @@ public class AdminService : IAdminService
             };
         }
 
-        admin.Country = model.Country;
-        admin.State = model.State;
-        admin.City = model.City;
-        admin.Language = model.Language;
+        admin.Country = model.Country ?? admin.Country;
+        admin.State = model.State ?? admin.State;
+        admin.City = model.City ?? admin.City;
+        admin.Language = model.Language ?? admin.Language;
         admin.ModifiedOn = DateTime.Now;
         admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
@@ -243,7 +263,7 @@ public class AdminService : IAdminService
             };
         }
 
-        admin.Password = model.Password;
+        admin.Password = model.Password ?? admin.Password;
         admin.ModifiedOn = DateTime.Now;
         admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
@@ -266,7 +286,7 @@ public class AdminService : IAdminService
             };
         }
 
-        admin.IsActive = model.IsActive == (int)boolOption.IsTrue;
+        admin.IsActive = model.IsActive;
         admin.ModifiedOn = DateTime.Now;
         admin.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         await _userRepository.SaveChangesAsync();
@@ -280,6 +300,16 @@ public class AdminService : IAdminService
     public async Task<AdminResponseModel> GetById(string id)
     {
         var admin = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+
+        if (admin == null)
+        {
+            return new AdminResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var adminModel = new AdminResponseModel
         {
             Status = true,
@@ -304,9 +334,48 @@ public class AdminService : IAdminService
         return adminModel;
     }
 
+
+    //public async Task<PaymentDetailRequestModel> GetBankDetail(string id)
+    //{
+    //    var admin = await _paymentDetailsRepository.GetAsync(x => x.UserId == id && !x.IsDeleted);
+
+    //    if (admin == null)
+    //    {
+    //        return new PaymentDetailRequestModel
+    //        {
+    //            Message = "User not found..",
+    //            Status = false,
+    //        };
+    //    }
+
+    //    var adminModel = new PaymentDetailRequestModel
+    //    {
+    //        Status = true,
+    //        Message = "Details successfully retrieved...",
+    //        Data = new PaymentDetailDTO
+    //        {
+    //            Id = admin.Id,
+    //            AccountName = admin.AccountName,
+    //            AccountNumber = admin.AccountNumber,
+    //            AccountType = admin.AccountType,
+    //            BankName = admin.BankName,
+    //        }
+    //    };
+    //    return adminModel;
+    //}
+
     public async Task<AdminResponseModel> GetFullDetailById(string id)
     {
-        var admin = await _adminRepository.GetFullDetailByIdAsync(id);
+        var admin = await _adminRepository.GetFullDetailByIdAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+        if (admin == null)
+        {
+            return new AdminResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var adminModel = new AdminResponseModel
         {
             Status = true,
@@ -314,22 +383,30 @@ public class AdminService : IAdminService
             Data = new AdminDtos
             {
                 Id = admin.Id,
-                FirstName = admin.User.FirstName,
-                LastName = admin.User.LastName,
-                Email = admin.User.Email,
-                Password = admin.User.Password,
-                ProfilePicture = admin.User.ProfilePicture,
-                Biography = admin.User.Biography,
-                Skill = admin.User.Skill,
-                Interest = admin.User.Interest,
-                PhoneNumber = admin.User.PhoneNumber,
-                Gender = admin.User.Gender,
-                StudentshipStatus = admin.User.StudentshipStatus,
-                RoleId = admin.User.RoleId,
-                Language = admin.User.Address.Language,
-                City = admin.User.Address.City,
-                State = admin.User.Address.State,
-                Country = admin.User.Address.Country,
+                FirstName = admin.FirstName,
+                LastName = admin.LastName,
+                Email = admin.Email,
+                Password = admin.Password,
+                ProfilePicture = admin.ProfilePicture,
+                Biography = admin.Biography,
+                Skill = admin.Skill,
+                Interest = admin.Interest,
+                PhoneNumber = admin.PhoneNumber,
+                Gender = admin.Gender,
+                StudentshipStatus = admin.StudentshipStatus,
+                RoleId = admin.RoleId,
+
+                Language = admin.Address.Language,
+                City = admin.Address.City,
+                State = admin.Address.State,
+                Country = admin.Address.Country,
+                PaymentDetailData = admin.PaymentDetails.Select(x => new PaymentDetailDTO
+                {
+                    AccountName = x.AccountName,
+                    BankName = x.BankName,
+                    AccountNumber = x.AccountNumber,
+                    AccountType = x.AccountType,
+                }),
             }
         };
         return adminModel;
@@ -338,7 +415,17 @@ public class AdminService : IAdminService
     public async Task<AdminResponseModel> GetByEmail(string email)
     {
         // throw new NotImplementedException();
-        var admin = await _userRepository.GetAsync(x => x.Email == email && x.IsActive && !x.IsDeleted);
+        var admin = await _userRepository.GetAsync(x => x.Email == email && x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
+
+        if (admin == null)
+        {
+            return new AdminResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var adminModel = new AdminResponseModel
         {
             Status = true,
@@ -364,9 +451,53 @@ public class AdminService : IAdminService
     }
 
 
+
+
+    public async Task<PaymentDetailRequestModel> GetByPaymentDetail(string id)
+    {
+        var instructor = await _paymentDetailsRepository.GetAsync(x => x.Id == id && !x.IsDeleted);
+
+        if (instructor == null)
+        {
+            return new PaymentDetailRequestModel
+            {
+                Status = false,
+                Message = "No bank account found",
+            };
+        }
+        var instructorModel = new PaymentDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new PaymentDetailDTO
+            {
+                Id = instructor.Id,
+                AccountName = instructor.AccountName,
+                AccountNumber = instructor.AccountNumber,
+                AccountType = instructor.AccountType,
+                BankName = instructor.BankName,
+                UserId = instructor.UserId,
+            }
+        };
+        return instructorModel;
+    }
+
+
+
     public async Task<AdminsResponseModel> GetByName(string name)
     {
-        var admins = await _userRepository.GetListAsync(x => x.FirstName == name || x.LastName == name && x.IsActive && !x.IsDeleted);
+        var admins = await _userRepository.GetListAsync(x =>
+           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && x.RoleId == "Admin" && !x.IsDeleted);
+
+        if (admins == null)
+        {
+            return new AdminsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var adminModel = new AdminsResponseModel
         {
             Status = true,
@@ -386,7 +517,36 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
+        };
+        return adminModel;
+    }
+
+    public async Task<PaymentsDetailRequestModel> GetListOfAdminBankDetails(string userId)
+    {
+        var admins = await _paymentDetailsRepository.GetListAsync(x => x.UserId == userId && !x.IsDeleted);
+
+        if (admins == null)
+        {
+            return new PaymentsDetailRequestModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var adminModel = new PaymentsDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = admins.Select(x => new PaymentDetailDTO
+            {
+                Id = x.Id,
+                BankName = x.BankName,
+                AccountName = x.AccountName,
+                AccountNumber = x.AccountNumber,
+                AccountType = x.AccountType,
+            }),
         };
         return adminModel;
     }
@@ -394,7 +554,17 @@ public class AdminService : IAdminService
     public async Task<AdminsResponseModel> GetAll()
     {
         //throw new NotImplementedException();
-        var admins = await _userRepository.GetAllAsync();
+        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin");
+
+        if (admins == null)
+        {
+            return new AdminsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var adminModel = new AdminsResponseModel
         {
             Status = true,
@@ -414,14 +584,24 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
         };
         return adminModel;
     }
 
     public async Task<AdminsResponseModel> GetAllActive()
     {
-        var admins = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
+
+        if (admins == null)
+        {
+            return new AdminsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var adminModel = new AdminsResponseModel
         {
             Status = true,
@@ -441,14 +621,24 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
         };
         return adminModel;
     }
 
     public async Task<AdminsResponseModel> GetAllInActive()
     {
-        var admins = await _userRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && !x.IsActive && !x.IsDeleted);
+
+        if (admins == null)
+        {
+            return new AdminsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
         var adminModel = new AdminsResponseModel
         {
             Status = true,
@@ -468,9 +658,9 @@ public class AdminService : IAdminService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
-            }).AsEnumerable(),
+            }),
         };
         return adminModel;
     }
-
 }
+
