@@ -3,6 +3,7 @@ using EasyLearn.Models.DTOs.AdminDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EasyLearn.Repositories.Implementations;
 
@@ -14,13 +15,14 @@ public class AdminRepository : BaseRepository<Admin>, IAdminRepository
     }
 
 
-    public async Task<Admin> GetFullDetailByIdAsync(string id)
+    public async Task<User> GetFullDetailByIdAsync(Expression<Func<User, bool>> expression)
     {
-        var admin = await _context.Admins
-            .Include(a => a.User)
-            .ThenInclude(b => b.Address)
-            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        var admin = await _context.Users
+          .Include(a => a.Admin)
+          .Include(b => b.PaymentDetails)
+          .Include(b => b.Address)
+          .FirstOrDefaultAsync(expression);
         return admin;
     }
-    
+
 }

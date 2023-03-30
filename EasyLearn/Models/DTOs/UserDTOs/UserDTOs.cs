@@ -12,13 +12,16 @@ public class UserDTOs
     public string Password { get; set; }
     public string ProfilePicture { get; set; }
     public string RoleId { get; set; }
+    public string UserName { get; set; }
 }
 
 
 public class CreateUserRequestModel
 {
-    [DisplayName("First Name")] public string FirstName { get; set; }
-    [DisplayName("Last Name")] public string LastName { get; set; }
+    [DisplayName("First Name")]
+    public string FirstName { get; set; }
+    [DisplayName("Last Name")]
+    public string LastName { get; set; }
 
     [EmailAddress(ErrorMessage = "Enter a valid email..")]
     public string Email { get; set; }
@@ -30,7 +33,7 @@ public class CreateUserRequestModel
     public string ConfirmPassword { get; set; }
     public Gender Gender { get; set; }
     public StudentshipStatus StudentshipStatus { get; set; }
-    public IFormFile formFile { get; set; }
+    public IFormFile FormFile { get; set; }
 }
 
 
@@ -88,7 +91,7 @@ public class UpdateUserPasswordRequestModel
 public class UpdateUserActiveStatusRequestModel
 {
     public string Id { get; set; }
-    public int IsActive { get; set; }
+    public bool IsActive { get; set; }
 }
 
 
@@ -112,9 +115,15 @@ public class UserResponseModel
     public string RoleId { get; set; }
 }
 
-public class UserLoginResponseModel
+public class LoginRequestModel : BaseResponse
 {
+
+    public string Id { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
     public string RoleId { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string UserName { get; set; }
+    public string ProfilePicture { get; set; }
 }

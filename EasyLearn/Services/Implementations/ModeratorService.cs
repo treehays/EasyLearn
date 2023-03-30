@@ -13,18 +13,21 @@ public class ModeratorService : IModeratorService
 {
     private readonly IUserRepository _userRepository;
     private readonly IModeratorRepository _moderatorRepository;
-    private readonly IPaymentDetailsRepository _paymentDetailsRepository;
+    private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
 
     public ModeratorService(IModeratorRepository moderatorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailsRepository paymentDetailsRepository, IAddressRepository addressRepository)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
     {
         _moderatorRepository = moderatorRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public async Task<BaseResponse> Create(CreateModeratorRequestModel model)
@@ -38,6 +41,26 @@ public class ModeratorService : IModeratorService
                 Message = "Email already exist.",
             };
         }
+
+        string fileRelativePathx = null;
+
+        if (model.formFile != null || model.formFile.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures"); //ppop
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
+            fileRelativePathx = "/uploads/profilePictures/" + fileName;
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.formFile.CopyToAsync(stream);
+            }
+        }
+
 
         var truncUserName = model.Email.IndexOf('@');
         var userName = model.Email.Remove(truncUserName);
@@ -56,8 +79,37 @@ public class ModeratorService : IModeratorService
             CreatedOn = DateTime.Now,
             IsActive = true,
         };
+
+        var userAddress = new Address
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
+
+        var userPaymentDetail = new PaymentDetails
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
+        
+        var moderDetail = new Moderator
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+        };
+
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
+
+        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
+        await _userRepository.SaveChangesAsync();
+        
+        await _moderatorRepository.AddAsync(moderDetail);
+        await _userRepository.SaveChangesAsync();
+
+        await _addressRepository.AddAsync(userAddress);
+        await _userRepository.SaveChangesAsync();
+
 
         return new BaseResponse
         {

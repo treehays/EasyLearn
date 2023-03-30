@@ -1,0 +1,52 @@
+﻿@model EasyLearn.Models.DTOs.CategoryDTOs.CategoryResponseModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+<div class="row">
+    <div class="col-sm-11">
+
+        @* <table class="table table-hover"> *@
+        <table class="table table-hover able-striped table-borderless ">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Name)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Name)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Id)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Id)</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Description)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Description)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.CategoryImage)</th>
+                    <td>@Html.DisplayFor(x => x.Data.CategoryImage)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.IsAvailable)</th>
+                    <td>@Html.DisplayFor(x => x.Data.IsAvailable)</td>
+                </tr>
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.Entities;
+﻿using EasyLearn.Models.DTOs.PaymentDetailDTOs;
+using EasyLearn.Models.Entities;
 
 namespace EasyLearn.Repositories.Interfaces;
 

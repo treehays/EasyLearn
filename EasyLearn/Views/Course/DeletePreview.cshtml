@@ -1,0 +1,70 @@
+﻿@model EasyLearn.Models.DTOs.CourseDTOs.CourseRequestModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+<div class="row">
+    <div class="col-sm-11">
+
+        @* <table class="table table-hover"> *@
+        <table class="table table-hover able-striped table-borderless ">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Title)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Title)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Description)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Description)</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.CourseLanguage)</th>
+                    <td>@Html.DisplayFor(x => x.Data.CourseLanguage)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.DifficultyLevel)</th>
+                    <td>@Html.DisplayFor(x => x.Data.DifficultyLevel)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Requirement)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Requirement)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.CourseDuration)</th>
+                    <td>@Html.DisplayFor(x => x.Data.CourseDuration)</td>
+                </tr>
+
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Price)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Price)</td>
+                </tr>
+
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.InstructorId)</th>
+                    <td>@Html.DisplayFor(x => x.Data.InstructorId)</td>
+                </tr>
+
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
