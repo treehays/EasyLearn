@@ -15,7 +15,7 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<LoginRequestModel> Login(string username, string email)
         {
-            var user = await _userRepository.GetAsync(x => x.UserName == username || x.Email == email);
+            var user = await _userRepository.GetFullDetails(x => x.UserName == username || x.Email == email);
             if (user == null)
             {
                 return new LoginRequestModel
@@ -24,6 +24,9 @@ namespace EasyLearn.Services.Implementations
                     Status = false,
                 };
             }
+
+            var instructorId = user.Instructor != null ? user.Instructor.Id : null;
+            var ModeratorId = user.Moderator != null ? user.Moderator.Id : null;
             var loginModel = new LoginRequestModel
             {
                 Message = "Login successfully..",
@@ -34,7 +37,8 @@ namespace EasyLearn.Services.Implementations
                 LastName = user.LastName,
                 FirstName = user.FirstName,
                 ProfilePicture = user.ProfilePicture,
-                Id = user.Id,
+                Id = instructorId ?? ModeratorId,
+                UserId = user.Id,
             };
             return loginModel;
         }

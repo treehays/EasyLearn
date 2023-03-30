@@ -29,7 +29,8 @@ public class CourseService : ICourseService
     /// Same instructor can not create course with exactly the saqme name
     public async Task<BaseResponse> Create(CreateCourseRequestModel model)
     {
-        var courseInstructor = await _courseRepository.GetAsync(x => x.Title == model.Title && x.InstructorId == model.InstructorId);
+        var instructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Actor)?.Value;
+        var courseInstructor = await _courseRepository.GetAsync(x => x.Title == model.Title && x.InstructorId == instructorId);
         if (courseInstructor != null)
         {
             return new BaseResponse
@@ -41,7 +42,7 @@ public class CourseService : ICourseService
 
         string fileRelativePathx = null;
 
-        if (model.FormFile != null || model.FormFile.Length > 0)
+        if (model.FormFile != null)
         {
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
             if (!Directory.Exists(uploadsFolder))
@@ -65,35 +66,50 @@ public class CourseService : ICourseService
         //    //category.Add(get);
         //}
 
-        var cate = model.CourseCategories.Select(async (y) => await _courseCategoryRepository.GetAsync((x => x.Id == y)));
+        //var cate = model.CourseCategories.Select(async (y) => await _courseCategoryRepository.GetAsync((x => x.Id == y)));
         var course = new Course
         {
             Id = Guid.NewGuid().ToString(),
             Title = model.Title,
-            InstructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            InstructorId = instructorId,
             Description = model.Description,
             CourseLanguage = model.CourseLanguage,
             DifficultyLevel = model.DifficultyLevel,
             Requirement = model.Requirement,
             CourseDuration = model.CourseDuration,
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            CreatedBy = instructorId,
             CreatedOn = DateTime.Now,
-            //CourseCategories = courseCategory,
+            Price = model.Price,
+            IsActive = true,
+            //CourseCategories = dd,
         };
-        foreach (var item in model.CourseCategories)
+
+        var categoryList = model.CourseCategories.Select(x => new CourseCategory
         {
-            var courseCategory = new CourseCategory
-            {
-                Id = Guid.NewGuid().ToString(),
-                CourseId = course.Id,
-                CategoryId = item,
-            };
-            course.CourseCategories.Add(courseCategory);
-        }
+            Id = Guid.NewGuid().ToString(),
+            CourseId = course.Id,
+            CategoryId = x,
+            CreatedBy = instructorId,
+            CreatedOn = course.CreatedOn,
+        }).ToList();
+
+        //foreach (var item in model.CourseCategories)
+        //{
+        //    var courseCategory = new CourseCategory
+        //    {
+        //        Id = Guid.NewGuid().ToString(),
+        //        CourseId = course.Id,
+        //        CategoryId = item,
+        //        CreatedBy =instructorId, 
+        //        CreatedOn = course.CreatedOn,
+        //    };
+        //    course.CourseCategories.Add(courseCategory);
+        //}
+        course.CourseCategories = categoryList;
 
         await _courseRepository.AddAsync(course);
         await _courseRepository.SaveChangesAsync();
-        var cc = new List<CourseCategory>();
+        //var cc = new List<CourseCategory>();
 
 
 
@@ -149,7 +165,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTOs
+            Data = courses.Select(x => new CourseDTO
             {
                 Id = x.Id,
                 Title = x.Title,
@@ -181,7 +197,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTOs
+            Data = courses.Select(x => new CourseDTO
             {
                 Id = x.Id,
                 Title = x.Title,
@@ -214,7 +230,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTOs
+            Data = courses.Select(x => new CourseDTO
             {
                 Id = x.Id,
                 Title = x.Title,
@@ -247,7 +263,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = new CourseDTOs
+            Data = new CourseDTO
             {
                 Id = course.Id,
                 Title = course.Title,
@@ -279,7 +295,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTOs
+            Data = courses.Select(x => new CourseDTO
             {
                 Id = x.Id,
                 Title = x.Title,

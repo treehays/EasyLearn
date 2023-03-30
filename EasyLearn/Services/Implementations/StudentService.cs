@@ -89,7 +89,7 @@ public class StudentService : IStudentService
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
         };
-        
+
         var studentDetail = new Student
         {
             Id = Guid.NewGuid().ToString(),
@@ -97,10 +97,10 @@ public class StudentService : IStudentService
         };
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
-        
+
         await _studentRepository.AddAsync(studentDetail);
         await _userRepository.SaveChangesAsync();
-        
+
 
         await _paymentDetailsRepository.AddAsync(userPaymentDetail);
         await _userRepository.SaveChangesAsync();
@@ -146,7 +146,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = students.Select(x => new StudentDtos
+            Data = students.Select(x => new StudentDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -184,7 +184,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = student.Select(x => new StudentDtos
+            Data = student.Select(x => new StudentDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -221,7 +221,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = student.Select(x => new StudentDtos
+            Data = student.Select(x => new StudentDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -258,7 +258,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new StudentDtos
+            Data = new StudentDto
             {
                 Id = student.Id,
                 FirstName = student.FirstName,
@@ -296,7 +296,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new StudentDtos
+            Data = new StudentDto
             {
                 Id = student.Id,
                 FirstName = student.FirstName,
@@ -334,7 +334,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = student.Select(x => new StudentDtos
+            Data = student.Select(x => new StudentDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -371,7 +371,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new StudentDtos
+            Data = new StudentDto
             {
                 Id = student.Id,
                 FirstName = student.FirstName,

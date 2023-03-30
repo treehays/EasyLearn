@@ -199,7 +199,7 @@ public class InstructorService : IInstructorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = instructors.Select(x => new InstructorDtos
+            Data = instructors.Select(x => new InstructorDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -237,7 +237,7 @@ public class InstructorService : IInstructorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = instructor.Select(x => new InstructorDtos
+            Data = instructor.Select(x => new InstructorDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -275,7 +275,7 @@ public class InstructorService : IInstructorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = instructor.Select(x => new InstructorDtos
+            Data = instructor.Select(x => new InstructorDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -302,7 +302,7 @@ public class InstructorService : IInstructorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new InstructorDtos
+            Data = new InstructorDto
             {
                 Id = instructor.Id,
                 FirstName = instructor.FirstName,
@@ -330,7 +330,7 @@ public class InstructorService : IInstructorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new InstructorDtos
+            Data = new InstructorDto
             {
                 Id = instructor.Id,
                 FirstName = instructor.FirstName,
@@ -401,7 +401,7 @@ public class InstructorService : IInstructorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = instructor.Select(x => new InstructorDtos
+            Data = instructor.Select(x => new InstructorDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -428,7 +428,7 @@ public class InstructorService : IInstructorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new InstructorDtos
+            Data = new InstructorDto
             {
                 Id = instructor.Id,
                 FirstName = instructor.FirstName,

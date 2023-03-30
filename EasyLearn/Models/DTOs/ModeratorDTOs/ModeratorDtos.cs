@@ -4,7 +4,7 @@ using EasyLearn.Models.Enums;
 
 namespace EasyLearn.Models.DTOs.ModeratorDTOs;
 
-public class ModeratorDtos
+public class ModeratorDto
 {
     public string Id { get; set; }
     public string FirstName { get; set; }
@@ -105,10 +105,10 @@ public class UpdateModeratorActiveStatusRequestModel
 
 public class ModeratorResponseModel : BaseResponse
 {
-    public ModeratorDtos Data { get; set; }
+    public ModeratorDto Data { get; set; }
 }
 
 public class ModeratorsResponseModel : BaseResponse
 {
-    public IEnumerable<ModeratorDtos> Data { get; set; }
+    public IEnumerable<ModeratorDto> Data { get; set; }
 }

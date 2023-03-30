@@ -1,6 +1,6 @@
 ﻿namespace EasyLearn.Models.DTOs.CourseReviewDTOs
 {
-    public class CourseReviewDTOs
+    public class CourseReviewDTO
     {
         public string Id { get; set; }
         public string Title { get; set; }
@@ -39,13 +39,13 @@
 
     public class CourseReviewsResponseModel : BaseResponse
     {
-        public IEnumerable<CourseReviewDTOs> Data { get; set; }
+        public IEnumerable<CourseReviewDTO> Data { get; set; }
     }
 
 
     public class CourseReviewResponseModel : BaseResponse
     {
-        public CourseReviewDTOs Data { get; set; }
+        public CourseReviewDTO Data { get; set; }
     }
 
 }

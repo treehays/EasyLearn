@@ -314,7 +314,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new AdminDtos
+            Data = new AdminDto
             {
                 Id = admin.Id,
                 FirstName = admin.FirstName,
@@ -380,7 +380,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new AdminDtos
+            Data = new AdminDto
             {
                 Id = admin.Id,
                 FirstName = admin.FirstName,
@@ -430,7 +430,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new AdminDtos
+            Data = new AdminDto
             {
                 Id = admin.Id,
                 FirstName = admin.FirstName,
@@ -502,7 +502,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDtos
+            Data = admins.Select(x => new AdminDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -569,7 +569,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDtos
+            Data = admins.Select(x => new AdminDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -606,7 +606,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDtos
+            Data = admins.Select(x => new AdminDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -643,7 +643,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDtos
+            Data = admins.Select(x => new AdminDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,

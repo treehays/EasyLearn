@@ -91,7 +91,7 @@ public class ModeratorService : IModeratorService
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
         };
-        
+
         var moderDetail = new Moderator
         {
             Id = Guid.NewGuid().ToString(),
@@ -103,7 +103,7 @@ public class ModeratorService : IModeratorService
 
         await _paymentDetailsRepository.AddAsync(userPaymentDetail);
         await _userRepository.SaveChangesAsync();
-        
+
         await _moderatorRepository.AddAsync(moderDetail);
         await _userRepository.SaveChangesAsync();
 
@@ -149,7 +149,7 @@ public class ModeratorService : IModeratorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = moderators.Select(x => new ModeratorDtos
+            Data = moderators.Select(x => new ModeratorDto
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -192,7 +192,7 @@ public class ModeratorService : IModeratorService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new ModeratorDtos
+            Data = new ModeratorDto
             {
                 Id = moderator.Id,
                 FirstName = moderator.FirstName,

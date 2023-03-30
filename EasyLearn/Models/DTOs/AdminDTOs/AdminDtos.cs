@@ -6,7 +6,7 @@ using Microsoft.Build.Framework;
 
 namespace EasyLearn.Models.DTOs.AdminDTOs;
 
-public class AdminDtos
+public class AdminDto
 {
     public string Id { get; set; }
     public string FirstName { get; set; }
@@ -42,12 +42,12 @@ public class AdminDtos
 
 public class AdminResponseModel : BaseResponse
 {
-    public AdminDtos Data { get; set; }
+    public AdminDto Data { get; set; }
 }
 
 public class AdminsResponseModel : BaseResponse
 {
-    public IEnumerable<AdminDtos> Data { get; set; }
+    public IEnumerable<AdminDto> Data { get; set; }
     //public AdminDtos Data { get; set; }
 }
 

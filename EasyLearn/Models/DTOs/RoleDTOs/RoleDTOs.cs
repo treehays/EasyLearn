@@ -1,6 +1,6 @@
 ﻿namespace EasyLearn.Models.DTOs.RoleDTOs
 {
-    public class RoleDTOs
+    public class RoleDTO
     {
         public string Id { get; set; }
         public string RoleName { get; set; }
@@ -23,12 +23,12 @@
 
     public class RoleResponseModel : BaseResponse
     {
-        public RoleDTOs Data { get; set; }
+        public RoleDTO Data { get; set; }
     }
 
     public class RolesResponseModel : BaseResponse
     {
-        public IEnumerable<RoleDTOs> Data { get; set; }
+        public IEnumerable<RoleDTO> Data { get; set; }
     }
 
 }

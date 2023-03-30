@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EasyLearn.Models.DTOs.CourseDTOs
 {
-    public class CourseDTOs
+    public class CourseDTO
     {
         public string Id { get; set; }
         public string Title { get; set; }
@@ -49,13 +49,13 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
 
     public class CourseRequestModel : BaseResponse
     {
-        public CourseDTOs Data { get; set; }
+        public CourseDTO Data { get; set; }
     }
 
 
     public class CoursesRequestModel : BaseResponse
     {
-        public IEnumerable<CourseDTOs> Data { get; set; }
+        public IEnumerable<CourseDTO> Data { get; set; }
     }
 
 

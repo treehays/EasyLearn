@@ -5,7 +5,7 @@ using Microsoft.Build.Framework;
 
 namespace EasyLearn.Models.DTOs.StudentDTOs;
 
-public class StudentDtos
+public class StudentDto
 {
     public string Id { get; set; }
     public string FirstName { get; set; }
@@ -106,10 +106,10 @@ public class UpdateStudentActiveStatusRequestModel
 
 public class StudentResponseModel : BaseResponse
 {
-    public StudentDtos Data { get; set; }
+    public StudentDto Data { get; set; }
 }
 
 public class StudentsResponseModel : BaseResponse
 {
-    public IEnumerable<StudentDtos> Data { get; set; }
+    public IEnumerable<StudentDto> Data { get; set; }
 }
