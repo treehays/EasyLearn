@@ -4,7 +4,7 @@ using EasyLearn.Models.Enums;
 
 namespace EasyLearn.Models.DTOs.ModeratorDTOs;
 
-public class ModeratorDtos
+public class ModeratorDto
 {
     public string Id { get; set; }
     public string FirstName { get; set; }
@@ -46,10 +46,12 @@ public class CreateModeratorRequestModel
     public string Password { get; set; }
     [DataType(DataType.Password)]
     [DisplayName("Re-enter Password")]
-    [Compare(nameof(Password),ErrorMessage = "Password not match")]
+    [Compare(nameof(Password), ErrorMessage = "Password not match")]
     public string ConfirmPassword { get; set; }
     public Gender Gender { get; set; }
     public StudentshipStatus StudentshipStatus { get; set; }
+    public IFormFile formFile { get; set; }
+
 }
 
 public class UpdateModeratorProfileRequestModel
@@ -103,10 +105,10 @@ public class UpdateModeratorActiveStatusRequestModel
 
 public class ModeratorResponseModel : BaseResponse
 {
-    public ModeratorDtos Data { get; set; }
+    public ModeratorDto Data { get; set; }
 }
 
 public class ModeratorsResponseModel : BaseResponse
 {
-    public IEnumerable<ModeratorDtos> Data { get; set; }
+    public IEnumerable<ModeratorDto> Data { get; set; }
 }

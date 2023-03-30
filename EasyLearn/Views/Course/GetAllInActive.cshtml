@@ -1,0 +1,70 @@
+﻿@model EasyLearn.Models.DTOs.CourseDTOs.CoursesRequestModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<div class="row">
+    <div class="col-sm-11">
+        <h2>
+            <a asp-action="Create">Create Course</a>
+        </h2>
+        <div class="table-responsive">
+
+            <table class="table table-hover table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">CourseLanguage</th>
+                        <th scope="col">DifficultyLevel</th>
+                        <th scope="col">Requirement</th>
+                        <th scope="col">CourseDuration</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">InstructorId</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var serialNumber = 1;
+                    }
+                    @foreach (var item in Model.Data)
+                    {
+                        <tr>
+                            <th scope="row">@serialNumber </th>
+                            <td>@item.Title</td>
+                            <td>@item.Description</td>
+                            <td>@item.CourseLanguage</td>
+                            <td>@item.DifficultyLevel</td>
+                            <td>@item.Requirement</td>
+                            <td>@item.CourseDuration</td>
+                            <td>@item.Price</td>
+                            <td>@item.InstructorId</td>
+                            <td>
+                                <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-success">Details</a>
+                            </td>
+                            <td>
+                                <a asp-action="DeletePreview" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                            </td>
+
+                            <td>
+                                <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-info">Update</a>
+                            </td>
+
+                        </tr>
+
+                        serialNumber++;
+                    }
+
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>

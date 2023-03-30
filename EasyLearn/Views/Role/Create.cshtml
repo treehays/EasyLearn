@@ -1,0 +1,46 @@
+﻿@model EasyLearn.Models.DTOs.RoleDTOs.CreateRoleRequestModel
+
+@{
+    ViewBag.Title = "EasyLearn || Create new role";
+    //Layout = "_Layout";
+    Layout = null;
+}
+
+<partial name="_Notification" />
+
+<h2>titletitle</h2>
+<div class="row">
+    <div class="col-md-4 text-center">
+        @using (Html.BeginForm("Create", "Role", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="form-group">
+                @Html.LabelFor(x => x.RoleName, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.RoleName, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.RoleName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Description, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="reset" class="btn btn-danger">Reset</button>
+        }
+
+    </div>
+
+    <div class="col-md-6">
+        @* <h2></h2> *@
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

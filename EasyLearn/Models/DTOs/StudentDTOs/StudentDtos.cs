@@ -5,7 +5,7 @@ using Microsoft.Build.Framework;
 
 namespace EasyLearn.Models.DTOs.StudentDTOs;
 
-public class StudentDtos
+public class StudentDto
 {
     public string Id { get; set; }
     public string FirstName { get; set; }
@@ -47,10 +47,12 @@ public class CreateStudentRequestModel
     public string Password { get; set; }
     [DataType(DataType.Password)]
     [DisplayName("Re-enter Password")]
-    [Compare(nameof(Password),ErrorMessage = "Password not match")]
+    [Compare(nameof(Password), ErrorMessage = "Password not match")]
     public string ConfirmPassword { get; set; }
     public Gender Gender { get; set; }
     public StudentshipStatus StudentshipStatus { get; set; }
+    public IFormFile formFile { get; set; }
+
 }
 
 public class UpdateStudentProfileRequestModel
@@ -99,15 +101,15 @@ public class UpdateStudentPasswordRequestModel
 public class UpdateStudentActiveStatusRequestModel
 {
     public string Id { get; set; }
-    public int IsActive { get; set; }
+    public bool IsActive { get; set; }
 }
 
 public class StudentResponseModel : BaseResponse
 {
-    public StudentDtos Data { get; set; }
+    public StudentDto Data { get; set; }
 }
 
 public class StudentsResponseModel : BaseResponse
 {
-    public IEnumerable<StudentDtos> Data { get; set; }
+    public IEnumerable<StudentDto> Data { get; set; }
 }
