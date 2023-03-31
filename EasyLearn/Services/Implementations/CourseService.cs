@@ -17,12 +17,13 @@ public class CourseService : ICourseService
     private readonly ICategoryRepository _CategoryRepository;
 
 
-    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, ICourseCategoryRepository courseCategoryRepository, IWebHostEnvironment webHostEnvironment)
+    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, ICourseCategoryRepository courseCategoryRepository, IWebHostEnvironment webHostEnvironment, ICategoryRepository categoryRepository)
     {
         _courseRepository = courseRepository;
         _httpContextAccessor = httpContextAccessor;
         _courseCategoryRepository = courseCategoryRepository;
         _webHostEnvironment = webHostEnvironment;
+        _CategoryRepository = categoryRepository;
     }
 
     /// <summary>
@@ -44,14 +45,14 @@ public class CourseService : ICourseService
 
         if (model.FormFile != null)
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "images");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
             var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
-            fileRelativePathx = "/uploads/profilePictures/" + fileName;
+            fileRelativePathx = "/uploads/images/" + fileName;
             var filePath = Path.Combine(uploadsFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {

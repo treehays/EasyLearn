@@ -1,4 +1,4 @@
-﻿@model EasyLearn.Models.DTOs.CourseDTOs.CoursesRequestModel
+﻿@model EasyLearn.Models.DTOs.ModulesDTOs.ModulesResponseModel
 
 @{
     //ViewBag.Title = "title";
@@ -7,7 +7,7 @@
 <div class="row">
     <div class="col-sm-11">
         <h2>
-            <a asp-action="Create">Create Course</a>
+            <a asp-action="Create">Create Module</a>
         </h2>
         <div class="table-responsive">
 
@@ -17,12 +17,13 @@
                         <th scope="col">#</th>
                         <th scope="col">Title</th>
                         <th scope="col">Description</th>
-                        <th scope="col">CourseLanguage</th>
-                        <th scope="col">DifficultyLevel</th>
-                        <th scope="col">Requirement</th>
-                        <th scope="col">CourseDuration</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">InstructorId</th>
+                        <th scope="col">Resources</th>
+                        <th scope="col">Prerequisites</th>
+                        <th scope="col">Objective</th>
+                        <th scope="col">ModuleDuration</th>
+                        <th scope="col">SequenceOfModule</th>
+                        <th scope="col">VideoPath</th>
+                        <th scope="col">CourseId</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                         <th scope="col"></th>
@@ -38,12 +39,13 @@
                             <th scope="row">@serialNumber </th>
                             <td>@item.Title</td>
                             <td>@item.Description</td>
-                            <td>@item.CourseLanguage</td>
-                            <td>@item.DifficultyLevel</td>
-                            <td>@item.Requirement</td>
-                            <td>@item.CourseDuration</td>
-                            <td>@item.Price</td>
-                            <td>@item.InstructorId</td>
+                            <td>@item.Resources</td>
+                            <td>@item.Prerequisites</td>
+                            <td>@item.Objective</td>
+                            <td>@item.ModuleDuration</td>
+                            <td>@item.SequenceOfModule</td>
+                            <td>@item.VideoPath</td>
+                            <td>@item.CourseId</td>
                             <td>
                                 <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-success">Details</a>
                             </td>
@@ -52,7 +54,7 @@
                             </td>
 
                             <td>
-                                <a asp-controller="Module" asp-action="Create" asp-route-id="@item.Id" class="btn btn-info">More..</a>
+                                <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-info">Update</a>
                             </td>
 
                         </tr>
