@@ -1,13 +1,14 @@
 ﻿using EasyLearn.Models.Contracts;
+using EasyLearn.Models.Enums;
 
 namespace EasyLearn.Models.Entities
 {
     public class Enrolment : AuditableEntity
     {
-        public string CompletionStatus { get; set; }
+        public CompletionStatus CompletionStatus { get; set; }
         public string Grade { get; set; }
         public string CertificateNumber { get; set; }
-        public string PaymentStatus { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
         public DateTime AccessExpiration { get; set; }
         public string InstructorFeedBack { get; set; }
         public string UserFeedBack { get; set; }

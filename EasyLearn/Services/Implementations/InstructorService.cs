@@ -44,7 +44,7 @@ public class InstructorService : IInstructorService
 
         if (model.formFile != null || model.formFile.Length > 0)
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
