@@ -75,40 +75,7 @@ namespace EasyLearn.Services.Implementations
                 Status = true,
                 Message = "video has been successfully uploaded...",
             };
-            /*
-                    var listOfModules1 = model.FormFiles.Select(async (x,index) => 
-                    {
-                       var fileName = Guid.NewGuid().ToString() + Path.GetFileName(x.FileName);
-                    //fileRelativePathx = "/uploads/videos/" + fileName;
-                    var filePath = Path.Combine(uploadsFolder, fileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await x.CopyToAsync(stream);
-                    }
-
-                            var module = new Module
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                            Title = model.Title,
-                            Description = model.Description,
-                            Resources = model.Resources,
-                            Prerequisites = model.Prerequisites,
-                            Objective = model.Objective,
-                            ModuleDuration = model.ModuleDuration,
-                            SequenceOfModule = index + 1,
-                            VideoPath = "/uploads/videos/" + Guid.NewGuid().ToString() + Path.GetFileName(x.FileName),
-                            CourseId = model.CourseId,
-                            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                            CreatedOn = DateTime.Now,
-                        };
-                        return module;
-                    });
-        */
-
-            /*                await _moduleRepository.AddAsync(module);
-                            await _moduleRepository.SaveChangesAsync();
-            */
-
+           
         }
 
         public async Task<BaseResponse> Delete(string id)
@@ -172,7 +139,7 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<ModuleResponseModel> GetByCourse(string courseId, string moduleId)
         {
-            var module = await _moduleRepository.GetAsync(x => x.Id == courseId && x.CourseId == courseId && !x.IsDeleted);
+            var module = await _moduleRepository.GetAsync(x => x.Id == courseId && x.Id == moduleId && !x.IsDeleted);
 
             if (module == null)
             {
@@ -202,6 +169,41 @@ namespace EasyLearn.Services.Implementations
                 },
             };
             return modulModel;
+        }
+
+
+        public async Task<ModulesResponseModel> GetByCourse(string courseId)
+        {
+            var modules = await _moduleRepository.GetListAsync(x => x.CourseId == courseId && !x.IsDeleted);
+
+            if (modules.Count() == 0)
+            {
+                return new ModulesResponseModel
+                {
+                    Message = "Nothing has been added yet..",
+                    Status = false,
+                };
+            }
+
+            var modulesModel = new ModulesResponseModel
+            {
+                Status = true,
+                Message = "modules retrieved successfuly..",
+                Data = modules.Select(x => new ModuleDTO
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Resources = x.Resources,
+                    Prerequisites = x.Prerequisites,
+                    Objective = x.Objective,
+                    ModuleDuration = x.ModuleDuration,
+                    SequenceOfModule = x.SequenceOfModule,
+                    VideoPath = x.VideoPath,
+                    CourseId = x.CourseId,
+                }),
+            };
+            return modulesModel;
         }
 
         public async Task<ModuleResponseModel> GetById(string id)
@@ -362,3 +364,50 @@ public async Task<Module> AddModule(CreateModuleRequestModel model, IFormFile x)
     };
     return module;
 }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+                   var listOfModules1 = model.FormFiles.Select(async (x,index) => 
+                   {
+                      var fileName = Guid.NewGuid().ToString() + Path.GetFileName(x.FileName);
+                   //fileRelativePathx = "/uploads/videos/" + fileName;
+                   var filePath = Path.Combine(uploadsFolder, fileName);
+                   using (var stream = new FileStream(filePath, FileMode.Create))
+                   {
+                       await x.CopyToAsync(stream);
+                   }
+
+                           var module = new Module
+                           {
+                               Id = Guid.NewGuid().ToString(),
+                           Title = model.Title,
+                           Description = model.Description,
+                           Resources = model.Resources,
+                           Prerequisites = model.Prerequisites,
+                           Objective = model.Objective,
+                           ModuleDuration = model.ModuleDuration,
+                           SequenceOfModule = index + 1,
+                           VideoPath = "/uploads/videos/" + Guid.NewGuid().ToString() + Path.GetFileName(x.FileName),
+                           CourseId = model.CourseId,
+                           CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                           CreatedOn = DateTime.Now,
+                       };
+                       return module;
+                   });
+       */
+
+/*                await _moduleRepository.AddAsync(module);
+                await _moduleRepository.SaveChangesAsync();
+*/

@@ -26,6 +26,7 @@
                         <th scope="col"></th>
                         <th scope="col"></th>
                         <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,6 +45,9 @@
                             <td>@item.CourseDuration</td>
                             <td>@item.Price</td>
                             <td>@item.InstructorId</td>
+                            <td>
+                                <a asp-controller="Module" asp-action="GetAllByCourseId" asp-route-courseId="@item.Id" class="btn btn-success">More..</a>
+                            </td>
                             <td>
                                 <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-success">Details</a>
                             </td>

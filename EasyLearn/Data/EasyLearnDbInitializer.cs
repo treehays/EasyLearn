@@ -5,56 +5,75 @@ namespace EasyLearn.Data
 {
     public class EasyLearnDbInitializer
     {
-/*
+
         public static void Seed(IApplicationBuilder applicationBuilder)
         {
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
-            {
-                var context = serviceScope.ServiceProvider.GetService<EasyLearnDbContext>();
+        //    using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+        //    {
+        //        var context = serviceScope.ServiceProvider.GetService<EasyLearnDbContext>();
 
-                context.Database.Migrate();
-                //context.Database.EnsureDeleted();
-                //context.Database.EnsureCreated();
-                //Create Role
-                if (!context.Roles.Any())
-                {
-                    context.Roles.AddRange(new List<Role>()
-                    {
-                        new Role()
-                        {
+        //        context.Database.Migrate();
+        //        //context.Database.EnsureDeleted();
+        //        //context.Database.EnsureCreated();
+        //        //Create Role
+        //        if (!context.Roles.Any())
+        //        {
+        //            context.Roles.AddRange(new List<Role>()
+        //            {
+        //                new Role()
+        //                {
+        //                    RoleName = "Admin",
+        //                    Description= "Admin",
+        //                    CreatedOn= DateTime.Now,
+        //                    Id= "Admin",
+        //                },
 
-                        }
-                    });
-                    context.SaveChanges();
-                }
+        //                new Role()
+        //                {
+        //                    RoleName = "Instructor",
+        //                    Description= "Instructor",
+        //                    CreatedOn= DateTime.Now,
+        //                    Id= "Instructor",
+        //                },
 
-                //Create User
-                if (!context.Users.Any())
-                {
-                    context.Users.AddRange(new List<User>()
-                    {
-                        new User()
-                        {
+        //                new Role()
+        //                {
+        //                    RoleName = "Moderator",
+        //                    Description= "Moderator",
+        //                    CreatedOn= DateTime.Now,
+        //                    Id= "Moderator",
+        //                }
+        //            });
+        //            context.SaveChanges();
+        //        }
 
-                        }
-                    });
-                    context.SaveChanges();
-                }
+        //        //Create User
+        //        if (!context.Users.Any())
+        //        {
+        //            context.Users.AddRange(new List<User>()
+        //            {
+        //                new User()
+        //                {
 
-                //Create Admin
-                if (!context.Admins.Any())
-                {
-                    context.Admins.AddRange(new List<Admin>()
-                    {
-                        new Admin()
-                        {
+        //                }
+        //            });
+        //            context.SaveChanges();
+        //        }
 
-                        }
-                    });
-                    context.SaveChanges();
-                }
-            }
+        //        //Create Admin
+        //        if (!context.Admins.Any())
+        //        {
+        //            context.Admins.AddRange(new List<Admin>()
+        //            {
+        //                new Admin()
+        //                {
+
+        //                }
+        //            });
+        //            context.SaveChanges();
+        //        }
+        //    }
         }
-                        */
+                        
     }
 }
