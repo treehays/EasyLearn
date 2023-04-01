@@ -16,8 +16,48 @@ namespace EasyLearn.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("EasyLearn.Models.DTOs.UserDTOs.LoginRequestModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LoginRequestModel");
+                });
 
             modelBuilder.Entity("EasyLearn.Models.Entities.Address", b =>
                 {
@@ -543,12 +583,6 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("CompletionStatus")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("CourseId")
                         .HasColumnType("varchar(255)");
 
@@ -567,15 +601,6 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("DifficultyLevel")
-                        .HasColumnType("longtext");
-
-                    b.Property<double>("Duration")
-                        .HasColumnType("double");
-
-                    b.Property<string>("FeedBack")
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -584,6 +609,9 @@ namespace EasyLearn.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<double>("ModuleDuration")
+                        .HasColumnType("double");
 
                     b.Property<string>("Objective")
                         .HasColumnType("longtext");
@@ -598,6 +626,9 @@ namespace EasyLearn.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VideoPath")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

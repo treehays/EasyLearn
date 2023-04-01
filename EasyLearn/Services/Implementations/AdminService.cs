@@ -16,8 +16,8 @@ public class AdminService : IAdminService
     private readonly IUserRepository _userRepository;
     private readonly IAdminRepository _adminRepository;
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
 
@@ -48,9 +48,9 @@ public class AdminService : IAdminService
 
         string fileRelativePathx = null;
 
-        if (model.FormFile != null || model.FormFile.Length > 0)
+        if (model.FormFile != null)
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "abdullahpicture", "profilePictures");
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
@@ -102,7 +102,6 @@ public class AdminService : IAdminService
 
         };
 
-
         var userAdmin = new Admin
         {
             Id = Guid.NewGuid().ToString(),
@@ -111,6 +110,8 @@ public class AdminService : IAdminService
             CreatedOn = user.CreatedOn,
 
         };
+        user.Address = userAddress;
+        user.Admin = userAdmin;
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
@@ -118,11 +119,11 @@ public class AdminService : IAdminService
         await _paymentDetailsRepository.AddAsync(userPaymentDetail);
         await _userRepository.SaveChangesAsync();
 
-        await _adminRepository.AddAsync(userAdmin);
-        await _userRepository.SaveChangesAsync();
+        //await _adminRepository.AddAsync(userAdmin);
+        //await _userRepository.SaveChangesAsync();
 
-        await _addressRepository.AddAsync(userAddress);
-        await _userRepository.SaveChangesAsync();
+        //await _addressRepository.AddAsync(userAddress);
+        //await _userRepository.SaveChangesAsync();
 
         return new BaseResponse
         {

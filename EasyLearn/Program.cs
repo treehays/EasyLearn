@@ -48,6 +48,11 @@ namespace EasyLearn
 
             builder.Services.AddScoped<IPaymentDetailRepository, PaymentDetailRepository>();
             builder.Services.AddScoped<IPaymentDetailService, PaymentDetailService>();
+
+            builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+            builder.Services.AddScoped<IModuleService, ModuleService>();
+
+
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
                 configuration =>
