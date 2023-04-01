@@ -31,6 +31,7 @@ namespace EasyLearn.Controllers
             var multiSelectList = new MultiSelectList(categoryList.Data, "Id", "Name");
 
             ViewData["Category"] = new SelectList(categoryList.Data, "Id", "Name");
+            //ViewData["Category"] = new SelectListItem(categoryList.Data);
 
 
             var createDetail = new CreateCourseRequestModel
