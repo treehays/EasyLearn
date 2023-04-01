@@ -56,18 +56,19 @@ namespace EasyLearn.Controllers
                 return RedirectToAction(nameof(Index), "Home");
             }
             var module = await _moduleService.GetByCourse(courseId);
-            if (!module.Status)
+            if (module.Status)
             {
-                module = new ModulesResponseModel
-                {
-                    CourseId = courseId,
-                };
-                TempData["failed"] = module.Message;
+                //module = new ModulesResponseModel
+                //{
+                module.CourseId = courseId;
+                //};
+                TempData["success"] = module.Message;
                 return View(module);
                 //return RedirectToAction(nameof(Index), "Home");
             }
 
-            TempData["success"] = module.Message;
+            module.CourseId = courseId;
+            TempData["failed"] = module.Message;
             return View(module);
         }
 
