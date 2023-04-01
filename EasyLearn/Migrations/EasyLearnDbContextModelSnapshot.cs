@@ -362,8 +362,8 @@ namespace EasyLearn.Migrations
                     b.Property<string>("CertificateNumber")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("CompletionStatus")
-                        .HasColumnType("longtext");
+                    b.Property<int>("CompletionStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("Coupon")
                         .HasColumnType("longtext");
@@ -398,8 +398,8 @@ namespace EasyLearn.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("PaymentStatus")
-                        .HasColumnType("longtext");
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("varchar(255)");
