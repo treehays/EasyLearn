@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    [Migration("20230401105809_inkjsd")]
-    partial class inkjsd
+    [Migration("20230402034805_hd")]
+    partial class hd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

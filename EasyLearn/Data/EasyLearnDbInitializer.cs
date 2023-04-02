@@ -9,7 +9,7 @@ namespace EasyLearn.Data
     public class EasyLearnDbInitializer
     {
 
-        public static void Seed(IApplicationBuilder applicationBuilder)
+        public static async void Seed(IApplicationBuilder applicationBuilder)
         {
             var userId = Guid.NewGuid().ToString();
             var admin = new Admin()
@@ -47,7 +47,8 @@ namespace EasyLearn.Data
             {
                 var context = serviceScope.ServiceProvider.GetService<EasyLearnDbContext>();
 
-                context.Database.Migrate();
+                //context.Database.Migrate();
+                await context.Database.MigrateAsync();
                 //context.Database.EnsureDeleted();
                 //context.Database.EnsureCreated();
                 //Create Role

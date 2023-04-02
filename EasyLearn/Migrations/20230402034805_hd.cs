@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EasyLearn.Migrations
 {
-    public partial class inkjsd : Migration
+    public partial class hd : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
