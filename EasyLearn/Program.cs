@@ -4,6 +4,9 @@ using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Implementations;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyLearn
@@ -53,6 +56,64 @@ namespace EasyLearn
             builder.Services.AddScoped<IModuleService, ModuleService>();
 
 
+            // Set the execution timeout
+            builder.Services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new RequestSizeLimitAttribute(int.MaxValue));
+            });
+
+
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = int.MaxValue;
+            });
+
+
+            //builder.Services.AddHttpClient("MyHttpClient", client =>
+            //{
+            //    // Set the maximum request timeout to 5 minutes
+            //    client.Timeout = TimeSpan.FromMinutes(5);
+            //});
+
+            /*Thi is working*/
+
+            //// Add Kestrel server options
+            //builder.Services.Configure<KestrelServerOptions>(options =>
+            //{
+            //    options.Limits.MaxRequestBodySize = int.MaxValue;
+            //});
+
+
+            /*
+
+            This 2 doesnt work
+                        // Set the maximum request length (in bytes)
+                        builder.Services.Configure<IISServerOptions>(options =>
+                        {
+                            options.MaxRequestBodySize = int.MaxValue;
+                        });
+
+
+
+
+                        builder.Services.Configure<FormOptions>(options =>
+                        {
+                            // Set the limit to 128 MB
+                            options.MultipartBodyLengthLimit = 134217728;
+                        });
+
+            */
+
+
+
+
+
+
+
+
+
+
+
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
                 configuration =>
@@ -80,7 +141,8 @@ namespace EasyLearn
 
             app.UseAuthentication();
             app.UseAuthorization();
-            // EasyLearnDbInitializer.Seed(app);
+            //seeding into databse first methos
+            EasyLearnDbInitializer.Seed(app);
 
             app.MapControllerRoute(
                 name: "default",

@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<Folder Include="Models\ViewModels\" />
+		<Folder Include="wwwroot\uploads\profilePictures\" />
 		<PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.15" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.15" />

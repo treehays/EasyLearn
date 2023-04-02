@@ -51,6 +51,7 @@ public class AdminService : IAdminService
         if (model.FormFile != null)
         {
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
+            //var uploadsFolder1 = Path.Combine(_webHostEnvironment.WebRootPath);
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
