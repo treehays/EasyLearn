@@ -9,6 +9,7 @@ namespace EasyLearn.Models.Entities
         //public string  EmploymentStatus { get; set; }
 
         public IEnumerable<StudentCourse> StudentCourses { get; set; } = new HashSet<StudentCourse>();
+        public IEnumerable<Payment> Payments { get; set; } = new HashSet<Payment>();
         public IEnumerable<CourseReview> CourseReviews { get; set; } = new HashSet<CourseReview>();
         public IEnumerable<InstructorReview> InstructorReviews { get; set; } = new HashSet<InstructorReview>();
         public IEnumerable<Enrolment> Enrolments { get; set; } = new HashSet<Enrolment>();

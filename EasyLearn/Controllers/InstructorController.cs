@@ -105,8 +105,8 @@ namespace EasyLearn.Controllers
 
         public async Task<IActionResult> PaginatedSample(int page)
         {
-            //page = 1;
-            int recordPerPage = 2;
+            // page = 1;
+            int recordPerPage = 5;
             var instructors = await _instructorService.PaginatedSample();
             var pagedList = instructors.ToPagedList(page, recordPerPage);
             //if (!instructors.Status)
@@ -117,6 +117,16 @@ namespace EasyLearn.Controllers
 
             //TempData["success"] = instructors.Message;
             return View(pagedList);
+        }
+
+
+
+        public async Task<IActionResult> customerDatatable(int page)
+        {
+
+            var instructors = await _instructorService.PaginatedSample();
+
+            return View(instructors);
         }
 
 

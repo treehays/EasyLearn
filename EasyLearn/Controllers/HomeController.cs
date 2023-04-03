@@ -4,6 +4,7 @@ using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using sib_api_v3_sdk.Client;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -15,7 +16,7 @@ namespace EasyLearn.Controllers
         private readonly IUserService _userService;
 
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService = null)
+        public HomeController(ILogger<HomeController> logger, IUserService userService)
         {
             _logger = logger;
             _userService = userService;
@@ -23,10 +24,16 @@ namespace EasyLearn.Controllers
 
         public IActionResult Index()
         {
-
             return View();
         }
 
+
+        public IActionResult Testing(string email, string OTPKey)
+        {
+
+            var verify = _userService.Testing(email, OTPKey);
+            return View();
+        }
 
         public IActionResult Login()
         {

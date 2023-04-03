@@ -24,7 +24,6 @@ public partial class AdminController : Controller
 
     public IActionResult Create()
     {
-        var grr = Path.GetRandomFileName();
 
         return View();
     }
