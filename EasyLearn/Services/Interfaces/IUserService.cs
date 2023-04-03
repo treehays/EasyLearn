@@ -4,6 +4,6 @@ namespace EasyLearn.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<LoginRequestModel> Login(string username, string email);
+        Task<LoginRequestModel> Login(string email);
     }
 }

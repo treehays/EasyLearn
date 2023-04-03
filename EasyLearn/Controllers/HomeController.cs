@@ -40,7 +40,7 @@ namespace EasyLearn.Controllers
             {
                 return View(model);
             }
-            var getEmail = await _userService.Login(model.UserName, model.Email);
+            var getEmail = await _userService.Login(model.Email);
 
             if (!getEmail.Status)
             {

@@ -1,7 +1,8 @@
 ﻿using EasyLearn.Models.DTOs.InstructorDTOs;
-using EasyLearn.Services.Implementations;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 
 namespace EasyLearn.Controllers
 {
@@ -30,7 +31,7 @@ namespace EasyLearn.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateInstructorRequestModel model)
+        public async Task<IActionResult> Create(CreateUserRequestModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -42,8 +43,8 @@ namespace EasyLearn.Controllers
             if (!create.Status)
             {
                 TempData["failed"] = create.Message;
-                return RedirectToAction(nameof(Index));
-                //return View(model);
+                //return RedirectToAction(nameof(Index));
+                return View(model);
             }
 
             TempData["success"] = create.Message;
@@ -99,6 +100,23 @@ namespace EasyLearn.Controllers
 
             TempData["success"] = instructors.Message;
             return View(instructors);
+        }
+
+
+        public async Task<IActionResult> PaginatedSample(int page)
+        {
+            //page = 1;
+            int recordPerPage = 2;
+            var instructors = await _instructorService.PaginatedSample();
+            var pagedList = instructors.ToPagedList(page, recordPerPage);
+            //if (!instructors.Status)
+            //{
+            //    TempData["failed"] = instructors.Message;
+            //    return RedirectToAction(nameof(Index), "Home");
+            //}
+
+            //TempData["success"] = instructors.Message;
+            return View(pagedList);
         }
 
 

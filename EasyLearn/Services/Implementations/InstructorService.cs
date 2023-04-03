@@ -2,10 +2,12 @@
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
+using X.PagedList;
 
 namespace EasyLearn.Services.Implementations;
 
@@ -29,7 +31,7 @@ public class InstructorService : IInstructorService
         _addressRepository = addressRepository;
         _webHostEnvironment = webHostEnvironment;
     }
-    public async Task<BaseResponse> Create(CreateInstructorRequestModel model)
+    public async Task<BaseResponse> Create(CreateUserRequestModel model)
     {
         var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
         if (emailExist)
@@ -42,7 +44,7 @@ public class InstructorService : IInstructorService
         }
         string fileRelativePathx = null;
 
-        if (model.formFile != null || model.formFile.Length > 0)
+        if (model.FormFile != null || model.FormFile.Length > 0)
         {
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
             if (!Directory.Exists(uploadsFolder))
@@ -50,12 +52,12 @@ public class InstructorService : IInstructorService
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
             fileRelativePathx = "/uploads/profilePictures/" + fileName;
             var filePath = Path.Combine(uploadsFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await model.formFile.CopyToAsync(stream);
+                await model.FormFile.CopyToAsync(stream);
             }
         }
 
@@ -192,9 +194,42 @@ public class InstructorService : IInstructorService
     }
 
 
+    public async Task<IList<User>> PaginatedSample()
+    {
+        var instructor = await _userRepository.GetListAsync(x => x.RoleId == "Instructor");
+        var instructors = instructor.ToList();
+        /*
+                var pagedList = instructors.ToPagedList(instructors.Count(), 5);
+                var instructorModel = new InstructorsResponseModel
+                {
+                    Status = true,
+                    Message = "Details successfully retrieved...",
+                    Data = instructors.Select(x => new InstructorDto
+                    {
+                        Id = x.Id,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        Email = x.Email,
+                        Password = x.Password,
+                        ProfilePicture = x.ProfilePicture,
+                        Biography = x.Biography,
+                        Skill = x.Skill,
+                        Interest = x.Interest,
+                        PhoneNumber = x.PhoneNumber,
+                        Gender = x.Gender,
+                        StudentshipStatus = x.StudentshipStatus,
+                        RoleId = x.RoleId,
+                    }).AsEnumerable(),
+                };*/
+        return instructors;
+
+    }
+
+
     public async Task<InstructorsResponseModel> GetAll()
     {
         var instructors = await _userRepository.GetListAsync(x => x.RoleId == "Instructor");
+        var pagedList = instructors.ToPagedList(instructors.Count(), 5);
         var instructorModel = new InstructorsResponseModel
         {
             Status = true,

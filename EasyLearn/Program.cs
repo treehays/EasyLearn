@@ -62,6 +62,11 @@ namespace EasyLearn
                 options.Filters.Add(new RequestSizeLimitAttribute(int.MaxValue));
             });
 
+            //// Add Kestrel server options
+            //builder.Services.Configure<KestrelServerOptions>(options =>
+            //{
+            //    options.Limits.MaxRequestBodySize = int.MaxValue;
+            //});
 
             builder.Services.Configure<FormOptions>(options =>
             {
@@ -77,11 +82,6 @@ namespace EasyLearn
 
             /*Thi is working*/
 
-            //// Add Kestrel server options
-            //builder.Services.Configure<KestrelServerOptions>(options =>
-            //{
-            //    options.Limits.MaxRequestBodySize = int.MaxValue;
-            //});
 
 
             /*
@@ -141,6 +141,10 @@ namespace EasyLearn
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+
+            //seeding into databse secondmethos
+            //EasyLearnDbSeedingData.InitializeDb(app.Services.CreateScope().ServiceProvider);
             //seeding into databse first methos
             EasyLearnDbInitializer.Seed(app);
 

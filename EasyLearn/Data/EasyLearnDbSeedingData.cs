@@ -2,14 +2,12 @@
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Bcpg;
 
 namespace EasyLearn.Data
 {
-    public class EasyLearnDbInitializer
+    public class EasyLearnDbSeedingData
     {
-
-        public static async void Seed(IApplicationBuilder applicationBuilder)
+        public static async void InitializeDb(IServiceProvider serviceProvider)
         {
             var userId = Guid.NewGuid().ToString();
             var admin = new Admin()
@@ -42,11 +40,8 @@ namespace EasyLearn.Data
               }
             };
 
-
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            using (var context = new EasyLearnDbContext(serviceProvider.GetRequiredService<DbContextOptions<EasyLearnDbContext>>()))
             {
-                var context = serviceScope.ServiceProvider.GetService<EasyLearnDbContext>();
-
                 await context.Database.MigrateAsync();
 
                 if (!context.Roles.Any())
@@ -95,6 +90,5 @@ namespace EasyLearn.Data
                 }
             }
         }
-
     }
 }

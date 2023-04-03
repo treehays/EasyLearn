@@ -1,0 +1,198 @@
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@model IPagedList<EasyLearn.Models.Entities.User>;
+
+@{
+        /*
+        <style>
+        .ul.pagination {
+        display: inline-block;
+    padding: 0;
+    margin: 0;
+        }
+
+    ul.pagination li {
+        display: inline;
+            }
+
+            ul.pagination li a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+                }
+
+                ul.pagination li a.active {
+                background-color: #4CAF50;
+            color: white;
+            }
+
+                ul.pagination li a:hover:not(.active) {
+                        background-color: #ddd;
+                    }
+        </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @using (Html.BeginForm())
+        {
+        <center>
+        <h2>Student Details</h2>
+                <div style="border:1px solid
+            red; margin-left:25%; margin-right:20%">
+                <table style="width:100%" border="1">
+                    <tr>
+                    <th style="width:10%; text-align:left"> @Html.Label("Student ID")</th>
+                    <th style="width:10%; text-align:left">@Html.Label("Name")</th>
+                    <th style="width:15%; text-align:left">@Html.Label("Father Name")</th>
+                    <th style="width:15%; text-align:left">@Html.Label("Mother Name")</th>
+                    <th style="width:5%; text-align:left">@Html.Label("Age")</th>
+                    <th style="width:15%; text-align:left">@Html.Label("Country")</th>
+                    <th style="width:15%; text-align:left">@Html.Label("State" )</th>
+                    <th style="width:15%; text-align:left">@Html.Label("Nationality")</th>
+
+                </tr>
+
+                @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr style="border:1px solid
+                        red">
+                        <td>@Model.Id</td>
+                        <td>@Model.FirstName</td>
+                        <td>@Model.LastName</td>
+                        <td>@Model.Email</td>
+                        <td>@Model.Gender</td>
+                        <td>@Model.StudentshipStatus</td>
+                        <td>@Model.Password</td>
+                    <td>@Model.CreatedOn</td>
+            </tr>
+
+        }
+    </table>
+
+
+    </div>
+    </center>
+        <div id="container" style="margin-left: 20px">
+        <p></p>
+        <p></p>
+            <div class="pagination" style="margin-left: 400px">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+            of @Model.PageCount   @Html.PagedListPager(Model, page => Url.Action("PaginatedSample", new { page }))
+    </div>
+    </div>
+
+    }
+
+    */
+}
+
+
+
+
+
+
+@{
+
+    <div class="row">
+        <div class="col-sm-11">
+            <h2>
+                <a asp-action="Create">Create Instructor</a>
+            </h2>
+            <div class="table-responsive">
+
+                <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Student Status</th>
+                            <th scope="col">Password</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var serialNumber = 1;
+                        }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <th scope="row">@serialNumber </th>
+                                <td>@item.FirstName</td>
+                                <td>@item.LastName</td>
+                                <td>@item.Email</td>
+                                <td>@item.Gender</td>
+                                <td>@item.StudentshipStatus</td>
+                                <td>@item.Password</td>
+                                <td>
+                                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-success">Details</a>
+                                </td>
+                                <td>
+                                    <a asp-action="DeletePreview" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                                </td>
+
+                                <td>
+                                    <a asp-action="ListOfBankDetail" asp-route-id="@item.Id" class="btn btn-info">Update</a>
+                                </td>
+
+                            </tr>
+
+                            serialNumber++;
+                        }
+
+
+                    </tbody>
+
+                </table>
+
+
+
+            </div>
+
+
+            <div class="pagination" style="margin-left: 400px">
+                
+                <h4>
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+                of @Model.PageCount   
+                
+                    @Html.PagedListPager(Model, page => Url.Action("PaginatedSample", new { page  }))</h4>
+
+            </div>
+
+            @*
+        @Html.PagedListPager(bookPages, page => Url.Action("OpenRazorPage", "Home",new { Page = page }),
+        new PagedListRenderOptions {LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+        })*@
+
+        </div>
+
+    </div>
+
+
+}
