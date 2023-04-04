@@ -27,11 +27,11 @@ namespace EasyLearn.Services.Implementations
                 return new BaseResponse
                 {
                     Status = false,
-                    Message = "No video has been uploaded...",
+                    Message = "No video has been uploaded....",
                 };
             }
 
-            int i = await _moduleRepository.GetLastElement()+1;
+            int i = await _moduleRepository.GetLastElement() + 1;
             string fileRelativePathx = null;
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "videos");
             if (!Directory.Exists(uploadsFolder))
