@@ -1,4 +1,5 @@
 ﻿using EasyLearn.Models;
+using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using FluentEmail.Core;
@@ -16,17 +17,20 @@ namespace EasyLearn.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
         private readonly IFluentEmail _fluentEmail;
+        private readonly IEmailService _emailService;
 
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService, IFluentEmail fluentEmail)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IFluentEmail fluentEmail, IEmailService emailService)
         {
             _logger = logger;
             _userService = userService;
             _fluentEmail = fluentEmail;
+            _emailService = emailService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(EmailSenderAttachmentDTO model)
         {
+            _emailService.SendEmailAttachment(model);
             return View();
         }
 

@@ -1,0 +1,504 @@
+1
+00:00:01,350 --> 00:00:02,960
+Now before you start,
+
+2
+00:00:02,960 --> 00:00:07,770
+here are 10 quick considerations on how to take this course.
+
+3
+00:00:07,770 --> 00:00:11,800
+And I promise they are super short and super important.
+
+4
+00:00:11,800 --> 00:00:14,493
+So, please don't skip this video.
+
+5
+00:00:15,390 --> 00:00:16,770
+And first of all,
+
+6
+00:00:16,770 --> 00:00:20,500
+there are many different types of students in this course.
+
+7
+00:00:20,500 --> 00:00:23,670
+Some have never programmed in their life,
+
+8
+00:00:23,670 --> 00:00:26,580
+others have experienced with other languages,
+
+9
+00:00:26,580 --> 00:00:28,380
+but not with JavaScript.
+
+10
+00:00:28,380 --> 00:00:32,290
+And even others have some experience with JavaScript,
+
+11
+00:00:32,290 --> 00:00:35,050
+but want to become even more advanced.
+
+12
+00:00:35,050 --> 00:00:40,050
+And this course is for all of you, everyone is welcome.
+
+13
+00:00:40,140 --> 00:00:43,670
+So, please don't write a bad review right away
+
+14
+00:00:43,670 --> 00:00:45,800
+if the course is too easy
+
+15
+00:00:45,800 --> 00:00:47,240
+or too hard
+
+16
+00:00:47,240 --> 00:00:51,090
+or progressing too slow or too fast for you.
+
+17
+00:00:51,090 --> 00:00:54,640
+I built this course with everyone in mind.
+
+18
+00:00:54,640 --> 00:00:57,380
+Now, to make the course perfect for you,
+
+19
+00:00:57,380 --> 00:00:59,780
+you can always rewatch lectures,
+
+20
+00:00:59,780 --> 00:01:02,650
+jump to other more advanced sections,
+
+21
+00:01:02,650 --> 00:01:06,540
+watch the course with slower or faster playback speed,
+
+22
+00:01:06,540 --> 00:01:09,990
+or ask questions in the Q&amp;A section.
+
+23
+00:01:09,990 --> 00:01:13,460
+Of course you can give a one-star review
+
+24
+00:01:13,460 --> 00:01:16,430
+if the course is absolutely terrible,
+
+25
+00:01:16,430 --> 00:01:19,690
+but please, at least wait a couple of sections
+
+26
+00:01:19,690 --> 00:01:21,883
+to get a good idea of the course.
+
+27
+00:01:23,470 --> 00:01:26,210
+Now, about actually taking the course,
+
+28
+00:01:26,210 --> 00:01:28,700
+you need to code along with me.
+
+29
+00:01:28,700 --> 00:01:31,040
+And this is crucial,
+
+30
+00:01:31,040 --> 00:01:34,530
+you will learn exactly zero JavaScript skills
+
+31
+00:01:34,530 --> 00:01:37,660
+by just sitting and watching me code.
+
+32
+00:01:37,660 --> 00:01:40,180
+So, you have to code yourself,
+
+33
+00:01:40,180 --> 00:01:42,860
+even if you're just typing the same code
+
+34
+00:01:42,860 --> 00:01:45,170
+as I am typing in the video.
+
+35
+00:01:45,170 --> 00:01:48,023
+It doesn't matter as long as you're coding.
+
+36
+00:01:49,770 --> 00:01:53,010
+Next, try all the coding challenges.
+
+37
+00:01:53,010 --> 00:01:54,920
+Do the best that you can,
+
+38
+00:01:54,920 --> 00:01:57,260
+but if you get stuck for too long,
+
+39
+00:01:57,260 --> 00:01:59,730
+then simply watch the solution.
+
+40
+00:01:59,730 --> 00:02:02,120
+And I can't stress this enough,
+
+41
+00:02:02,120 --> 00:02:04,870
+you have to try the coding challenges,
+
+42
+00:02:04,870 --> 00:02:06,787
+because otherwise, you will miss
+
+43
+00:02:06,787 --> 00:02:10,450
+half of the learning opportunity in this course.
+
+44
+00:02:10,450 --> 00:02:12,750
+And please don't beat yourself up
+
+45
+00:02:12,750 --> 00:02:14,900
+if you can figure out the solution.
+
+46
+00:02:14,900 --> 00:02:17,870
+This is completely normal, trust me.
+
+47
+00:02:17,870 --> 00:02:19,650
+And figuring out the solution,
+
+48
+00:02:19,650 --> 00:02:23,710
+is actually not even the main point of these challenges.
+
+49
+00:02:23,710 --> 00:02:25,410
+So, if that happens,
+
+50
+00:02:25,410 --> 00:02:28,200
+just rewatch the lectures that were covered,
+
+51
+00:02:28,200 --> 00:02:31,083
+try to understand them better and move on.
+
+52
+00:02:33,020 --> 00:02:37,150
+If you want the course material to stick, then take notes.
+
+53
+00:02:37,150 --> 00:02:39,220
+Notes on code syntax,
+
+54
+00:02:39,220 --> 00:02:41,420
+notes on theory concepts,
+
+55
+00:02:41,420 --> 00:02:44,310
+and really notes on everything.
+
+56
+00:02:44,310 --> 00:02:46,720
+You can't take too many notes,
+
+57
+00:02:46,720 --> 00:02:48,871
+and everyone has their own style,
+
+58
+00:02:48,871 --> 00:02:50,863
+so, just find yours.
+
+59
+00:02:52,520 --> 00:02:55,810
+Now, if this is your first time ever programming,
+
+60
+00:02:55,810 --> 00:02:58,800
+then please don't get overwhelmed.
+
+61
+00:02:58,800 --> 00:03:02,710
+It's 100% normal that will not understand everything
+
+62
+00:03:02,710 --> 00:03:04,160
+at the beginning.
+
+63
+00:03:04,160 --> 00:03:07,370
+Just keep going through the first few sections,
+
+64
+00:03:07,370 --> 00:03:10,690
+even if you don't understand everything at first,
+
+65
+00:03:10,690 --> 00:03:13,410
+you soon will, believe me.
+
+66
+00:03:13,410 --> 00:03:15,820
+But please just don't think,
+
+67
+00:03:15,820 --> 00:03:18,150
+I guess coding is not for me.
+
+68
+00:03:18,150 --> 00:03:23,100
+That thought is simply not allowed here, okay?
+
+69
+00:03:23,100 --> 00:03:25,330
+So, keep in mind that everyone
+
+70
+00:03:25,330 --> 00:03:27,480
+has different learning speeds.
+
+71
+00:03:27,480 --> 00:03:30,350
+I have seen tens of thousands of students,
+
+72
+00:03:30,350 --> 00:03:32,550
+progressing through my courses,
+
+73
+00:03:32,550 --> 00:03:34,060
+so, believe me,
+
+74
+00:03:34,060 --> 00:03:36,013
+this is completely normal.
+
+75
+00:03:37,879 --> 00:03:40,620
+In the first couple of sections of the course,
+
+76
+00:03:40,620 --> 00:03:44,360
+don't bother understanding exactly why things work
+
+77
+00:03:44,360 --> 00:03:47,100
+the way they do in JavaScript.
+
+78
+00:03:47,100 --> 00:03:48,720
+Also in the beginning,
+
+79
+00:03:48,720 --> 00:03:51,350
+don't stress about efficient code,
+
+80
+00:03:51,350 --> 00:03:54,700
+or fast code, or clean code.
+
+81
+00:03:54,700 --> 00:03:56,600
+That's all super important,
+
+82
+00:03:56,600 --> 00:03:58,100
+don't get me wrong.
+
+83
+00:03:58,100 --> 00:04:01,770
+But in the first few sections while still learning,
+
+84
+00:04:01,770 --> 00:04:04,220
+we just want to make things to work.
+
+85
+00:04:04,220 --> 00:04:07,340
+We will understand the why, later in the course,
+
+86
+00:04:07,340 --> 00:04:10,423
+and of course make the code clean as well.
+
+87
+00:04:11,770 --> 00:04:15,370
+The sections in the course built on one another.
+
+88
+00:04:15,370 --> 00:04:18,200
+So, before moving on from a section,
+
+89
+00:04:18,200 --> 00:04:22,670
+make sure that you understand exactly what was covered.
+
+90
+00:04:22,670 --> 00:04:24,050
+So, take a break,
+
+91
+00:04:24,050 --> 00:04:26,350
+review the code that we wrote,
+
+92
+00:04:26,350 --> 00:04:27,830
+review your notes
+
+93
+00:04:27,830 --> 00:04:30,460
+and review the projects that we built.
+
+94
+00:04:30,460 --> 00:04:33,200
+And maybe even write some code yourself
+
+95
+00:04:33,200 --> 00:04:35,040
+in order to practice.
+
+96
+00:04:35,040 --> 00:04:37,313
+Only then, you're ready to move on.
+
+97
+00:04:38,900 --> 00:04:41,470
+If you ever have an error in your code,
+
+98
+00:04:41,470 --> 00:04:42,920
+or a question,
+
+99
+00:04:42,920 --> 00:04:46,310
+always start by trying to solve it yourself,
+
+100
+00:04:46,310 --> 00:04:51,060
+because this is absolutely essential for your progress.
+
+101
+00:04:51,060 --> 00:04:53,670
+Now, if you cannot solve the problem,
+
+102
+00:04:53,670 --> 00:04:56,150
+then check the Q&amp;A section,
+
+103
+00:04:56,150 --> 00:04:58,640
+because someone probably already had
+
+104
+00:04:58,640 --> 00:05:00,740
+the same problem before.
+
+105
+00:05:00,740 --> 00:05:03,060
+And if that doesn't help either,
+
+106
+00:05:03,060 --> 00:05:05,930
+then just ask a new question.
+
+107
+00:05:05,930 --> 00:05:07,160
+And to do that,
+
+108
+00:05:07,160 --> 00:05:09,170
+use a short description,
+
+109
+00:05:09,170 --> 00:05:12,500
+post your code on codepen.io,
+
+110
+00:05:12,500 --> 00:05:15,410
+and shared the link in the Q&amp;A.
+
+111
+00:05:15,410 --> 00:05:17,280
+Because without the code,
+
+112
+00:05:17,280 --> 00:05:19,173
+we will not be able to help you.
+
+113
+00:05:20,990 --> 00:05:24,380
+I built and recorded this course on a Mac,
+
+114
+00:05:24,380 --> 00:05:29,380
+but everything works the exact same way on Windows or Linux.
+
+115
+00:05:29,700 --> 00:05:32,950
+So, if something doesn't work on your computer,
+
+116
+00:05:32,950 --> 00:05:34,500
+it's not because you're using
+
+117
+00:05:34,500 --> 00:05:37,493
+a different operating system, okay?
+
+118
+00:05:38,510 --> 00:05:39,980
+And now, finally,
+
+119
+00:05:39,980 --> 00:05:43,520
+and most importantly, have fun.
+
+120
+00:05:43,520 --> 00:05:45,790
+Coding is a lot of fun.
+
+121
+00:05:45,790 --> 00:05:48,530
+And it's so rewarding to see something
+
+122
+00:05:48,530 --> 00:05:51,066
+that you have built yourself.
+
+123
+00:05:51,066 --> 00:05:54,630
+So, if you're feeling frustrated for some reason,
+
+124
+00:05:54,630 --> 00:05:58,390
+stop whatever you're doing and come back later.
+
+125
+00:05:58,390 --> 00:06:03,090
+Always, always have fun while coding, okay?
+
+126
+00:06:03,090 --> 00:06:06,593
+And with that being said, let's now get started.
+

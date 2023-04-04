@@ -28,31 +28,54 @@ namespace EasyLearn.Services.Implementations
 
 
             Configuration.Default.ApiKey.Add("api-key", "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");
+
             var apiInstance = new TransactionalEmailsApi();
             string SenderName = "Ahmad Sender Name";
             string SenderEmail = "treehays90@gmail.com";
-            SendSmtpEmailSender Email = new SendSmtpEmailSender(SenderName, SenderEmail);
+            SendSmtpEmailSender Email = new SendSmtpEmailSender(SenderName, SenderEmail);//emailsender
+
+
             string ToEmail = "aymoneyay@gmail.com";
             string ToName = "Abdulsalam TO Name";
-            SendSmtpEmailTo smtpEmailTo = new SendSmtpEmailTo(ToEmail, ToName);
+            SendSmtpEmailTo smtpEmailTo = new SendSmtpEmailTo(ToEmail, ToName);//emailreciever
+
+
             List<SendSmtpEmailTo> To = new List<SendSmtpEmailTo>();
-            To.Add(smtpEmailTo);
+            To.Add(smtpEmailTo);//bulkemail
+
+
             string BccName = "Akin BCC Name";
             string BccEmail = "abdulsalamayoola@gmail.com";
             SendSmtpEmailBcc BccData = new SendSmtpEmailBcc(BccEmail, BccName);
             List<SendSmtpEmailBcc> Bcc = new List<SendSmtpEmailBcc>();
             Bcc.Add(BccData);
+
+
+
             string CcName = "Ayo CCNAme";
             string CcEmail = "treehays90@yahoo.com";
             SendSmtpEmailCc CcData = new SendSmtpEmailCc(CcEmail, CcName);
             List<SendSmtpEmailCc> Cc = new List<SendSmtpEmailCc>();
             Cc.Add(CcData);
+
+
+
             string HtmlContent = "<html><body><h1>This is my first transactional email {{params.parameter}}</h1></body></html>";
+
+
             string TextContent = null;
+
+
+
+
             string Subject = "My {{params.subject}}";
             string ReplyToName = "Mad Reply to ";
             string ReplyToEmail = "treehays90@gmail.com";
             SendSmtpEmailReplyTo ReplyTo = new SendSmtpEmailReplyTo(ReplyToEmail, ReplyToName);
+
+
+
+
             string AttachmentUrl = null;
             string stringInBase64 = "aGVsbG8gdGhpcyBpcyB0ZXN0";
             byte[] Content = System.Convert.FromBase64String(stringInBase64);
@@ -60,6 +83,10 @@ namespace EasyLearn.Services.Implementations
             SendSmtpEmailAttachment AttachmentContent = new SendSmtpEmailAttachment(AttachmentUrl, Content, AttachmentName);
             List<SendSmtpEmailAttachment> Attachment = new List<SendSmtpEmailAttachment>();
             Attachment.Add(AttachmentContent);
+
+
+
+
             JObject Headers = new JObject();
             Headers.Add("Some-Custom-Name", "unique-id-1234");
             long? TemplateId = null;
@@ -80,6 +107,8 @@ namespace EasyLearn.Services.Implementations
             try
             {
                 var sendSmtpEmail = new SendSmtpEmail(Email, To, Bcc, Cc, HtmlContent, TextContent, Subject, ReplyTo, Attachment, Headers, TemplateId, Params, messageVersiopns, Tags);
+
+
                 CreateSmtpEmail result = apiInstance.SendTransacEmail(sendSmtpEmail);
                 Debug.WriteLine(result.ToJson());
                 Console.WriteLine(result.ToJson());

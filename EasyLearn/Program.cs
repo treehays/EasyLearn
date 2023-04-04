@@ -19,7 +19,11 @@ namespace EasyLearn
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             var configuration = builder.Configuration.GetConnectionString("EasyLearnDbConnectionString");
+
             builder.Services.AddDbContext<EasyLearnDbContext>(options => options.UseMySql(configuration, ServerVersion.AutoDetect(configuration)));
+
+
+
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminService, AdminService>();
 
@@ -54,6 +58,8 @@ namespace EasyLearn
             builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
             builder.Services.AddScoped<IModuleService, ModuleService>();
 
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             builder.Services.AddFluentEmail("katelynn3@ethereal.email")
                 .AddMailKitSender(new FluentEmail.MailKitSmtp.SmtpClientOptions
                 {
@@ -64,8 +70,7 @@ namespace EasyLearn
                     User = "katelynn3@ethereal.email",
                     SocketOptions = MailKit.Security.SecureSocketOptions.StartTls
                 });
-            builder.Services.AddFluentEmail("katelynn3@ethereal.email")
-                .AddSmtpSender(System.Net.Mail.Smtp.SmtpClientO)
+
 
             // Set the execution timeout
             builder.Services.Configure<MvcOptions>(options =>

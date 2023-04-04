@@ -331,6 +331,10 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+*.mp4
+*.mp3
+*.pdf
+*.mkv
 
 # OpenCover UI analysis results
 OpenCover/
@@ -364,3 +368,4 @@ FodyWeavers.xsd
 /EasyLearn.zip
 /EasyLearn/wwwroot/uploads
 /Materials
+/EasyLearn/wwwroot/abdullahpicture
