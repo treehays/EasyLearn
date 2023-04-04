@@ -6,7 +6,6 @@ using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyLearn
@@ -55,6 +54,18 @@ namespace EasyLearn
             builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
             builder.Services.AddScoped<IModuleService, ModuleService>();
 
+            builder.Services.AddFluentEmail("katelynn3@ethereal.email")
+                .AddMailKitSender(new FluentEmail.MailKitSmtp.SmtpClientOptions
+                {
+                    Server = "smtp.ethereal.email",
+                    Port = 587,
+                    Password = "qhdb6KQeKn49ameSj5",
+                    RequiresAuthentication = true,
+                    User = "katelynn3@ethereal.email",
+                    SocketOptions = MailKit.Security.SecureSocketOptions.StartTls
+                });
+            builder.Services.AddFluentEmail("katelynn3@ethereal.email")
+                .AddSmtpSender(System.Net.Mail.Smtp.SmtpClientO)
 
             // Set the execution timeout
             builder.Services.Configure<MvcOptions>(options =>

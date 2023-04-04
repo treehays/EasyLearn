@@ -1,6 +1,7 @@
 ﻿using EasyLearn.Models;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
+using FluentEmail.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,14 @@ namespace EasyLearn.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
+        private readonly IFluentEmail _fluentEmail;
 
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IFluentEmail fluentEmail)
         {
             _logger = logger;
             _userService = userService;
+            _fluentEmail = fluentEmail;
         }
 
         public IActionResult Index()
@@ -28,9 +31,14 @@ namespace EasyLearn.Controllers
         }
 
 
-        public IActionResult Testing(string email, string OTPKey)
+        public async Task<IActionResult> Testing(string email, string OTPKey)
         {
 
+            var smtpp = await _fluentEmail
+                .To("treehays90@gmail.com", "Mukesh")
+                .Subject("Hey Just Trying it out")
+                .Body("Help me out with the medsdjhs")
+                .SendAsync();
             var verify = _userService.Testing(email, OTPKey);
             return View();
         }
