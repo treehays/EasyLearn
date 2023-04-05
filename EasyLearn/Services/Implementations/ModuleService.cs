@@ -22,7 +22,7 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<BaseResponse> Create(CreateModuleRequestModel model)
         {
-            if (model.FormFiles == null)
+            if (model.FormFiles.Count() == 0)
             {
                 return new BaseResponse
                 {

@@ -3,12 +3,10 @@ using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using FluentEmail.Core;
-using FluentEmail.Smtp;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Net;
 using System.Security.Claims;
 
 namespace EasyLearn.Controllers
@@ -29,39 +27,20 @@ namespace EasyLearn.Controllers
             _emailService = emailService;
         }
 
-        public IActionResult Index(EmailSenderAttachmentDTO model)
+        public IActionResult Index()
         {
-            //_emailService.SendEmailAttachment(model);
             return View();
         }
-
-
-        public async Task<IActionResult> Testing(string email, string OTPKey)
+        public IActionResult Testing()
         {
 
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Testing(EmailSenderAttachmentDTO model)
+        {
 
-            var sender = new SmtpSender(() => new System.Net.Mail.SmtpClient("smtp.ethereal.email")
-            {
-                UseDefaultCredentials = false,
-                Port = 587,
-                Credentials = new NetworkCredential("katelynn3@ethereal.email", "qhdb6KQeKn49ameSj5"),
-                EnableSsl = true,
-            });
-
-            //var emails = Email
-            //    .From("katelynn3@ethereal.email", "Abdulsalam Ahmad")
-            //    .To("treehays90@gmail.com", "Abdulsalam Ahmad Recieved")
-            //    .Subject("THis is just a test")
-            //    .Body("This coul be wotjng but hte sender is so stupid");
-            //await emails.SendAsync();
-
-
-            //var smtpp = await _fluentEmail
-            //    .To("treehays90@gmail.com", "Mukesh")
-            //    .Subject("Hey Just Trying it out")
-            //    .Body("Help me out with the medsdjhs")
-            //    .SendAsync();
-            //var verify = _userService.Testing(email, OTPKey);
+            await _emailService.SendEmailAttachment(model);
             return View();
         }
 

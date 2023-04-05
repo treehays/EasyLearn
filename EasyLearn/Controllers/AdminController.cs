@@ -1,5 +1,4 @@
-﻿using EasyLearn.Models.DTOs.AdminDTOs;
-using EasyLearn.Models.DTOs.UserDTOs;
+﻿using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

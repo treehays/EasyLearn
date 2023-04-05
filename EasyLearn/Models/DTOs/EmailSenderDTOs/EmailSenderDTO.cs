@@ -14,7 +14,7 @@ public class EmailSenderAttachmentDTO : BaseResponse
 {
     public string ReceiverName { get; set; }
     public string ReceiverEmail { get; set; }
-    public string Message { get; set; }
+    public string Messages { get; set; }
     public string Subject { get; set; }
     public string File { get; set; }
     public string FIleName { get; set; }
