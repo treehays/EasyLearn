@@ -48,9 +48,15 @@
                             <td>
                                 <a asp-controller="Module" asp-action="GetAllByCourseId" asp-route-courseId="@item.Id" class="btn btn-success">More..</a>
                             </td>
+
+                            <td>
+                                <a asp-controller="Enrolment" asp-action="Create" asp-route-id="@item.Id" class="btn btn-success">Enroll</a>
+                            </td>
+                            
                             <td>
                                 <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-success">Details</a>
                             </td>
+                            
                             <td>
                                 <a asp-action="DeletePreview" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                             </td>

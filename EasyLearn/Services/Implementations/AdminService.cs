@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using BCrypt.Net;
+﻿using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.AdminDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
@@ -8,6 +7,7 @@ using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
+using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
 
@@ -19,11 +19,12 @@ public class AdminService : IAdminService
     private readonly IAddressRepository _addressRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IFileManagerService _fileManagerService;
 
 
     public AdminService(IAdminRepository adminRepository, IUserRepository userRepository,
         IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository,
-        IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment)
+        IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService)
     {
         _adminRepository = adminRepository;
         _userRepository = userRepository;
@@ -31,6 +32,7 @@ public class AdminService : IAdminService
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
         _webHostEnvironment = webHostEnvironment;
+        _fileManagerService = fileManagerService;
     }
 
 
@@ -45,26 +47,9 @@ public class AdminService : IAdminService
                 Message = "Email already exist.",
             };
         }
+        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
 
-        string fileRelativePathx = null;
-
-        if (model.FormFile != null)
-        {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
-            //var uploadsFolder1 = Path.Combine(_webHostEnvironment.WebRootPath);
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
-            fileRelativePathx = "/uploads/profilePictures/" + fileName;
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.FormFile.CopyToAsync(stream);
-            }
-        }
+        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
 
         var truncUserName = model.Email.IndexOf('@');
         var userName = model.Email.Remove(truncUserName);
@@ -78,7 +63,7 @@ public class AdminService : IAdminService
             Password = password,
             Gender = model.Gender,
             StudentshipStatus = model.StudentshipStatus,
-            ProfilePicture = fileRelativePathx,
+            ProfilePicture = filePath,
             RoleId = "Admin",
             UserName = userName,
             CreatedOn = DateTime.Now,
@@ -94,13 +79,16 @@ public class AdminService : IAdminService
             UserId = user.Id,
         };
 
-        var userPaymentDetail = new PaymentDetails
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
 
+        var userPayment = new List<PaymentDetails>
+        {
+            new PaymentDetails
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                CreatedBy = user.CreatedBy,
+                CreatedOn = user.CreatedOn,
+            }
         };
 
         var userAdmin = new Admin
@@ -113,18 +101,11 @@ public class AdminService : IAdminService
         };
         user.Address = userAddress;
         user.Admin = userAdmin;
+        user.PaymentDetails = userPayment;
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
 
-        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
-        await _userRepository.SaveChangesAsync();
-
-        //await _adminRepository.AddAsync(userAdmin);
-        //await _userRepository.SaveChangesAsync();
-
-        //await _addressRepository.AddAsync(userAddress);
-        //await _userRepository.SaveChangesAsync();
 
         return new BaseResponse
         {
@@ -301,7 +282,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminResponseModel> GetById(string id)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+        var admin = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted && x.RoleId == "Admin");
 
         if (admin == null)
         {
@@ -368,7 +349,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminResponseModel> GetFullDetailById(string id)
     {
-        var admin = await _adminRepository.GetFullDetailByIdAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+        var admin = await _adminRepository.GetFullDetailByIdAsync(x => x.Id == id && x.IsActive && !x.IsDeleted && x.RoleId == "Admin");
         if (admin == null)
         {
             return new AdminResponseModel

@@ -2,7 +2,6 @@
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
-using FluentEmail.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +14,13 @@ namespace EasyLearn.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
-        private readonly IFluentEmail _fluentEmail;
         private readonly IEmailService _emailService;
 
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService, IFluentEmail fluentEmail, IEmailService emailService)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IEmailService emailService)
         {
             _logger = logger;
             _userService = userService;
-            _fluentEmail = fluentEmail;
             _emailService = emailService;
         }
 
@@ -44,53 +41,61 @@ namespace EasyLearn.Controllers
             return View();
         }
 
+        //[Route("v{version:apiVersion}/[controller]")]
+        [Route("{Login}")]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [Route("{Login}")]
         public async Task<IActionResult> Login(LoginRequestModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var getEmail = await _userService.Login(model.Email);
+            var user = await _userService.Login(model.Email);
 
-            if (!getEmail.Status)
+            if (!user.Status)
             {
-                TempData["failed"] = getEmail.Message;
+                TempData["failed"] = user.Message;
                 return View();
             }
-            var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, getEmail.Password);
+            var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
 
             if (!verifyPassword)
             {
-                TempData["failed"] = getEmail.Message;
+                TempData["failed"] = user.Message;
                 return View();
             }
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role,getEmail.RoleId),
-                new Claim(ClaimTypes.NameIdentifier,getEmail.Id),
-                new Claim(ClaimTypes.Actor, getEmail.Id),
-                new Claim(ClaimTypes.Name,getEmail.FirstName),
+                new Claim(ClaimTypes.Role,user.RoleId),
+                new Claim(ClaimTypes.NameIdentifier,user.Id),
+                new Claim(ClaimTypes.Actor, user.Id),
+                new Claim(ClaimTypes.Name,user.FirstName),
             };
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authenticationProperties = new AuthenticationProperties();
             var principal = new ClaimsPrincipal(claimIdentity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
 
-            if (getEmail.RoleId == "Admin")
+            if (user.RoleId == "Admin")
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Admin");
             }
-            else if (getEmail.RoleId == "Instructor")
+            else if (user.RoleId == "Instructor")
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Instructor");
+            }
+            else if (user.RoleId == "Student")
+            {
+                TempData["success"] = "Login successful";
+                return RedirectToAction("GetAllActive", "Student");
             }
             else
             {

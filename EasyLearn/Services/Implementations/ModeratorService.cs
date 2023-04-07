@@ -1,6 +1,7 @@
 ﻿using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.ModeratorDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
@@ -16,21 +17,23 @@ public class ModeratorService : IModeratorService
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
+    private readonly IFileManagerService _fileManagerService;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
 
     public ModeratorService(IModeratorRepository moderatorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, IWebHostEnvironment webHostEnvironment)
     {
         _moderatorRepository = moderatorRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
+        _fileManagerService = fileManagerService;
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public async Task<BaseResponse> Create(CreateModeratorRequestModel model)
+    public async Task<BaseResponse> Create(CreateUserRequestModel model)
     {
         var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
         if (emailExist)
@@ -41,26 +44,9 @@ public class ModeratorService : IModeratorService
                 Message = "Email already exist.",
             };
         }
+        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
 
-        string fileRelativePathx = null;
-
-        if (model.formFile != null || model.formFile.Length > 0)
-        {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
-            fileRelativePathx = "/uploads/profilePictures/" + fileName;
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.formFile.CopyToAsync(stream);
-            }
-        }
-
+        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
 
         var truncUserName = model.Email.IndexOf('@');
         var userName = model.Email.Remove(truncUserName);
@@ -78,36 +64,43 @@ public class ModeratorService : IModeratorService
             UserName = userName,
             CreatedOn = DateTime.Now,
             IsActive = true,
+            ProfilePicture = filePath,
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
         };
+
 
         var userAddress = new Address
         {
             Id = Guid.NewGuid().ToString(),
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             UserId = user.Id,
         };
 
-        var userPaymentDetail = new PaymentDetails
+
+        var userPayment = new List<PaymentDetails>
         {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
+            new PaymentDetails
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                CreatedBy = user.CreatedBy,
+                CreatedOn = user.CreatedOn,
+            }
         };
 
-        var moderDetail = new Moderator
+        var userModerator = new Moderator
         {
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
+
         };
+        user.Address = userAddress;
+        user.Moderator = userModerator;
+        user.PaymentDetails = userPayment;
 
         await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
-
-        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
-        await _userRepository.SaveChangesAsync();
-
-        await _moderatorRepository.AddAsync(moderDetail);
-        await _userRepository.SaveChangesAsync();
-
-        await _addressRepository.AddAsync(userAddress);
         await _userRepository.SaveChangesAsync();
 
 
@@ -144,7 +137,7 @@ public class ModeratorService : IModeratorService
 
     public async Task<ModeratorsResponseModel> GetAll()
     {
-        var moderators = await _userRepository.GetAllAsync();
+        var moderators = await _userRepository.GetListAsync(x => !x.IsDeleted && x.RoleId == "Moderator");
         var moderatorModel = new ModeratorsResponseModel
         {
             Status = true,

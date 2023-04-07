@@ -59,17 +59,21 @@ namespace EasyLearn
             builder.Services.AddScoped<IModuleService, ModuleService>();
 
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IFileManagerService, FileManagerService>();
 
-            builder.Services.AddFluentEmail("katelynn3@ethereal.email")
-                .AddMailKitSender(new FluentEmail.MailKitSmtp.SmtpClientOptions
-                {
-                    Server = "smtp.ethereal.email",
-                    Port = 587,
-                    Password = "qhdb6KQeKn49ameSj5",
-                    RequiresAuthentication = true,
-                    User = "katelynn3@ethereal.email",
-                    SocketOptions = MailKit.Security.SecureSocketOptions.StartTls
-                });
+            builder.Services.AddScoped<IEnrolmentRepository, EnrolmentRepository>();
+            builder.Services.AddScoped<IEnrolmentService, EnrolmentService>();
+
+            //builder.Services.AddFluentEmail("katelynn3@ethereal.email")
+            //    .AddMailKitSender(new FluentEmail.MailKitSmtp.SmtpClientOptions
+            //    {
+            //        Server = "smtp.ethereal.email",
+            //        Port = 587,
+            //        Password = "qhdb6KQeKn49ameSj5",
+            //        RequiresAuthentication = true,
+            //        User = "katelynn3@ethereal.email",
+            //        SocketOptions = MailKit.Security.SecureSocketOptions.StartTls
+            //    });
 
 
             // Set the execution timeout

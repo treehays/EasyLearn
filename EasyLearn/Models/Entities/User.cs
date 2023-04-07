@@ -16,10 +16,12 @@ namespace EasyLearn.Models.Entities
         public string Interest { get; set; }
         public string PhoneNumber { get; set; }
         public Gender Gender { get; set; }
-        public  StudentshipStatus StudentshipStatus { get; set; }
+        public StudentshipStatus StudentshipStatus { get; set; }
         public string RoleId { get; set; }
         public bool IsActive { get; set; }
-        
+        public bool EmailConfirmed { get; set; }
+        public bool PhoneNumberCOnfirmed { get; set; }
+
         public Role Role { get; set; }
         public Student Student { get; set; }
         public Moderator Moderator { get; set; }

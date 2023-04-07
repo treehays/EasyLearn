@@ -1,11 +1,11 @@
 ﻿using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
+using Newtonsoft.Json.Linq;
 using sib_api_v3_sdk.Api;
 using sib_api_v3_sdk.Client;
 using sib_api_v3_sdk.Model;
 using System.Diagnostics;
-using Newtonsoft.Json.Linq;
 
 namespace EasyLearn.Services.Implementations
 {
@@ -136,8 +136,9 @@ namespace EasyLearn.Services.Implementations
             }
 
             var instructorId = user.Instructor != null ? user.Instructor.Id : null;
-            var ModeratorId = user.Moderator != null ? user.Moderator.Id : null;
-            var AdminId = user.Admin != null ? user.Admin.Id : null;
+            var moderatorId = user.Moderator != null ? user.Moderator.Id : null;
+            var adminId = user.Admin != null ? user.Admin.Id : null;
+            var studentId = user.Student != null ? user.Student.Id : null;
             var loginModel = new LoginRequestModel
             {
                 Message = "Login successfully..",
@@ -148,7 +149,7 @@ namespace EasyLearn.Services.Implementations
                 LastName = user.LastName,
                 FirstName = user.FirstName,
                 ProfilePicture = user.ProfilePicture,
-                Id = instructorId ?? ModeratorId ?? AdminId,
+                Id = instructorId ?? moderatorId ?? adminId ?? studentId,
                 UserId = user.Id,
             };
             return loginModel;

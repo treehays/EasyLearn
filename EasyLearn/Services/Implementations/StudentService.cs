@@ -1,6 +1,7 @@
 ﻿using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.StudentDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
@@ -15,10 +16,11 @@ public class StudentService : IStudentService
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IFileManagerService _fileManagerService;
     private readonly IAddressRepository _addressRepository;
 
     public StudentService(IStudentRepository studentRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null, IFileManagerService fileManagerService = null)
     {
         _studentRepository = studentRepository;
         _userRepository = userRepository;
@@ -26,9 +28,10 @@ public class StudentService : IStudentService
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
         _webHostEnvironment = webHostEnvironment;
+        _fileManagerService = fileManagerService;
     }
 
-    public async Task<BaseResponse> Create(CreateStudentRequestModel model)
+    public async Task<BaseResponse> Create(CreateUserRequestModel model)
     {
         var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
         if (emailExist)
@@ -40,24 +43,9 @@ public class StudentService : IStudentService
             };
         }
 
-        string fileRelativePathx = null;
+        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
 
-        if (model.formFile != null || model.formFile.Length > 0)
-        {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
-            fileRelativePathx = "/uploads/profilePictures/" + fileName;
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.formFile.CopyToAsync(stream);
-            }
-        }
+        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
 
 
         var truncUserName = model.Email.IndexOf('@');
@@ -76,37 +64,45 @@ public class StudentService : IStudentService
             UserName = userName,
             CreatedOn = DateTime.Now,
             IsActive = true,
+            ProfilePicture = filePath,
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+
         };
 
         var userAddress = new Address
         {
             Id = Guid.NewGuid().ToString(),
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             UserId = user.Id,
         };
 
-        var userPaymentDetail = new PaymentDetails
+
+        var userPayment = new List<PaymentDetails>
         {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
+            new PaymentDetails
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                CreatedBy = user.CreatedBy,
+                CreatedOn = user.CreatedOn,
+            }
         };
 
-        var studentDetail = new Student
+        var userStudent = new Student
         {
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
+            CreatedBy = user.CreatedBy,
+            CreatedOn = user.CreatedOn,
+
         };
+        user.Address = userAddress;
+        user.Student = userStudent;
+        user.PaymentDetails = userPayment;
+
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
 
-        await _studentRepository.AddAsync(studentDetail);
-        await _userRepository.SaveChangesAsync();
-
-
-        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
-        await _userRepository.SaveChangesAsync();
-
-        await _addressRepository.AddAsync(userAddress);
-        await _userRepository.SaveChangesAsync();
 
         return new BaseResponse
         {
@@ -139,9 +135,9 @@ public class StudentService : IStudentService
 
     }
 
-    public async Task<StudentsResponseModel> GetAll()
+    public async Task<StudentsResponseModel> GetAllStudent()
     {
-        var students = await _userRepository.GetAllAsync();
+        var students = await _userRepository.GetListAsync(x => x.RoleId == "Student");
         var studentModel = new StudentsResponseModel
         {
             Status = true,
@@ -169,7 +165,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentsResponseModel> GetAllActive()
     {
-        var student = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        var student = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && x.RoleId == "Student");
 
         if (student == null)
         {
@@ -206,7 +202,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentsResponseModel> GetAllInActive()
     {
-        var student = await _userRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        var student = await _userRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted && x.RoleId == "Student");
 
         if (student == null)
         {
@@ -243,7 +239,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentResponseModel> GetByEmail(string email)
     {
-        var student = await _userRepository.GetAsync(x => x.Email == email && x.IsActive && !x.IsDeleted);
+        var student = await _userRepository.GetAsync(x => x.Email == email && x.IsActive && !x.IsDeleted && x.RoleId == "Student");
 
         if (student == null)
         {
@@ -281,7 +277,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentResponseModel> GetById(string id)
     {
-        var student = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+        var student = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted && x.RoleId == "Student");
 
         if (student == null)
         {
@@ -319,7 +315,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentsResponseModel> GetByName(string name)
     {
-        var student = await _userRepository.GetListAsync(x => (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && !x.IsDeleted);
+        var student = await _userRepository.GetListAsync(x => (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && !x.IsDeleted && x.RoleId == "Student");
 
         if (student == null)
         {
@@ -356,7 +352,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentResponseModel> GetFullDetailById(string id)
     {
-        var student = await _studentRepository.GetFullDetailByIdAsync(x => x.Id == id && x.IsActive && !x.IsDeleted);
+        var student = await _studentRepository.GetFullDetailByIdAsync(x => x.Id == id && x.IsActive && !x.IsDeleted && x.RoleId == "Student");
 
         if (student == null)
         {
@@ -393,7 +389,7 @@ public class StudentService : IStudentService
 
     public async Task<BaseResponse> UpdateActiveStatus(UpdateStudentActiveStatusRequestModel model)
     {
-        var student = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted);
+        var student = await _userRepository.GetAsync(x => x.Id == model.Id && x.IsActive && !x.IsDeleted && x.RoleId == "Student");
         if (student == null)
         {
             return new BaseResponse

@@ -1,11 +1,12 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.StudentDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 
 namespace EasyLearn.Services.Interfaces;
 
 public interface IStudentService
 {
-    Task<BaseResponse> Create(CreateStudentRequestModel model);
+    Task<BaseResponse> Create(CreateUserRequestModel model);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateStudentProfileRequestModel model);
     Task<BaseResponse> UpdateBankDetail(UpdateStudentBankDetailRequestModel model);
@@ -16,7 +17,7 @@ public interface IStudentService
     Task<StudentResponseModel> GetFullDetailById(string id);
     Task<StudentResponseModel> GetByEmail(string email);
     Task<StudentsResponseModel> GetByName(string name);
-    Task<StudentsResponseModel> GetAll();
+    Task<StudentsResponseModel> GetAllStudent();
     Task<StudentsResponseModel> GetAllActive();
     Task<StudentsResponseModel> GetAllInActive();
 }

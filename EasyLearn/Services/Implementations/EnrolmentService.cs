@@ -6,93 +6,112 @@ using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
 
-namespace EasyLearn.Services.Implementations
+namespace EasyLearn.Services.Implementations;
+
+public class EnrolmentService : IEnrolmentService
 {
-    public class EnrolmentService : IEnrolmentService
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IEnrolmentRepository _enrolmentRepository;
+    private readonly ICourseRepository _courseRepository;
+
+    public EnrolmentService(IEnrolmentRepository enrolmentRepository, IHttpContextAccessor httpContextAccessor, ICourseRepository courseRepository)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IEnrolmentRepository _enrolmentRepository;
-        private readonly IPaymentRepository _paymentRepository;
+        _enrolmentRepository = enrolmentRepository;
+        _httpContextAccessor = httpContextAccessor;
+        _courseRepository = courseRepository;
+    }
 
-        public EnrolmentService(IEnrolmentRepository enrolmentRepository, IHttpContextAccessor httpContextAccessor, IPaymentRepository paymentRepository = null)
+    public async Task<BaseResponse> Create(CreateEnrolmentRequestModel model)
+    {
+        var course = new StudentCourse
         {
-            _enrolmentRepository = enrolmentRepository;
-            _httpContextAccessor = httpContextAccessor;
-            _paymentRepository = paymentRepository;
-        }
+            CourseId = model.CourseId,
+            StudentId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            CreatedBy = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+            CreatedOn = DateTime.Now,
+            Id = Guid.NewGuid().ToString(),
+        };
+        var courses = new List<StudentCourse>();
+        courses.Add(course);
 
-        public async Task<BaseResponse> Create(CreateEnrolmentRequestModel model)
+        var stdt = await _courseRepository.GetAsync(x => x.Id == model.CourseId);
+
+
+        var payment = new Payment
         {
-            var payment = new Payment
-            {
-                PaymentMethod = model.PaymentMethods,
-                PaymentStatus = PaymentStatus.Pending,
-                CouponUsed = model.Coupon,
-                StudentId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                Id = Guid.NewGuid().ToString(),
-                CourseId = model.CourseId,
-                CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                CreatedOn = DateTime.Now,
-                PaymentAmount = model.AmountPaid,
-            };
+            Id = Guid.NewGuid().ToString(),
+            PaymentMethod = model.PaymentMethods,
+            PaymentStatus = PaymentStatus.Pending,
+            CouponUsed = model.Coupon,
+            StudentId = course.StudentId,
+            CourseId = model.CourseId,
+            CreatedBy = course.CreatedBy,
+            CreatedOn = course.CreatedOn,
+            PaymentAmount = model.AmountPaid,
+        };
 
-            var enrolment = new Enrolment
-            {
-                Id = Guid.NewGuid().ToString(),
-                CompletionStatus = CompletionStatus.NotCompleted,
-                CreatedBy = payment.StudentId,
-                CreatedOn = payment.CreatedOn,
-                PaymentId = payment.Id,
-            };
-            enrolment.Payment = payment;
-            await _enrolmentRepository.AddAsync(enrolment);
-            await _enrolmentRepository.SaveChangesAsync();
-            return new BaseResponse
-            {
-                Message = "Payment processing..",
-                Status = true,
-            };
-
-        }
-
-        public Task<BaseResponse> Delete(string id)
+        var enrolment = new Enrolment
         {
-            throw new NotImplementedException();
-        }
+            Id = Guid.NewGuid().ToString(),
+            CompletionStatus = CompletionStatus.NotCompleted,
+            CreatedBy = course.StudentId,
+            CreatedOn = course.CreatedOn,
+            PaymentId = payment.Id,
+            CourseId = course.CourseId,
+        };
+        stdt.StudentCourses = courses;
+        enrolment.Payment = payment;
+        //enrolment.Course.StudentCourses = courses;
 
-        public Task<EnrolmentsResponseModel> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<EnrolmentsResponseModel> GetAllPaid()
-        {
-            throw new NotImplementedException();
-        }
+        await _enrolmentRepository.AddAsync(enrolment);
+        await _enrolmentRepository.SaveChangesAsync();
 
-        public Task<EnrolmentResponseModel> GetById(string id)
+        return new BaseResponse
         {
-            throw new NotImplementedException();
-        }
+            Message = "Payment processing..",
+            Status = true,
+        };
 
-        public Task<EnrolmentsResponseModel> GetByName(string name)
-        {
-            throw new NotImplementedException();
-        }
+    }
 
-        public Task<EnrolmentsResponseModel> GetNotPaid()
-        {
-            throw new NotImplementedException();
-        }
+    public Task<BaseResponse> Delete(string id)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<BaseResponse> Update(UpdateEnrolmentRequestModel model)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<EnrolmentsResponseModel> GetAll()
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<BaseResponse> UpdateActiveStatus(UpdateEnrolmentRequestModel model)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<EnrolmentsResponseModel> GetAllPaid()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<EnrolmentResponseModel> GetById(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<EnrolmentsResponseModel> GetByName(string name)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<EnrolmentsResponseModel> GetNotPaid()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse> Update(UpdateEnrolmentRequestModel model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse> UpdateActiveStatus(UpdateEnrolmentRequestModel model)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -39,7 +39,7 @@ public class EmailService : IEmailService
         var subject = $"My Sample {model.Subject}";
 
 
-        var htmlContent = $"< html >< body >< h1 > This testing Message {model.Messages} </ h1 > <h4>Thanks for trying it</h4> </ body ></ html > ";
+        var htmlContent = $"< html >< body >< h1 > This testing Message {model.Body} </ h1 > <h4>Thanks for trying it</h4> </ body ></ html > ";
 
         var stringInBase64 = "aGVsbG8gdGhpcyBpcyB0ZXN0";
         var content = Convert.FromBase64String(stringInBase64);

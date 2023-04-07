@@ -11,6 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Controllers\HomeController.cs~RF55069.TMP" />
 		<None Remove="Views\Admin\CreateC.cshtml~RF4cc05c7.TMP" />
 	</ItemGroup>
 
@@ -27,13 +28,9 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
 		<PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.10" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
-		<PackageReference Include="X.PagedList" Version="8.4.7" />
-		<PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
-		<PackageReference Include="FluentEmail.Core" Version="3.0.2" />
-		<PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
-		<PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
 		<PackageReference Include="sib_api_v3_sdk" Version="4.0.2" />
-		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
+		<PackageReference Include="X.PagedList" Version="8.4.7" />
+		<PackageReference Include="X.PagedList.Mvc.Core;" Version="8.4.7" />
 	</ItemGroup>
 
 	<ItemGroup>

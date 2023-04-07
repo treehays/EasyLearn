@@ -20,9 +20,11 @@ public class InstructorService : IInstructorService
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IAddressRepository _addressRepository;
+    private readonly IFileManagerService _fileManagerService;
+
 
     public InstructorService(IInstructorRepository instructorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null, IFileManagerService fileManagerService = null)
     {
         _instructorRepository = instructorRepository;
         _userRepository = userRepository;
@@ -30,6 +32,7 @@ public class InstructorService : IInstructorService
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
         _webHostEnvironment = webHostEnvironment;
+        _fileManagerService = fileManagerService;
     }
     public async Task<BaseResponse> Create(CreateUserRequestModel model)
     {
@@ -42,24 +45,11 @@ public class InstructorService : IInstructorService
                 Message = "Email already exist.",
             };
         }
-        string fileRelativePathx = null;
 
-        if (model.FormFile != null || model.FormFile.Length > 0)
-        {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
-            fileRelativePathx = "/uploads/profilePictures/" + fileName;
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.FormFile.CopyToAsync(stream);
-            }
-        }
+        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
+
 
         var truncUserName = model.Email.IndexOf('@');
         var userName = model.Email.Remove(truncUserName);
@@ -73,50 +63,48 @@ public class InstructorService : IInstructorService
             Password = password,
             Gender = model.Gender,
             StudentshipStatus = model.StudentshipStatus,
-            ProfilePicture = fileRelativePathx,
-            RoleId = "Instructor",
+            RoleId = "userInstructor",
             UserName = userName,
             CreatedOn = DateTime.Now,
             IsActive = true,
+            ProfilePicture = filePath,
             CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+
         };
 
         var userAddress = new Address
         {
             Id = Guid.NewGuid().ToString(),
+            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
         };
 
-        var userPaymentDetail = new PaymentDetails
+
+        var userPayment = new List<PaymentDetails>
+        {
+            new PaymentDetails
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                CreatedBy = user.CreatedBy,
+                CreatedOn = user.CreatedOn,
+            }
+        };
+
+        var userInstructor = new Instructor
         {
             Id = Guid.NewGuid().ToString(),
             UserId = user.Id,
             CreatedBy = user.CreatedBy,
             CreatedOn = user.CreatedOn,
-        };
 
-        var instrDetail = new Instructor
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
         };
+        user.Address = userAddress;
+        user.Instructor = userInstructor;
+        user.PaymentDetails = userPayment;
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
-
-        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
-        await _userRepository.SaveChangesAsync();
-
-        await _instructorRepository.AddAsync(instrDetail);
-        await _userRepository.SaveChangesAsync();
-
-        await _addressRepository.AddAsync(userAddress);
-        await _userRepository.SaveChangesAsync();
-
 
         return new BaseResponse
         {
@@ -421,7 +409,7 @@ public class InstructorService : IInstructorService
     public async Task<InstructorsResponseModel> GetByName(string name)
     {
         var instructor = await _userRepository.GetListAsync(x =>
-           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && x.RoleId == "Instructor" && !x.IsActive && !x.IsDeleted);
+           (x.FirstName.ToUpper() == name.ToUpper() || x.LastName.ToUpper() == name.ToUpper() || (x.FirstName.ToUpper() + " " + x.LastName.ToUpper()) == name) && x.RoleId == "Instructor" && x.IsActive && !x.IsDeleted);
 
         if (instructor == null)
         {

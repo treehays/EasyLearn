@@ -3,6 +3,7 @@ using System;
 using EasyLearn.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    partial class EasyLearnDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230406143402_latest Migration")]
+    partial class latestMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,7 +361,7 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<DateTime?>("AccessExpiration")
+                    b.Property<DateTime>("AccessExpiration")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CertificateNumber")
@@ -924,9 +926,6 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext");
 
@@ -956,9 +955,6 @@ namespace EasyLearn.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
-
-                    b.Property<bool>("PhoneNumberCOnfirmed")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("longtext");

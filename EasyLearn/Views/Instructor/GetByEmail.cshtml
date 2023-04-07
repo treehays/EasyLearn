@@ -1,0 +1,58 @@
+﻿@model EasyLearn.Models.DTOs.InstructorDTOs.InstructorResponseModel
+
+@{
+    //ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+<div class="row">
+    <div class="col-sm-11">
+
+        @* <table class="table table-hover"> *@
+        <table class="table table-hover able-striped table-borderless ">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.FirstName)</th>
+                    <td>@Html.DisplayFor(x => x.Data.FirstName)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.LastName)</th>
+                    <td>@Html.DisplayFor(x => x.Data.LastName)</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Email)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Email)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Gender)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Gender)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.StudentshipStatus)</th>
+                    <td>@Html.DisplayFor(x => x.Data.StudentshipStatus)</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">@Html.DisplayNameFor(x => x.Data.Password)</th>
+                    <td>@Html.DisplayFor(x => x.Data.Password)</td>
+                </tr>
+
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>

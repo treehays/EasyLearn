@@ -23,6 +23,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     {
         var user = await _context.Users
             .Include(x => x.Instructor)
+            .Include(x => x.Student)
             .FirstOrDefaultAsync(expression);
         return user;
 

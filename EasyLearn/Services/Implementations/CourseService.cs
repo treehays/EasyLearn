@@ -3,7 +3,6 @@ using EasyLearn.Models.DTOs.CourseDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
-using Microsoft.AspNetCore.Hosting;
 using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
@@ -150,9 +149,9 @@ public class CourseService : ICourseService
 
     }
 
-    public async Task<CoursesRequestModel> GetAll()
+    public async Task<CoursesRequestModel> GetAllInstructorCourse(string instructorId)
     {
-        var courses = await _courseRepository.GetAllAsync();
+        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId);
         if (courses == null)
         {
             return new CoursesRequestModel
@@ -182,9 +181,9 @@ public class CourseService : ICourseService
         return coursesModel;
     }
 
-    public async Task<CoursesRequestModel> GetAllActive()
+    public async Task<CoursesRequestModel> GetAllActiveInstructorCourse(string instructorId)
     {
-        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && x.InstructorId == instructorId);
         if (courses == null)
         {
             return new CoursesRequestModel
@@ -215,9 +214,9 @@ public class CourseService : ICourseService
 
     }
 
-    public async Task<CoursesRequestModel> GetAllInActive()
+    public async Task<CoursesRequestModel> GetAllInActiveInstructorCourse(string instructorId)
     {
-        var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted && x.InstructorId == instructorId);
         if (courses == null)
         {
             return new CoursesRequestModel
@@ -367,6 +366,38 @@ public class CourseService : ICourseService
             Message = "Course updated successfully...",
             Status = true,
         };
+    }
+
+    public async Task<CoursesRequestModel> GetAllCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesRequestModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                CourseLanguage = x.CourseLanguage,
+                DifficultyLevel = x.DifficultyLevel,
+                Requirement = x.Requirement,
+                CourseDuration = x.CourseDuration,
+                InstructorId = x.InstructorId,
+                Price = x.Price,
+            })
+        };
+        return coursesModel;
     }
 }
 
