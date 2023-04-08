@@ -56,24 +56,24 @@ namespace EasyLearn.Controllers
             {
                 return View(model);
             }
-            var user = await _userService.Login(model.Email);
+            var user = await _userService.Login(model);
 
             if (!user.Status)
             {
                 TempData["failed"] = user.Message;
                 return View();
             }
-            var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+            //var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
 
-            if (!verifyPassword)
-            {
-                TempData["failed"] = user.Message;
-                return View();
-            }
+            //if (!verifyPassword)
+            //{
+            //    TempData["failed"] = user.Message;
+            //    return View();
+            //}
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Role,user.RoleId),
-                new Claim(ClaimTypes.NameIdentifier,user.Id),
+                new Claim(ClaimTypes.NameIdentifier,user.UserId),
                 new Claim(ClaimTypes.Actor, user.Id),
                 new Claim(ClaimTypes.Name,user.FirstName),
             };

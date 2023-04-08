@@ -15,9 +15,11 @@ public class ModuleRepository : BaseRepository<Module>, IModuleRepository
     public async Task<int> GetLastElement()
     {
         //var value = await _context.Modules.OrderBy(x => x.SequenceOfModule).LastOrDefaultAsync();
+        if (await _context.Modules.AnyAsync())
+        {
         var value = await _context.Modules.MaxAsync(x => x.SequenceOfModule);
-        //var count = await _context.Modules.CountAsync();
-        //var highest = value.SequenceOfModule;
         return value;
+        }
+        return 0;
     }
 }

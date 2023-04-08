@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs.UserDTOs;
+﻿using EasyLearn.Models.DTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using Newtonsoft.Json.Linq;
@@ -6,16 +7,112 @@ using sib_api_v3_sdk.Api;
 using sib_api_v3_sdk.Client;
 using sib_api_v3_sdk.Model;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public async Task<LoginRequestModel> Login(LoginRequestModel model)
+        {
+            var user = await _userRepository.GetFullDetails(x => x.UserName.ToUpper() == model.Email.ToUpper() || x.Email.ToUpper() == model.Email.ToUpper());
+
+
+            if (user == null)
+            {
+                return new LoginRequestModel
+                {
+                    Message = "invalid login details",
+                    Status = false,
+                };
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                return new LoginRequestModel
+                {
+                    Message = "kindly Confirm your email...",
+                    Status = false,
+                };
+            }
+
+            var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+
+            if (!verifyPassword)
+            {
+                return new LoginRequestModel
+                {
+                    Message = "incorrect login detail...",
+                    Status = false,
+                };
+            }
+
+            var instructorId = user.Instructor != null ? user.Instructor.Id : null;
+            var moderatorId = user.Moderator != null ? user.Moderator.Id : null;
+            var adminId = user.Admin != null ? user.Admin.Id : null;
+            var studentId = user.Student != null ? user.Student.Id : null;
+            var loginModel = new LoginRequestModel
+            {
+                Message = "Login successfully..",
+                Status = true,
+                Email = user.Email,
+                Password = user.Password,
+                RoleId = user.RoleId,
+                LastName = user.LastName,
+                FirstName = user.FirstName,
+                ProfilePicture = user.ProfilePicture,
+                Id = instructorId ?? moderatorId ?? adminId ?? studentId,
+                UserId = user.Id,
+            };
+            return loginModel;
+        }
+
+
+        public async Task<BaseResponse> EmailVerification(string emailToken)
+        {
+
+            var user = await _userRepository.GetAsync(x => x.EmailToken == emailToken);
+
+            if (user == null)
+            {
+                return new BaseResponse
+                {
+                    Message = "Wrong verification code...",
+                    Status = false,
+                };
+            }
+
+            if (user.EmailConfirmed)
+            {
+                return new BaseResponse
+                {
+                    Message = "Account already verified, proceed to login...",
+                    Status = false,
+                };
+            }
+
+            var date = DateTime.Now;
+            var modifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            user.EmailConfirmed = true;
+            user.ModifiedOn = date;
+            user.ModifiedBy = modifiedBy;
+
+            await _userRepository.SaveChangesAsync();
+            return new BaseResponse
+            {
+                Message = "Account activated...",
+                Status = true,
+            };
         }
 
         public async Task<bool> Testing(string email, string OTPKey)
@@ -123,36 +220,5 @@ namespace EasyLearn.Services.Implementations
             return true;
         }
 
-        public async Task<LoginRequestModel> Login(string email)
-        {
-            var user = await _userRepository.GetFullDetails(x => x.UserName.ToUpper() == email.ToUpper() || x.Email.ToUpper() == email.ToUpper());
-            if (user == null)
-            {
-                return new LoginRequestModel
-                {
-                    Message = "invalid login details",
-                    Status = false,
-                };
-            }
-
-            var instructorId = user.Instructor != null ? user.Instructor.Id : null;
-            var moderatorId = user.Moderator != null ? user.Moderator.Id : null;
-            var adminId = user.Admin != null ? user.Admin.Id : null;
-            var studentId = user.Student != null ? user.Student.Id : null;
-            var loginModel = new LoginRequestModel
-            {
-                Message = "Login successfully..",
-                Status = true,
-                Email = user.Email,
-                Password = user.Password,
-                RoleId = user.RoleId,
-                LastName = user.LastName,
-                FirstName = user.FirstName,
-                ProfilePicture = user.ProfilePicture,
-                Id = instructorId ?? moderatorId ?? adminId ?? studentId,
-                UserId = user.Id,
-            };
-            return loginModel;
-        }
     }
 }

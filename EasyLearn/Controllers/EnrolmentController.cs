@@ -40,7 +40,7 @@ namespace EasyLearn.Controllers
                 return View(enrol);
             }
             TempData["success"] = enrol.Message;
-            return RedirectToAction("GenerateReciept");
+            return RedirectToAction("ListAllCourses", "Course");
         }
 
         public IActionResult GenerateReciept()

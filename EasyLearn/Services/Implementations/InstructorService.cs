@@ -1,5 +1,6 @@
 ﻿using BCrypt.Net;
 using EasyLearn.Models.DTOs;
+using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
@@ -21,10 +22,11 @@ public class InstructorService : IInstructorService
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IAddressRepository _addressRepository;
     private readonly IFileManagerService _fileManagerService;
+    private readonly IEmailService _emailService;
 
 
     public InstructorService(IInstructorRepository instructorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null, IFileManagerService fileManagerService = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IEmailService emailService)
     {
         _instructorRepository = instructorRepository;
         _userRepository = userRepository;
@@ -33,6 +35,7 @@ public class InstructorService : IInstructorService
         _addressRepository = addressRepository;
         _webHostEnvironment = webHostEnvironment;
         _fileManagerService = fileManagerService;
+        _emailService = emailService;
     }
     public async Task<BaseResponse> Create(CreateUserRequestModel model)
     {
@@ -47,8 +50,8 @@ public class InstructorService : IInstructorService
         }
 
         var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
-
         var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
+
 
 
         var truncUserName = model.Email.IndexOf('@');
@@ -63,14 +66,22 @@ public class InstructorService : IInstructorService
             Password = password,
             Gender = model.Gender,
             StudentshipStatus = model.StudentshipStatus,
-            RoleId = "userInstructor",
+            RoleId = "Instructor",
             UserName = userName,
             CreatedOn = DateTime.Now,
             IsActive = true,
+            EmailToken = Guid.NewGuid().ToString().Replace('-', '0'),
             ProfilePicture = filePath,
             CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-
         };
+        //user.ProfilePicture = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
+        var senderDetail = new EmailSenderDetails
+        {
+            EmailToken = user.EmailToken,
+            ReceiverEmail = user.Email,
+            ReceiverName = model.FirstName,
+        };
+        var emailSender = _emailService.EmailVerificationTemplate(senderDetail);
 
         var userAddress = new Address
         {
@@ -601,6 +612,44 @@ public class InstructorService : IInstructorService
         return new BaseResponse
         {
             Message = "User updated successfully..",
+            Status = true,
+        };
+    }
+
+    public async Task<BaseResponse> EmailVerification(string emailToken)
+    {
+
+        var user = await _userRepository.GetAsync(x => x.EmailToken == emailToken);
+
+        if (user == null)
+        {
+            return new BaseResponse
+            {
+                Message = "Wrong verification code...",
+                Status = false,
+            };
+        }
+
+        if (user.EmailConfirmed)
+        {
+            return new BaseResponse
+            {
+                Message = "Account already verified, proceed to login...",
+                Status = false,
+            };
+        }
+
+        var date = DateTime.Now;
+        var modifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        user.EmailConfirmed = true;
+        user.ModifiedOn = date;
+        user.ModifiedBy = modifiedBy;
+
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "Account activated...",
             Status = true,
         };
     }

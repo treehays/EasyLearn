@@ -41,7 +41,7 @@ public partial class AdminController : Controller
         if (!createAdmin.Status)
         {
             TempData["failed"] = createAdmin.Message;
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetAllActive));
             //return View(model);
         }
 

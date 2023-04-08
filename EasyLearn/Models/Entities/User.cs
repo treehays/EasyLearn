@@ -20,7 +20,8 @@ namespace EasyLearn.Models.Entities
         public string RoleId { get; set; }
         public bool IsActive { get; set; }
         public bool EmailConfirmed { get; set; }
-        public bool PhoneNumberCOnfirmed { get; set; }
+        public string EmailToken { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
 
         public Role Role { get; set; }
         public Student Student { get; set; }

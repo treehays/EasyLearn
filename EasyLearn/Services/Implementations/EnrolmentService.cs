@@ -23,11 +23,14 @@ public class EnrolmentService : IEnrolmentService
 
     public async Task<BaseResponse> Create(CreateEnrolmentRequestModel model)
     {
+        var StudentId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var CreatedBy = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Actor);
+
         var course = new StudentCourse
         {
             CourseId = model.CourseId,
-            StudentId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-            CreatedBy = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+            StudentId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Actor)?.Value,
+            CreatedBy = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Actor),
             CreatedOn = DateTime.Now,
             Id = Guid.NewGuid().ToString(),
         };

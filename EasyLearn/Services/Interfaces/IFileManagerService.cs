@@ -1,4 +1,4 @@
-﻿namespace EasyLearn.Services.Implementations;
+﻿namespace EasyLearn.Services.Interfaces;
 
 public interface IFileManagerService
 {

@@ -11,6 +11,7 @@ public interface IInstructorService
     Task<BaseResponse> Create(CreateUserRequestModel model);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateInstructorProfileRequestModel model);
+    Task<BaseResponse> EmailVerification(string emailToken);
     Task<BaseResponse> UpdateBankDetail(UpdateInstructorBankDetailRequestModel model);
     Task<PaymentDetailRequestModel> GetByPaymentDetail(string id);
 

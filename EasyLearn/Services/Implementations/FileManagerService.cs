@@ -1,6 +1,6 @@
-﻿using EasyLearn.Services.Implementations;
+﻿using EasyLearn.Services.Interfaces;
 
-namespace EasyLearn.Services.Interfaces;
+namespace EasyLearn.Services.Implementations;
 
 public class FileManagerService : IFileManagerService
 {
@@ -23,7 +23,7 @@ public class FileManagerService : IFileManagerService
                 await file.CopyToAsync(stream);
             }
 
-            return ("/uploads/profilePictures/" + fileName);
+            return "/uploads/profilePictures/" + fileName;
         }
         return null;
     }
