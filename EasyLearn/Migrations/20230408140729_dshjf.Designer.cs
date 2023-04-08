@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    [Migration("20230407054705_confrim email")]
-    partial class confrimemail
+    [Migration("20230408140729_dshjf")]
+    partial class dshjf
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -929,6 +929,9 @@ namespace EasyLearn.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("EmailToken")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext");
 
@@ -959,7 +962,7 @@ namespace EasyLearn.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("PhoneNumberCOnfirmed")
+                    b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ProfilePicture")

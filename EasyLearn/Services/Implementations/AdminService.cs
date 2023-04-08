@@ -19,12 +19,13 @@ public class AdminService : IAdminService
     private readonly IAddressRepository _addressRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IUserService _userService;
     private readonly IFileManagerService _fileManagerService;
 
 
     public AdminService(IAdminRepository adminRepository, IUserRepository userRepository,
         IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository,
-        IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService)
+        IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IUserService userService)
     {
         _adminRepository = adminRepository;
         _userRepository = userRepository;
@@ -33,13 +34,15 @@ public class AdminService : IAdminService
         _addressRepository = addressRepository;
         _webHostEnvironment = webHostEnvironment;
         _fileManagerService = fileManagerService;
+        _userService = userService;
     }
 
 
-    public async Task<BaseResponse> Create(CreateUserRequestModel model)
+    public async Task<BaseResponse> AdminRegistration(CreateUserRequestModel model, string baseUrl)
     {
-        var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
-        if (emailExist)
+
+        var admin = await _userService.UserRegistration(model, baseUrl);
+        if (admin == null)
         {
             return new BaseResponse
             {
@@ -47,63 +50,8 @@ public class AdminService : IAdminService
                 Message = "Email already exist.",
             };
         }
-        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
-
-        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
-
-        var truncUserName = model.Email.IndexOf('@');
-        var userName = model.Email.Remove(truncUserName);
-        var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
-        var user = new User
-        {
-            Id = Guid.NewGuid().ToString(),
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            Password = password,
-            Gender = model.Gender,
-            StudentshipStatus = model.StudentshipStatus,
-            ProfilePicture = filePath,
-            RoleId = "Admin",
-            UserName = userName,
-            CreatedOn = DateTime.Now,
-            IsActive = true,
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-
-        };
-
-        var userAddress = new Address
-        {
-            Id = Guid.NewGuid().ToString(),
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-            UserId = user.Id,
-        };
-
-
-        var userPayment = new List<PaymentDetails>
-        {
-            new PaymentDetails
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = user.Id,
-                CreatedBy = user.CreatedBy,
-                CreatedOn = user.CreatedOn,
-            }
-        };
-
-        var userAdmin = new Admin
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
-
-        };
-        user.Address = userAddress;
-        user.Admin = userAdmin;
-        user.PaymentDetails = userPayment;
-
-        await _userRepository.AddAsync(user);
+        admin.RoleId = "Admin";
+        await _userRepository.AddAsync(admin);
         await _userRepository.SaveChangesAsync();
 
 
@@ -132,12 +80,9 @@ public class AdminService : IAdminService
         admin.IsDeleted = true;
         admin.DeletedOn = date;
         admin.DeletedBy = deletedby;
-
         admin.Address.IsDeleted = true;
         admin.Address.DeletedOn = date;
         admin.Address.DeletedBy = deletedby;
-
-
         admin.Admin.IsDeleted = true;
         admin.Admin.DeletedOn = date;
         admin.Admin.DeletedBy = deletedby;

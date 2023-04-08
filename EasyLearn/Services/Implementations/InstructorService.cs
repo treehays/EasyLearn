@@ -1,6 +1,4 @@
-﻿using BCrypt.Net;
-using EasyLearn.Models.DTOs;
-using EasyLearn.Models.DTOs.EmailSenderDTOs;
+﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
@@ -20,13 +18,15 @@ public class InstructorService : IInstructorService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IAddressRepository _addressRepository;
     private readonly IFileManagerService _fileManagerService;
+    private readonly IAddressRepository _addressRepository;
     private readonly IEmailService _emailService;
+    private readonly IUserService _userService;
+
 
 
     public InstructorService(IInstructorRepository instructorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IEmailService emailService)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IEmailService emailService, IUserService userService)
     {
         _instructorRepository = instructorRepository;
         _userRepository = userRepository;
@@ -36,11 +36,13 @@ public class InstructorService : IInstructorService
         _webHostEnvironment = webHostEnvironment;
         _fileManagerService = fileManagerService;
         _emailService = emailService;
+        _userService = userService;
     }
-    public async Task<BaseResponse> Create(CreateUserRequestModel model)
+    public async Task<BaseResponse> InstructorRegistration(CreateUserRequestModel model, string baseUrl)
     {
-        var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
-        if (emailExist)
+
+        var instructor = await _userService.UserRegistration(model, baseUrl);
+        if (instructor == null)
         {
             return new BaseResponse
             {
@@ -48,73 +50,8 @@ public class InstructorService : IInstructorService
                 Message = "Email already exist.",
             };
         }
-
-        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
-        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
-
-
-
-        var truncUserName = model.Email.IndexOf('@');
-        var userName = model.Email.Remove(truncUserName);
-        var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
-        var user = new User
-        {
-            Id = Guid.NewGuid().ToString(),
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            Password = password,
-            Gender = model.Gender,
-            StudentshipStatus = model.StudentshipStatus,
-            RoleId = "Instructor",
-            UserName = userName,
-            CreatedOn = DateTime.Now,
-            IsActive = true,
-            EmailToken = Guid.NewGuid().ToString().Replace('-', '0'),
-            ProfilePicture = filePath,
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-        };
-        //user.ProfilePicture = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
-        var senderDetail = new EmailSenderDetails
-        {
-            EmailToken = user.EmailToken,
-            ReceiverEmail = user.Email,
-            ReceiverName = model.FirstName,
-        };
-        var emailSender = _emailService.EmailVerificationTemplate(senderDetail);
-
-        var userAddress = new Address
-        {
-            Id = Guid.NewGuid().ToString(),
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-            UserId = user.Id,
-        };
-
-
-        var userPayment = new List<PaymentDetails>
-        {
-            new PaymentDetails
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = user.Id,
-                CreatedBy = user.CreatedBy,
-                CreatedOn = user.CreatedOn,
-            }
-        };
-
-        var userInstructor = new Instructor
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
-
-        };
-        user.Address = userAddress;
-        user.Instructor = userInstructor;
-        user.PaymentDetails = userPayment;
-
-        await _userRepository.AddAsync(user);
+        instructor.RoleId = "Instructor";
+        await _userRepository.AddAsync(instructor);
         await _userRepository.SaveChangesAsync();
 
         return new BaseResponse
@@ -135,20 +72,15 @@ public class InstructorService : IInstructorService
                 Status = false,
             };
         }
-
-
         var date = DateTime.Now;
         var deletedby = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         instructor.IsDeleted = true;
         instructor.DeletedOn = date;
         instructor.DeletedBy = deletedby;
-
         instructor.Address.IsDeleted = true;
         instructor.Address.DeletedOn = date;
         instructor.Address.DeletedBy = deletedby;
-
-
         instructor.Instructor.IsDeleted = true;
         instructor.Instructor.DeletedOn = date;
         instructor.Instructor.DeletedBy = deletedby;
@@ -159,7 +91,6 @@ public class InstructorService : IInstructorService
             Message = "Instructor successfully deleted...",
             Status = true,
         };
-
     }
 
 
@@ -616,41 +547,41 @@ public class InstructorService : IInstructorService
         };
     }
 
-    public async Task<BaseResponse> EmailVerification(string emailToken)
-    {
+    //public async Task<BaseResponse> EmailVerification(string emailToken)
+    //{
 
-        var user = await _userRepository.GetAsync(x => x.EmailToken == emailToken);
+    //    var user = await _userRepository.GetAsync(x => x.EmailToken == emailToken);
 
-        if (user == null)
-        {
-            return new BaseResponse
-            {
-                Message = "Wrong verification code...",
-                Status = false,
-            };
-        }
+    //    if (user == null)
+    //    {
+    //        return new BaseResponse
+    //        {
+    //            Message = "Wrong verification code...",
+    //            Status = false,
+    //        };
+    //    }
 
-        if (user.EmailConfirmed)
-        {
-            return new BaseResponse
-            {
-                Message = "Account already verified, proceed to login...",
-                Status = false,
-            };
-        }
+    //    if (user.EmailConfirmed)
+    //    {
+    //        return new BaseResponse
+    //        {
+    //            Message = "Account already verified, proceed to login...",
+    //            Status = false,
+    //        };
+    //    }
 
-        var date = DateTime.Now;
-        var modifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    //    var date = DateTime.Now;
+    //    var modifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        user.EmailConfirmed = true;
-        user.ModifiedOn = date;
-        user.ModifiedBy = modifiedBy;
+    //    user.EmailConfirmed = true;
+    //    user.ModifiedOn = date;
+    //    user.ModifiedBy = modifiedBy;
 
-        await _userRepository.SaveChangesAsync();
-        return new BaseResponse
-        {
-            Message = "Account activated...",
-            Status = true,
-        };
-    }
+    //    await _userRepository.SaveChangesAsync();
+    //    return new BaseResponse
+    //    {
+    //        Message = "Account activated...",
+    //        Status = true,
+    //    };
+    //}
 }

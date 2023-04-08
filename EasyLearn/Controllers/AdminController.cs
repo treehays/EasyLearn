@@ -36,8 +36,8 @@ public partial class AdminController : Controller
             TempData["failed"] = "Invalid inputs...";
             return View(model);
         }
-
-        var createAdmin = await _adminService.Create(model);
+        var baseUrl = $"https://{Request.Host}";
+        var createAdmin = await _adminService.AdminRegistration(model,baseUrl);
         if (!createAdmin.Status)
         {
             TempData["failed"] = createAdmin.Message;

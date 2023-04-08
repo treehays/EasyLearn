@@ -6,7 +6,7 @@ namespace EasyLearn.Services.Interfaces;
 
 public interface IModeratorService
 {
-    Task<BaseResponse> Create(CreateUserRequestModel model);
+    Task<BaseResponse> ModeratorRegistration(CreateUserRequestModel model, string baseUrl);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateModeratorProfileRequestModel model);
     Task<BaseResponse> UpdateBankDetail(UpdateModeratorBankDetailRequestModel model);

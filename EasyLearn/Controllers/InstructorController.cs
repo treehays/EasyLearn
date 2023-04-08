@@ -39,7 +39,8 @@ public class InstructorController : Controller
             return View(model);
         }
 
-        var create = await _instructorService.Create(model);
+        var baseUrl = $"https://{Request.Host}";
+        var create = await _instructorService.InstructorRegistration(model,baseUrl);
         if (!create.Status)
         {
             TempData["failed"] = create.Message;

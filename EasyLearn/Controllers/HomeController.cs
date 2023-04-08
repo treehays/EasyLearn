@@ -1,5 +1,4 @@
 ﻿using EasyLearn.Models;
-using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -14,31 +13,23 @@ namespace EasyLearn.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
-        private readonly IEmailService _emailService;
 
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService, IEmailService emailService)
+        public HomeController(ILogger<HomeController> logger, IUserService userService)
         {
             _logger = logger;
             _userService = userService;
-            _emailService = emailService;
         }
 
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult Testing()
-        {
 
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> Testing(EmailSenderAttachmentDTO model)
+        public async Task<IActionResult> ConfirmEmail(string emailToken)
         {
-
-            await _emailService.SendEmailAttachment(model);
-            return View();
+            await _userService.EmailVerification(emailToken);
+            return RedirectToAction("Index");
         }
 
         //[Route("v{version:apiVersion}/[controller]")]
@@ -63,13 +54,7 @@ namespace EasyLearn.Controllers
                 TempData["failed"] = user.Message;
                 return View();
             }
-            //var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
 
-            //if (!verifyPassword)
-            //{
-            //    TempData["failed"] = user.Message;
-            //    return View();
-            //}
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Role,user.RoleId),

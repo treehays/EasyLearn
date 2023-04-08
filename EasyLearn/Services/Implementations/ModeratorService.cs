@@ -19,10 +19,11 @@ public class ModeratorService : IModeratorService
     private readonly IAddressRepository _addressRepository;
     private readonly IFileManagerService _fileManagerService;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IUserService _userService;
 
 
     public ModeratorService(IModeratorRepository moderatorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, IWebHostEnvironment webHostEnvironment)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, IWebHostEnvironment webHostEnvironment, IUserService userService)
     {
         _moderatorRepository = moderatorRepository;
         _userRepository = userRepository;
@@ -31,12 +32,14 @@ public class ModeratorService : IModeratorService
         _addressRepository = addressRepository;
         _fileManagerService = fileManagerService;
         _webHostEnvironment = webHostEnvironment;
+        _userService = userService;
     }
 
-    public async Task<BaseResponse> Create(CreateUserRequestModel model)
+    public async Task<BaseResponse> ModeratorRegistration(CreateUserRequestModel model, string baseUrl)
     {
-        var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
-        if (emailExist)
+
+        var moderator = await _userService.UserRegistration(model, baseUrl);
+        if (moderator == null)
         {
             return new BaseResponse
             {
@@ -44,63 +47,8 @@ public class ModeratorService : IModeratorService
                 Message = "Email already exist.",
             };
         }
-        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
-
-        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
-
-        var truncUserName = model.Email.IndexOf('@');
-        var userName = model.Email.Remove(truncUserName);
-        var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
-        var user = new User
-        {
-            Id = Guid.NewGuid().ToString(),
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            Password = password,
-            Gender = model.Gender,
-            StudentshipStatus = model.StudentshipStatus,
-            RoleId = "Moderator",
-            UserName = userName,
-            CreatedOn = DateTime.Now,
-            IsActive = true,
-            ProfilePicture = filePath,
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-        };
-
-
-        var userAddress = new Address
-        {
-            Id = Guid.NewGuid().ToString(),
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-            UserId = user.Id,
-        };
-
-
-        var userPayment = new List<PaymentDetails>
-        {
-            new PaymentDetails
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = user.Id,
-                CreatedBy = user.CreatedBy,
-                CreatedOn = user.CreatedOn,
-            }
-        };
-
-        var userModerator = new Moderator
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
-
-        };
-        user.Address = userAddress;
-        user.Moderator = userModerator;
-        user.PaymentDetails = userPayment;
-
-        await _userRepository.AddAsync(user);
+        moderator.RoleId = "Instructor";
+        await _userRepository.AddAsync(moderator);
         await _userRepository.SaveChangesAsync();
 
 

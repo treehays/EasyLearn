@@ -36,8 +36,8 @@ namespace EasyLearn.Controllers
                 TempData["failed"] = "Invalid inputs...";
                 return View(model);
             }
-
-            var create = await _studentService.Create(model);
+            var baseUrl = $"https://{Request.Host}";
+            var create = await _studentService.StudentRegistration(model,baseUrl);
             if (!create.Status)
             {
                 TempData["failed"] = create.Message;

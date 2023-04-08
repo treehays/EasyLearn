@@ -6,7 +6,7 @@ namespace EasyLearn.Services.Interfaces;
 public interface IEmailService
 {
     Task<BaseResponse> SendEmailWithoutAttachment(EmailSenderNoAttachmentDTO model);
-    Task<BaseResponse> EmailVerificationTemplate(EmailSenderDetails model);
-    Task<BaseResponse> SendEmailAttachment(EmailSenderAttachmentDTO model);
+    Task<BaseResponse> EmailVerificationTemplate(EmailSenderDetails model, string baseUrl);
+    //Task<BaseResponse> SendEmailAttachment(EmailSenderAttachmentDTO model);
 
 }

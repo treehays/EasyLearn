@@ -6,7 +6,7 @@ namespace EasyLearn.Services.Interfaces;
 
 public interface IStudentService
 {
-    Task<BaseResponse> Create(CreateUserRequestModel model);
+    Task<BaseResponse> StudentRegistration(CreateUserRequestModel model, string baseUrl);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateStudentProfileRequestModel model);
     Task<BaseResponse> UpdateBankDetail(UpdateStudentBankDetailRequestModel model);

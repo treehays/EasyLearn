@@ -1,8 +1,6 @@
-﻿using BCrypt.Net;
-using EasyLearn.Models.DTOs;
+﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.StudentDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
-using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -18,9 +16,11 @@ public class StudentService : IStudentService
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IFileManagerService _fileManagerService;
     private readonly IAddressRepository _addressRepository;
+    private readonly IUserService _userService;
+
 
     public StudentService(IStudentRepository studentRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null, IFileManagerService fileManagerService = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null, IFileManagerService fileManagerService = null, IUserService userService = null)
     {
         _studentRepository = studentRepository;
         _userRepository = userRepository;
@@ -29,12 +29,13 @@ public class StudentService : IStudentService
         _addressRepository = addressRepository;
         _webHostEnvironment = webHostEnvironment;
         _fileManagerService = fileManagerService;
+        _userService = userService;
     }
 
-    public async Task<BaseResponse> Create(CreateUserRequestModel model)
+    public async Task<BaseResponse> StudentRegistration(CreateUserRequestModel model, string baseUrl)
     {
-        var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
-        if (emailExist)
+        var student = await _userService.UserRegistration(model,baseUrl);
+        if (student == null)
         {
             return new BaseResponse
             {
@@ -42,66 +43,11 @@ public class StudentService : IStudentService
                 Message = "Email already exist.",
             };
         }
-
-        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
-
-        var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
-
-
-        var truncUserName = model.Email.IndexOf('@');
-        var userName = model.Email.Remove(truncUserName);
-        var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
-        var user = new User
-        {
-            Id = Guid.NewGuid().ToString(),
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            Password = password,
-            Gender = model.Gender,
-            StudentshipStatus = model.StudentshipStatus,
-            RoleId = "Student",
-            UserName = userName,
-            CreatedOn = DateTime.Now,
-            IsActive = true,
-            ProfilePicture = filePath,
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-
-        };
-
-        var userAddress = new Address
-        {
-            Id = Guid.NewGuid().ToString(),
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-            UserId = user.Id,
-        };
-
-
-        var userPayment = new List<PaymentDetails>
-        {
-            new PaymentDetails
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = user.Id,
-                CreatedBy = user.CreatedBy,
-                CreatedOn = user.CreatedOn,
-            }
-        };
-
-        var userStudent = new Student
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
-
-        };
-        user.Address = userAddress;
-        user.Student = userStudent;
-        user.PaymentDetails = userPayment;
-
-        await _userRepository.AddAsync(user);
+        student.RoleId = "Instructor";
+        await _userRepository.AddAsync(student);
         await _userRepository.SaveChangesAsync();
+
+
 
 
         return new BaseResponse

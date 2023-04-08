@@ -35,8 +35,9 @@ namespace EasyLearn.Controllers
                 TempData["failed"] = "Invalid inputs...";
                 return View(model);
             }
+            var baseUrl = $"https://{Request.Host}";
 
-            var create = await _moderatorService.Create(model);
+            var create = await _moderatorService.ModeratorRegistration(model,baseUrl);
             if (!create.Status)
             {
                 TempData["failed"] = create.Message;

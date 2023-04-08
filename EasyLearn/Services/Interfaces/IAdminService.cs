@@ -7,7 +7,7 @@ namespace EasyLearn.Services.Interfaces;
 
 public interface IAdminService
 {
-    Task<BaseResponse> Create(CreateUserRequestModel model);
+    Task<BaseResponse> AdminRegistration(CreateUserRequestModel model, string baseUrl);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateUserProfileRequestModel model);
     Task<AdminResponseModel> GetById(string id);
