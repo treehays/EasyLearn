@@ -1,14 +1,17 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
+using EasyLearn.Models.Entities;
 
 namespace EasyLearn.Services.Interfaces;
 
 public interface IInstructorService
 {
-    Task<BaseResponse> Create(CreateInstructorRequestModel model);
+    Task<BaseResponse> InstructorRegistration(CreateUserRequestModel model, string baseUrl);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateInstructorProfileRequestModel model);
+    //Task<BaseResponse> EmailVerification(string emailToken);
     Task<BaseResponse> UpdateBankDetail(UpdateInstructorBankDetailRequestModel model);
     Task<PaymentDetailRequestModel> GetByPaymentDetail(string id);
 
@@ -21,6 +24,7 @@ public interface IInstructorService
     Task<InstructorResponseModel> GetByEmail(string email);
     Task<InstructorsResponseModel> GetByName(string name);
     Task<InstructorsResponseModel> GetAll();
+    Task<IList<User>> PaginatedSample();
     Task<InstructorsResponseModel> GetAllActive();
     Task<InstructorsResponseModel> GetAllInActive();
 }

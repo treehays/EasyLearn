@@ -1,79 +1,100 @@
-﻿using EasyLearn.Models.Entities;
+﻿using BCrypt.Net;
+using EasyLearn.Models.Entities;
+using EasyLearn.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Bcpg;
 
 namespace EasyLearn.Data
 {
     public class EasyLearnDbInitializer
     {
 
-        public static void Seed(IApplicationBuilder applicationBuilder)
+        public static async void Seed(IApplicationBuilder applicationBuilder)
         {
-        //    using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
-        //    {
-        //        var context = serviceScope.ServiceProvider.GetService<EasyLearnDbContext>();
+            var userId = Guid.NewGuid().ToString();
+            var admin = new Admin()
+            {
+                Id = Guid.NewGuid().ToString(),
+                IsDeleted = false,
+                CreatedBy = "Auto Create",
+                CreatedOn = DateTime.Now,
+                UserId = userId,
+            };
 
-        //        context.Database.Migrate();
-        //        //context.Database.EnsureDeleted();
-        //        //context.Database.EnsureCreated();
-        //        //Create Role
-        //        if (!context.Roles.Any())
-        //        {
-        //            context.Roles.AddRange(new List<Role>()
-        //            {
-        //                new Role()
-        //                {
-        //                    RoleName = "Admin",
-        //                    Description= "Admin",
-        //                    CreatedOn= DateTime.Now,
-        //                    Id= "Admin",
-        //                },
+            var user = new List<User>
+            {
+              new User ()
+              {
+                Id = userId,
+                FirstName = "Abdulsalam",
+                LastName = "Ahmad",
+                Password = BCrypt.Net.BCrypt.HashPassword("Admin", SaltRevision.Revision2B),
+                RoleId = "Admin",
+                Email = "aymoneyay@gmail.com",
+                PhoneNumber = "08066117783",
+                IsActive = true,
+                IsDeleted = false,
+                UserName = "Admin",
+                CreatedBy = "Auto Create",
+                CreatedOn = DateTime.Now,
+                Gender = Gender.Male,
+                Admin = admin,
+              }
+            };
 
-        //                new Role()
-        //                {
-        //                    RoleName = "Instructor",
-        //                    Description= "Instructor",
-        //                    CreatedOn= DateTime.Now,
-        //                    Id= "Instructor",
-        //                },
 
-        //                new Role()
-        //                {
-        //                    RoleName = "Moderator",
-        //                    Description= "Moderator",
-        //                    CreatedOn= DateTime.Now,
-        //                    Id= "Moderator",
-        //                }
-        //            });
-        //            context.SaveChanges();
-        //        }
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<EasyLearnDbContext>();
 
-        //        //Create User
-        //        if (!context.Users.Any())
-        //        {
-        //            context.Users.AddRange(new List<User>()
-        //            {
-        //                new User()
-        //                {
+                await context.Database.MigrateAsync();
 
-        //                }
-        //            });
-        //            context.SaveChanges();
-        //        }
+                if (!context.Roles.Any())
+                {
+                    var listOfRoles = new List<Role>
+                    {
+                          new Role()
+                        {
+                            RoleName = "Admin",
+                            Description= "Admin",
+                            CreatedOn= DateTime.Now,
+                            Id= "Admin",
+                            CreatedBy= "Auto Create",
+                            User = user,
+                        },
 
-        //        //Create Admin
-        //        if (!context.Admins.Any())
-        //        {
-        //            context.Admins.AddRange(new List<Admin>()
-        //            {
-        //                new Admin()
-        //                {
+                        new Role()
+                        {
+                            RoleName = "Instructor",
+                            Description= "Instructor",
+                            CreatedOn= DateTime.Now,
+                            CreatedBy= "Auto Create",
+                            Id= "Instructor",
+                        },
 
-        //                }
-        //            });
-        //            context.SaveChanges();
-        //        }
-        //    }
+                        new Role()
+                        {
+                            RoleName = "Moderator",
+                            Description= "Moderator",
+                            CreatedOn= DateTime.Now,
+                            CreatedBy= "Auto Create",
+                            Id= "Moderator",
+                        },
+
+                        new Role()
+                        {
+                            RoleName = "Student",
+                            Description= "Student",
+                            CreatedOn= DateTime.Now,
+                            CreatedBy= "Auto Create",
+                            Id= "Student",
+                        }
+                    };
+                    context.Roles.AddRange(listOfRoles);
+                    context.SaveChanges();
+                }
+            }
         }
-                        
+
     }
 }

@@ -55,6 +55,8 @@ namespace EasyLearn.Models.DTOs.ModulesDTOs
 
     public class ModulesResponseModel : BaseResponse
     {
+        public int PageCount { get; set; }
+        public int CurrentPageIndex { get; set; }
         public string CourseId { get; set; }
         public IEnumerable<ModuleDTO> Data { get; set; }
     }

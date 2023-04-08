@@ -20,6 +20,8 @@ public class InstructorDto
     public StudentshipStatus StudentshipStatus { get; set; }
     public string RoleId { get; set; }
     public bool IsActive { get; set; }
+    public string EmailToken { get; set; }
+
 
     //Bank Detail
     public string BankName { get; set; }

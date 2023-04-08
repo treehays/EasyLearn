@@ -22,16 +22,16 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<BaseResponse> Create(CreateModuleRequestModel model)
         {
-            if (model.FormFiles == null)
+            if (model.FormFiles.Count() == 0)
             {
                 return new BaseResponse
                 {
                     Status = false,
-                    Message = "No video has been uploaded...",
+                    Message = "No video has been uploaded....",
                 };
             }
 
-            int i = 0;
+            int i = await _moduleRepository.GetLastElement() + 1;
             string fileRelativePathx = null;
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "videos");
             if (!Directory.Exists(uploadsFolder))
@@ -75,7 +75,7 @@ namespace EasyLearn.Services.Implementations
                 Status = true,
                 Message = "video has been successfully uploaded...",
             };
-           
+
         }
 
         public async Task<BaseResponse> Delete(string id)

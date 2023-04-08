@@ -1,11 +1,12 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.ModeratorDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 
 namespace EasyLearn.Services.Interfaces;
 
 public interface IModeratorService
 {
-    Task<BaseResponse> Create(CreateModeratorRequestModel model);
+    Task<BaseResponse> ModeratorRegistration(CreateUserRequestModel model, string baseUrl);
     Task<BaseResponse> Delete(string id);
     Task<BaseResponse> UpdateProfile(UpdateModeratorProfileRequestModel model);
     Task<BaseResponse> UpdateBankDetail(UpdateModeratorBankDetailRequestModel model);

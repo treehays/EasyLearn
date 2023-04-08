@@ -1,5 +1,4 @@
-﻿using EasyLearn.Models.DTOs.AdminDTOs;
-using EasyLearn.Models.DTOs.UserDTOs;
+﻿using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +23,7 @@ public partial class AdminController : Controller
 
     public IActionResult Create()
     {
+
         return View();
     }
 
@@ -36,12 +36,12 @@ public partial class AdminController : Controller
             TempData["failed"] = "Invalid inputs...";
             return View(model);
         }
-
-        var createAdmin = await _adminService.Create(model);
+        var baseUrl = $"https://{Request.Host}";
+        var createAdmin = await _adminService.AdminRegistration(model,baseUrl);
         if (!createAdmin.Status)
         {
             TempData["failed"] = createAdmin.Message;
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetAllActive));
             //return View(model);
         }
 

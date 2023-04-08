@@ -8,4 +8,5 @@ public interface IUserRepository : IRepository<User>
 {
     Task<bool> ExistByEmailAsync(string email);
     Task<User> GetFullDetails(Expression<Func<User, bool>> expression);
+    Task<User> GetUserByTokenAsync(string token);
 }

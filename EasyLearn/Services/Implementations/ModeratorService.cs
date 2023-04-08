@@ -1,6 +1,7 @@
 ﻿using BCrypt.Net;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.ModeratorDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
@@ -16,24 +17,29 @@ public class ModeratorService : IModeratorService
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
+    private readonly IFileManagerService _fileManagerService;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IUserService _userService;
 
 
     public ModeratorService(IModeratorRepository moderatorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, IWebHostEnvironment webHostEnvironment, IUserService userService)
     {
         _moderatorRepository = moderatorRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
+        _fileManagerService = fileManagerService;
         _webHostEnvironment = webHostEnvironment;
+        _userService = userService;
     }
 
-    public async Task<BaseResponse> Create(CreateModeratorRequestModel model)
+    public async Task<BaseResponse> ModeratorRegistration(CreateUserRequestModel model, string baseUrl)
     {
-        var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
-        if (emailExist)
+
+        var moderator = await _userService.UserRegistration(model, baseUrl);
+        if (moderator == null)
         {
             return new BaseResponse
             {
@@ -41,73 +47,8 @@ public class ModeratorService : IModeratorService
                 Message = "Email already exist.",
             };
         }
-
-        string fileRelativePathx = null;
-
-        if (model.formFile != null || model.formFile.Length > 0)
-        {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures"); //ppop
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.formFile.FileName);
-            fileRelativePathx = "/uploads/profilePictures/" + fileName;
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.formFile.CopyToAsync(stream);
-            }
-        }
-
-
-        var truncUserName = model.Email.IndexOf('@');
-        var userName = model.Email.Remove(truncUserName);
-        var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
-        var user = new User
-        {
-            Id = Guid.NewGuid().ToString(),
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            Password = password,
-            Gender = model.Gender,
-            StudentshipStatus = model.StudentshipStatus,
-            RoleId = "Moderator",
-            UserName = userName,
-            CreatedOn = DateTime.Now,
-            IsActive = true,
-        };
-
-        var userAddress = new Address
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-        };
-
-        var userPaymentDetail = new PaymentDetails
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-        };
-
-        var moderDetail = new Moderator
-        {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-        };
-
-        await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
-
-        await _paymentDetailsRepository.AddAsync(userPaymentDetail);
-        await _userRepository.SaveChangesAsync();
-
-        await _moderatorRepository.AddAsync(moderDetail);
-        await _userRepository.SaveChangesAsync();
-
-        await _addressRepository.AddAsync(userAddress);
+        moderator.RoleId = "Instructor";
+        await _userRepository.AddAsync(moderator);
         await _userRepository.SaveChangesAsync();
 
 
@@ -144,7 +85,7 @@ public class ModeratorService : IModeratorService
 
     public async Task<ModeratorsResponseModel> GetAll()
     {
-        var moderators = await _userRepository.GetAllAsync();
+        var moderators = await _userRepository.GetListAsync(x => !x.IsDeleted && x.RoleId == "Moderator");
         var moderatorModel = new ModeratorsResponseModel
         {
             Status = true,
