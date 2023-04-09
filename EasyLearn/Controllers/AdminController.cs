@@ -37,16 +37,15 @@ public partial class AdminController : Controller
             return View(model);
         }
         var baseUrl = $"https://{Request.Host}";
-        var createAdmin = await _adminService.AdminRegistration(model,baseUrl);
-        if (!createAdmin.Status)
+        var registerAdmin = await _adminService.AdminRegistration(model, baseUrl);
+        if (!registerAdmin.Status)
         {
-            TempData["failed"] = createAdmin.Message;
-            return RedirectToAction(nameof(GetAllActive));
-            //return View(model);
+            TempData["failed"] = registerAdmin.Message;
+            return View(model);
         }
 
-        TempData["success"] = createAdmin.Message;
-        return RedirectToAction(nameof(Index));
+        TempData["success"] = registerAdmin.Message;
+        return RedirectToAction("Login", "");
     }
 
     public async Task<IActionResult> Detail(string id)
@@ -55,7 +54,7 @@ public partial class AdminController : Controller
         if (!admin.Status)
         {
             TempData["failed"] = admin.Message;
-            return RedirectToAction(nameof(Index), "Home");
+            return RedirectToAction(nameof(GetAllActive));
         }
 
         TempData["success"] = admin.Message;
@@ -66,9 +65,9 @@ public partial class AdminController : Controller
     {
         var admin = await _adminService.GetById(id);
         if (admin.Status) return View(admin);
+
         TempData["failed"] = admin.Message;
-        return RedirectToAction(nameof(Index), "Home");
-        //TempData["success"] = admin.Message;
+        return RedirectToAction(nameof(GetAllActive));
     }
 
     public async Task<IActionResult> Delete(string id)
@@ -76,12 +75,11 @@ public partial class AdminController : Controller
         var admin = await _adminService.Delete(id);
         if (admin.Status)
         {
-            TempData["success"] = admin.Message;
-            return RedirectToAction(nameof(GetAll));
+            TempData["failed"] = admin.Message;
+            return RedirectToAction(nameof(GetAllActive));
         }
-
-        TempData["failed"] = admin.Message;
-        return RedirectToAction(nameof(GetAll));
+        TempData["success"] = admin.Message;
+        return View(admin);
     }
 
 
@@ -91,7 +89,8 @@ public partial class AdminController : Controller
         if (!admins.Status)
         {
             TempData["failed"] = admins.Message;
-            return RedirectToAction(nameof(Index), "Home");
+            return RedirectToAction(nameof(GetAllActive));
+
         }
 
         TempData["success"] = admins.Message;
@@ -103,8 +102,8 @@ public partial class AdminController : Controller
         var admins = await _adminService.GetAllActive();
         if (!admins.Status)
         {
-            TempData["failed"] = admins.Message;
-            return RedirectToAction(nameof(Index), "Home");
+            return RedirectToAction(nameof(GetAllActive));
+
         }
 
         TempData["success"] = admins.Message;
@@ -117,7 +116,7 @@ public partial class AdminController : Controller
         if (!admins.Status)
         {
             TempData["failed"] = admins.Message;
-            return RedirectToAction(nameof(Index), "Home");
+            return RedirectToAction(nameof(GetAllActive));
         }
 
         TempData["success"] = admins.Message;

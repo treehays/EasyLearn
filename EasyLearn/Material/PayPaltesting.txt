@@ -1,0 +1,155 @@
+Add your Sandbox API credentials
+Client ID
+AXEKXbXgS8MbS4W1e9iEXMQpH9zKbND4fKK225i5GmYbUyI7hc9uIrfQ_opIDGe1mPfLa1HFED889xe0
+
+Client secret
+EFSVnv6rmDw7U9gnYuRoA1Gn-QqxDG9m3PTAUCmKviUHAhVMjwTqSYj1tlJZvv95VsFZ4A3haZqfjtvD
+
+
+Card number
+4032039397716269
+Expiry date
+Any
+CVC code
+Any
+
+
+
+Test Name
+Trigger
+Processor response code
+Fraudulent card
+CCREJECT-SF
+9500
+Card is declined
+CCREJECT-BANK_ERROR
+5100
+CVC check fails
+CCREJECT-CVV_F
+00N7
+Card expired
+CCREJECT-EC
+5400
+
+
+
+Successful authentication
+Visa
+4868 7194 6070 7704
+Mastercard
+5329 8797 8623 4393
+Expiry date
+01/2025
+CVC code
+123
+Failed signature
+Visa
+4868 7191 1551 4992
+Mastercard
+5329 8797 8516 0250
+Expiry date
+01/2025
+CVC code
+123
+
+
+
+Email
+sb-hciea3458110@personal.example.com
+Password
+@%2b<RoF
+Type
+Personal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+JohnFirst name:
+DoeLast name:
+
+sb-nl5af3461715@business.example.comEmail ID:
+
+Qt>?K&6OSystem Generated Password:
+Change password
+4083678732
+
+
+
+
+
+
+
+
+
+
+
+NVP/SOAP Sandbox API Credentials
+
+sb-nl5af3461715_api1.business.example.comUsername:
+
+QHVGQTKHW7NBA6HFPassword
+
+AEKcezj09N.qpixRVrodsVeq6uonAc3sah1FO8ArnxmYNyUIFMc-XOVYSignature:
+
+
+REST Apps
+
+
+
+
+Bank Account
+8529624713433Account Number
+325272063Routing Number
+
+Credit Card
+4032033900821310Credit Card Number
+VISACredit Card Type
+10/2025Expiration Date
+
+PayPal
+USD 5,000.00Balance:
+
+
+
+
+BusinessAccount type:
+Upgrade to Pro
+PYAGMYGRBTKRLAccount ID:
+
+VerifiedStatus:
+USCountry:
+
+
+
+
+
+testing
+App display name:
+testing
+SANDBOX API CREDENTIALS
+Sandbox Account
+sb-nl5af3461715@business.example.com
+Client ID
+AZyxfDrcJGGafyfWe1mPD9YlbVVqUYZxj362hM_71s3lCLuKX5ZnIytr5FU6ivO52oShOu_PeDTQ1yhm
+Secret
+Hide
+
+Note: When you generate a new secret, you still maintain the original secret. The maximum number of client secrets is two. A client secret is either in enabled or disabled state.
+Created	Secret	Status	Action
+Apr 8, 2023	EMgza_6x-H6ICGPUapLjnh79Vb82nPLnSn1c42qgNwNN-qwsyWF164iRWTXf14urFlZhzXsgI8VTipdv
+	Enabled	

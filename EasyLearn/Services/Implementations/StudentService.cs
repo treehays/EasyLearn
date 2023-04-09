@@ -1,6 +1,7 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.StudentDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
+using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -34,7 +35,7 @@ public class StudentService : IStudentService
 
     public async Task<BaseResponse> StudentRegistration(CreateUserRequestModel model, string baseUrl)
     {
-        var student = await _userService.UserRegistration(model,baseUrl);
+        var student = await _userService.UserRegistration(model, baseUrl);
         if (student == null)
         {
             return new BaseResponse
@@ -43,12 +44,9 @@ public class StudentService : IStudentService
                 Message = "Email already exist.",
             };
         }
-        student.RoleId = "Instructor";
+        student.RoleId = "Student";
         await _userRepository.AddAsync(student);
         await _userRepository.SaveChangesAsync();
-
-
-
 
         return new BaseResponse
         {
@@ -59,7 +57,7 @@ public class StudentService : IStudentService
 
     public async Task<BaseResponse> Delete(string id)
     {
-        var student = await _studentRepository.GetAsync(x => x.Id == id);
+        var student = await _studentRepository.GetFullDetailByIdAsync(x => x.Id == id && !x.IsDeleted && x.IsActive);
         if (student == null)
         {
             return new BaseResponse
@@ -68,10 +66,20 @@ public class StudentService : IStudentService
                 Status = false,
             };
         }
+        var date = DateTime.Now;
+        var deletedby = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
 
         student.IsDeleted = true;
-        student.DeletedOn = DateTime.Now;
-        student.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        student.DeletedOn = date;
+        student.DeletedBy = deletedby;
+        student.Address.IsDeleted = true;
+        student.Address.DeletedOn = date;
+        student.Address.DeletedBy = deletedby;
+        student.Admin.IsDeleted = true;
+        student.Admin.DeletedOn = date;
+        student.Admin.DeletedBy = deletedby;
+
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -88,22 +96,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = students.Select(x => new StudentDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }).AsEnumerable(),
+            Data = students.Select(x => ConvertToStudentResponseModel(x)),
         };
         return studentModel;
 
@@ -126,23 +119,9 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = student.Select(x => new StudentDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }),
+            Data = student.Select(x => ConvertToStudentResponseModel(x)),
         };
+
         return studentModel;
     }
 
@@ -163,22 +142,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = student.Select(x => new StudentDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }),
+            Data = student.Select(x => ConvertToStudentResponseModel(x)),
         };
         return studentModel;
     }
@@ -195,27 +159,12 @@ public class StudentService : IStudentService
                 Status = false,
             };
         }
-
+        var studentResponseModel = ConvertToStudentResponseModel(student);
         var studentModel = new StudentResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new StudentDto
-            {
-                Id = student.Id,
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                Email = student.Email,
-                Password = student.Password,
-                ProfilePicture = student.ProfilePicture,
-                Biography = student.Biography,
-                Skill = student.Skill,
-                Interest = student.Interest,
-                PhoneNumber = student.PhoneNumber,
-                Gender = student.Gender,
-                StudentshipStatus = student.StudentshipStatus,
-                RoleId = student.RoleId,
-            }
+            Data = studentResponseModel,
         };
         return studentModel;
 
@@ -233,27 +182,13 @@ public class StudentService : IStudentService
                 Status = false,
             };
         }
+        var studentResponseModel = ConvertToStudentResponseModel(student);
 
         var studentModel = new StudentResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new StudentDto
-            {
-                Id = student.Id,
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                Email = student.Email,
-                Password = student.Password,
-                ProfilePicture = student.ProfilePicture,
-                Biography = student.Biography,
-                Skill = student.Skill,
-                Interest = student.Interest,
-                PhoneNumber = student.PhoneNumber,
-                Gender = student.Gender,
-                StudentshipStatus = student.StudentshipStatus,
-                RoleId = student.RoleId,
-            }
+            Data = studentResponseModel,
         };
         return studentModel;
 
@@ -276,22 +211,7 @@ public class StudentService : IStudentService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = student.Select(x => new StudentDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }),
+            Data = student.Select(x => ConvertToStudentResponseModel(x)),
         };
         return studentModel;
     }
@@ -328,6 +248,12 @@ public class StudentService : IStudentService
                 Gender = student.Gender,
                 StudentshipStatus = student.StudentshipStatus,
                 RoleId = student.RoleId,
+
+
+                Language = student.Address.Language,
+                City = student.Address.City,
+                State = student.Address.State,
+                Country = student.Address.Country,
             }
         };
         return studentModel;
@@ -461,4 +387,29 @@ public class StudentService : IStudentService
             Status = true,
         };
     }
+
+
+
+    public StudentDto ConvertToStudentResponseModel(User user)
+    {
+        var studentModel = new StudentDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Password = user.Password,
+            ProfilePicture = user.ProfilePicture,
+            Biography = user.Biography,
+            Skill = user.Skill,
+            Interest = user.Interest,
+            PhoneNumber = user.PhoneNumber,
+            Gender = user.Gender,
+            StudentshipStatus = user.StudentshipStatus,
+            RoleId = user.RoleId,
+        };
+        return studentModel;
+    }
+
+
 }

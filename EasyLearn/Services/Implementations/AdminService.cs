@@ -242,55 +242,11 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new AdminDto
-            {
-                Id = admin.Id,
-                FirstName = admin.FirstName,
-                LastName = admin.LastName,
-                Email = admin.Email,
-                Password = admin.Password,
-                ProfilePicture = admin.ProfilePicture,
-                Biography = admin.Biography,
-                Skill = admin.Skill,
-                Interest = admin.Interest,
-                PhoneNumber = admin.PhoneNumber,
-                Gender = admin.Gender,
-                StudentshipStatus = admin.StudentshipStatus,
-                RoleId = admin.RoleId,
-            }
+            Data = ConvertToAdminResponseModel(admin),
         };
         return adminModel;
     }
 
-
-    //public async Task<PaymentDetailRequestModel> GetBankDetail(string id)
-    //{
-    //    var admin = await _paymentDetailsRepository.GetAsync(x => x.UserId == id && !x.IsDeleted);
-
-    //    if (admin == null)
-    //    {
-    //        return new PaymentDetailRequestModel
-    //        {
-    //            Message = "User not found..",
-    //            Status = false,
-    //        };
-    //    }
-
-    //    var adminModel = new PaymentDetailRequestModel
-    //    {
-    //        Status = true,
-    //        Message = "Details successfully retrieved...",
-    //        Data = new PaymentDetailDTO
-    //        {
-    //            Id = admin.Id,
-    //            AccountName = admin.AccountName,
-    //            AccountNumber = admin.AccountNumber,
-    //            AccountType = admin.AccountType,
-    //            BankName = admin.BankName,
-    //        }
-    //    };
-    //    return adminModel;
-    //}
 
     public async Task<AdminResponseModel> GetFullDetailById(string id)
     {
@@ -358,22 +314,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new AdminDto
-            {
-                Id = admin.Id,
-                FirstName = admin.FirstName,
-                LastName = admin.LastName,
-                Email = admin.Email,
-                Password = admin.Password,
-                ProfilePicture = admin.ProfilePicture,
-                Biography = admin.Biography,
-                Skill = admin.Skill,
-                Interest = admin.Interest,
-                PhoneNumber = admin.PhoneNumber,
-                Gender = admin.Gender,
-                StudentshipStatus = admin.StudentshipStatus,
-                RoleId = admin.RoleId,
-            }
+            Data = ConvertToAdminResponseModel(admin),
         };
         return adminModel;
     }
@@ -417,7 +358,7 @@ public class AdminService : IAdminService
         var admins = await _userRepository.GetListAsync(x =>
            (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && x.RoleId == "Admin" && !x.IsDeleted);
 
-        if (admins == null)
+        if (admins.Count() == 0)
         {
             return new AdminsResponseModel
             {
@@ -430,22 +371,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }),
+            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
         };
         return adminModel;
     }
@@ -454,7 +380,7 @@ public class AdminService : IAdminService
     {
         var admins = await _paymentDetailsRepository.GetListAsync(x => x.UserId == userId && !x.IsDeleted);
 
-        if (admins == null)
+        if (admins.Count() == 0)
         {
             return new PaymentsDetailRequestModel
             {
@@ -481,10 +407,9 @@ public class AdminService : IAdminService
 
     public async Task<AdminsResponseModel> GetAll()
     {
-        //throw new NotImplementedException();
         var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin");
 
-        if (admins == null)
+        if (admins.Count() == 0)
         {
             return new AdminsResponseModel
             {
@@ -497,22 +422,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }),
+            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
         };
         return adminModel;
     }
@@ -521,7 +431,7 @@ public class AdminService : IAdminService
     {
         var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
 
-        if (admins == null)
+        if (admins.Count() == 0)
         {
             return new AdminsResponseModel
             {
@@ -534,22 +444,7 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }),
+            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
         };
         return adminModel;
     }
@@ -558,7 +453,7 @@ public class AdminService : IAdminService
     {
         var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && !x.IsActive && !x.IsDeleted);
 
-        if (admins == null)
+        if (admins.Count() == 0)
         {
             return new AdminsResponseModel
             {
@@ -571,22 +466,31 @@ public class AdminService : IAdminService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => new AdminDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email,
-                Password = x.Password,
-                ProfilePicture = x.ProfilePicture,
-                Biography = x.Biography,
-                Skill = x.Skill,
-                Interest = x.Interest,
-                PhoneNumber = x.PhoneNumber,
-                Gender = x.Gender,
-                StudentshipStatus = x.StudentshipStatus,
-                RoleId = x.RoleId,
-            }),
+            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
+        };
+        return adminModel;
+    }
+
+
+
+
+    public AdminDto ConvertToAdminResponseModel(User user)
+    {
+        var adminModel = new AdminDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Password = user.Password,
+            ProfilePicture = user.ProfilePicture,
+            Biography = user.Biography,
+            Skill = user.Skill,
+            Interest = user.Interest,
+            PhoneNumber = user.PhoneNumber,
+            Gender = user.Gender,
+            StudentshipStatus = user.StudentshipStatus,
+            RoleId = user.RoleId,
         };
         return adminModel;
     }
