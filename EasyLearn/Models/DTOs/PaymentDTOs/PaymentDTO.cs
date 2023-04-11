@@ -16,3 +16,24 @@ public class PaymentDTO
     public Student Student { get; set; }
     public Course Course { get; set; }
 }
+
+public class PayStackResponse
+{
+    public bool status { get; set; }
+    public string message { get; set; }
+    public PayStackData data { get; set; }
+}
+
+public class PayStackData
+{
+    public string authorization_url { get; set; }
+    public string access_code { get; set; }
+    public string reference { get; set; }
+}
+
+public class SendMoneyDto
+{
+    public string AccountNumber { get; set; }
+    public string BankCode { get; set; }
+    public decimal Amount { get; set; }
+}

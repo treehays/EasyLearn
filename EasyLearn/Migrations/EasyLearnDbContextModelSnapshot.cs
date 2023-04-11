@@ -19,46 +19,6 @@ namespace EasyLearn.Migrations
                 .HasAnnotation("ProductVersion", "6.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("EasyLearn.Models.DTOs.UserDTOs.LoginRequestModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LoginRequestModel");
-                });
-
             modelBuilder.Entity("EasyLearn.Models.Entities.Address", b =>
                 {
                     b.Property<string>("Id")
@@ -690,9 +650,6 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("CouponUsed")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("CourseId")
                         .HasColumnType("varchar(255)");
 
@@ -725,6 +682,9 @@ namespace EasyLearn.Migrations
 
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
+
+                    b.Property<string>("ReferrenceNumber")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("varchar(255)");

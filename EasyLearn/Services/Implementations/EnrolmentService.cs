@@ -45,7 +45,7 @@ public class EnrolmentService : IEnrolmentService
             Id = Guid.NewGuid().ToString(),
             PaymentMethod = model.PaymentMethods,
             PaymentStatus = PaymentStatus.Pending,
-            CouponUsed = model.Coupon,
+            //CouponUsed = model.Coupon,
             StudentId = course.StudentId,
             CourseId = model.CourseId,
             CreatedBy = course.CreatedBy,
