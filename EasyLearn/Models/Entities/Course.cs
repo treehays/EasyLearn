@@ -15,6 +15,7 @@ namespace EasyLearn.Models.Entities
         public bool IsActive { get; set; }
         public string InstructorId { get; set; }
 
+        public string Coupon { get; set; }
         public Instructor Instructor { get; set; }
         public IEnumerable<StudentCourse> StudentCourses { get; set; } = new HashSet<StudentCourse>();
         public IEnumerable<Module> Modules { get; set; } = new HashSet<Module>();

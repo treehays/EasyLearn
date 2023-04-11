@@ -55,7 +55,7 @@
                 <div class="form-group">
                     <label asp-for="StudentshipStatus" class="control-label"></label>
 
-                    <select asp-for="StudentshipStatus" class="form-control" asp-items="Html.GetEnumSelectList<StudentshipStatus>()"></select>
+                    <select asp-for="StudentshipStatus" class="form-control" asp-items="Html.GetEnumSelectList<PaymentMethods>()"></select>
                     @*<select asp-for="StudentshipStatus" class="form-control"></select>*@
                     <span asp-validation-for="StudentshipStatus" class="text-danger"></span>
                 </div>
@@ -541,6 +541,4 @@
 
     *
     */
-}*
-     */
 }

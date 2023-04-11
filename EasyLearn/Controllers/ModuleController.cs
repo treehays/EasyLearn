@@ -19,11 +19,11 @@ namespace EasyLearn.Controllers
         }
 
 
-        public IActionResult Create(string id)
+        public IActionResult Create(string CourseId)
         {
             var courseId = new CreateModuleRequestModel
             {
-                CourseId = id,
+                CourseId = CourseId,
             };
             return View(courseId);
         }
@@ -46,6 +46,30 @@ namespace EasyLearn.Controllers
             }
             TempData["failed"] = createModule.Message;
             return View(model);
+        }
+
+        public async Task<IActionResult> GetAllByCourseId(string courseId)
+        {
+            if (courseId == null)
+            {
+                TempData["failed"] = "Empty course";
+                return RedirectToAction(nameof(Index), "Home");
+            }
+            var module = await _moduleService.GetByCourse(courseId);
+            if (module.Status)
+            {
+                //module = new ModulesResponseModel
+                //{
+                module.CourseId = courseId;
+                //};
+                TempData["success"] = module.Message;
+                return View(module);
+                //return RedirectToAction(nameof(Index), "Home");
+            }
+
+            module.CourseId = courseId;
+            TempData["failed"] = module.Message;
+            return View(module);
         }
 
         public async Task<IActionResult> GetAll()
@@ -103,18 +127,19 @@ namespace EasyLearn.Controllers
             return View(module);
         }
 
-        public async Task<IActionResult> GetByCourse(string moduleId, string courseId)
-        {
-            var module = await _moduleService.GetByCourse(courseId, moduleId);
-            if (!module.Status)
-            {
-                TempData["failed"] = module.Message;
-                return RedirectToAction(nameof(Index), "Home");
-            }
 
-            TempData["success"] = module.Message;
-            return View(module);
-        }
+        //public async Task<IActionResult> GetByCourse(string moduleId, string courseId)
+        //{
+        //    var module = await _moduleService.GetByCourse(courseId, moduleId);
+        //    if (!module.Status)
+        //    {
+        //        TempData["failed"] = module.Message;
+        //        return RedirectToAction(nameof(Index), "Home");
+        //    }
+
+        //    TempData["success"] = module.Message;
+        //    return View(module);
+        //}
 
 
 

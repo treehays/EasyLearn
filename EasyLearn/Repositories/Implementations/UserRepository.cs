@@ -19,10 +19,16 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         return emailChecker;
     }
 
+    public async Task<User> GetUserByTokenAsync(string token)
+    {
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.EmailToken == token);
+        return user;
+    }
     public async Task<User> GetFullDetails(Expression<Func<User, bool>> expression)
     {
         var user = await _context.Users
             .Include(x => x.Instructor)
+            .Include(x => x.Student)
             .FirstOrDefaultAsync(expression);
         return user;
 

@@ -4,5 +4,5 @@ namespace EasyLearn.Repositories.Interfaces;
 
 public interface IModuleRepository : IRepository<Module>
 {
-
+    Task<int> GetLastElement();
 }

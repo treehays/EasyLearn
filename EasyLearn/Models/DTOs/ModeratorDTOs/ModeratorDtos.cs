@@ -100,7 +100,7 @@ public class UpdateModeratorPasswordRequestModel
 public class UpdateModeratorActiveStatusRequestModel
 {
     public string Id { get; set; }
-    public int IsActive { get; set; }
+    public bool IsActive { get; set; }
 }
 
 public class ModeratorResponseModel : BaseResponse

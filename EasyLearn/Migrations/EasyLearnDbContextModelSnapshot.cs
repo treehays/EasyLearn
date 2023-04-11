@@ -19,46 +19,6 @@ namespace EasyLearn.Migrations
                 .HasAnnotation("ProductVersion", "6.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("EasyLearn.Models.DTOs.UserDTOs.LoginRequestModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LoginRequestModel");
-                });
-
             modelBuilder.Entity("EasyLearn.Models.Entities.Address", b =>
                 {
                     b.Property<string>("Id")
@@ -192,6 +152,9 @@ namespace EasyLearn.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Coupon")
+                        .HasColumnType("longtext");
 
                     b.Property<double>("CourseDuration")
                         .HasColumnType("double");
@@ -356,17 +319,14 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<DateTime>("AccessExpiration")
+                    b.Property<DateTime?>("AccessExpiration")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CertificateNumber")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("CompletionStatus")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Coupon")
-                        .HasColumnType("longtext");
+                    b.Property<int>("CompletionStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("CourseId")
                         .HasColumnType("varchar(255)");
@@ -386,9 +346,6 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Grade")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("InstructorFeedBack")
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -398,18 +355,17 @@ namespace EasyLearn.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("PaymentStatus")
-                        .HasColumnType("longtext");
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserFeedBack")
-                        .HasColumnType("longtext");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("PaymentId");
 
                     b.HasIndex("StudentId");
 
@@ -694,9 +650,6 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("CouponUsed")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("CourseId")
                         .HasColumnType("varchar(255)");
 
@@ -724,15 +677,23 @@ namespace EasyLearn.Migrations
                     b.Property<double>("PaymentAmount")
                         .HasColumnType("double");
 
-                    b.Property<string>("PaymentMethod")
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReferrenceNumber")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PaymentStatus")
-                        .HasColumnType("longtext");
+                    b.Property<string>("StudentId")
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Payments");
                 });
@@ -923,6 +884,12 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("EmailToken")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext");
 
@@ -952,6 +919,9 @@ namespace EasyLearn.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("longtext");
@@ -1038,11 +1008,17 @@ namespace EasyLearn.Migrations
                         .WithMany("Enrolments")
                         .HasForeignKey("CourseId");
 
+                    b.HasOne("EasyLearn.Models.Entities.Payment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentId");
+
                     b.HasOne("EasyLearn.Models.Entities.Student", "Student")
                         .WithMany("Enrolments")
                         .HasForeignKey("StudentId");
 
                     b.Navigation("Course");
+
+                    b.Navigation("Payment");
 
                     b.Navigation("Student");
                 });
@@ -1110,7 +1086,13 @@ namespace EasyLearn.Migrations
                         .WithMany("Payments")
                         .HasForeignKey("CourseId");
 
+                    b.HasOne("EasyLearn.Models.Entities.Student", "Student")
+                        .WithMany("Payments")
+                        .HasForeignKey("StudentId");
+
                     b.Navigation("Course");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("EasyLearn.Models.Entities.PaymentDetails", b =>
@@ -1199,6 +1181,8 @@ namespace EasyLearn.Migrations
                     b.Navigation("Enrolments");
 
                     b.Navigation("InstructorReviews");
+
+                    b.Navigation("Payments");
 
                     b.Navigation("StudentCourses");
                 });

@@ -1,21 +1,115 @@
-﻿using EasyLearn.Models.DTOs.UserDTOs;
+﻿using BCrypt.Net;
+using EasyLearn.Models.DTOs;
+using EasyLearn.Models.DTOs.EmailSenderDTOs;
+using EasyLearn.Models.DTOs.UserDTOs;
+using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
+
+using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IFileManagerService _fileManagerService;
+        private readonly IEmailService _emailService;
 
-        public UserService(IUserRepository userRepository)
+
+        public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IEmailService emailService)
         {
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _webHostEnvironment = webHostEnvironment;
+            _fileManagerService = fileManagerService;
+            _emailService = emailService;
         }
 
-        public async Task<LoginRequestModel> Login(string username, string email)
+
+        public async Task<User> UserRegistration (CreateUserRequestModel model, string baseUrl)
         {
-            var user = await _userRepository.GetFullDetails(x => x.UserName == username || x.Email == email);
+            var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
+            if (emailExist)
+            {
+                return null;
+            }
+
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
+            var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
+            var truncUserName = model.Email.IndexOf('@');
+            var userName = model.Email.Remove(truncUserName);
+            var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
+            var user = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Password = password,
+                Gender = model.Gender,
+                StudentshipStatus = model.StudentshipStatus,
+                //RoleId = "Instructor",
+                UserName = userName,
+                CreatedOn = DateTime.Now,
+                IsActive = true,
+                EmailToken = Guid.NewGuid().ToString().Replace('-', '0'),
+                ProfilePicture = filePath,
+                CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            };
+           
+            var senderDetail = new EmailSenderDetails
+            {
+                EmailToken = $"{baseUrl}/Home/ConfirmEmail?emailToken={user.EmailToken}",
+                ReceiverEmail = user.Email,
+                ReceiverName = model.FirstName,
+            };
+            var emailSender = _emailService.EmailVerificationTemplate(senderDetail,baseUrl);
+
+            var userAddress = new Address
+            {
+                Id = Guid.NewGuid().ToString(),
+                CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                UserId = user.Id,
+            };
+
+
+            var userPayment = new List<PaymentDetails>
+        {
+            new PaymentDetails
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                CreatedBy = user.CreatedBy,
+                CreatedOn = user.CreatedOn,
+            }
+        };
+
+            var userInstructor = new Instructor
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                CreatedBy = user.CreatedBy,
+                CreatedOn = user.CreatedOn,
+
+            };
+            user.Address = userAddress;
+            user.Instructor = userInstructor;
+            user.PaymentDetails = userPayment;
+            return user;
+
+        }
+
+
+
+
+        public async Task<LoginRequestModel> Login(LoginRequestModel model)
+        {
+            var user = await _userRepository.GetFullDetails(x => x.UserName.ToUpper() == model.Email.ToUpper() || x.Email.ToUpper() == model.Email.ToUpper());
+
+
             if (user == null)
             {
                 return new LoginRequestModel
@@ -25,8 +119,30 @@ namespace EasyLearn.Services.Implementations
                 };
             }
 
+            if (!user.EmailConfirmed)
+            {
+                return new LoginRequestModel
+                {
+                    Message = "kindly Confirm your email...",
+                    Status = false,
+                };
+            }
+
+            var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+
+            if (!verifyPassword)
+            {
+                return new LoginRequestModel
+                {
+                    Message = "incorrect login detail...",
+                    Status = false,
+                };
+            }
+
             var instructorId = user.Instructor != null ? user.Instructor.Id : null;
-            var ModeratorId = user.Moderator != null ? user.Moderator.Id : null;
+            var moderatorId = user.Moderator != null ? user.Moderator.Id : null;
+            var adminId = user.Admin != null ? user.Admin.Id : null;
+            var studentId = user.Student != null ? user.Student.Id : null;
             var loginModel = new LoginRequestModel
             {
                 Message = "Login successfully..",
@@ -37,10 +153,48 @@ namespace EasyLearn.Services.Implementations
                 LastName = user.LastName,
                 FirstName = user.FirstName,
                 ProfilePicture = user.ProfilePicture,
-                Id = instructorId ?? ModeratorId,
+                Id = instructorId ?? moderatorId ?? adminId ?? studentId,
                 UserId = user.Id,
             };
             return loginModel;
         }
+
+
+        public async Task<BaseResponse> EmailVerification(string emailToken)
+        {
+            var user = await _userRepository.GetUserByTokenAsync(emailToken);
+            if (user == null)
+            {
+                return new BaseResponse
+                {
+                    Message = "Wrong verification code...",
+                    Status = false,
+                };
+            }
+
+            if (user.EmailConfirmed)
+            {
+                return new BaseResponse
+                {
+                    Message = "Account already verified, proceed to login...",
+                    Status = false,
+                };
+            }
+
+            var date = DateTime.Now;
+            var modifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            user.EmailConfirmed = true;
+            user.ModifiedOn = date;
+            user.ModifiedBy = modifiedBy;
+            await _userRepository.UpdateAsync(user);
+            await _userRepository.SaveChangesAsync();
+            return new BaseResponse
+            {
+                Message = "Account activated...",
+                Status = true,
+            };
+        }
+
     }
 }
