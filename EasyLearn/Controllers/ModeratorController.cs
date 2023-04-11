@@ -1,5 +1,7 @@
-﻿using EasyLearn.Models.DTOs.ModeratorDTOs;
+﻿using EasyLearn.Models.DTOs.InstructorDTOs;
+using EasyLearn.Models.DTOs.ModeratorDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
+using EasyLearn.Services.Implementations;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,19 +66,19 @@ namespace EasyLearn.Controllers
         }
 
 
-        public async Task<IActionResult> DynamicDetail(string id)
-        {
-            //var instructor = await _instructorService.GetById(id);
-            var moderator = TempData["instructor"] as ModeratorResponseModel;
-            if (moderator == null)
-            {
-                TempData["failed"] = moderator.Message;
-                return RedirectToAction(nameof(Index), "Home");
-            }
+        //public async Task<IActionResult> DynamicDetail(string id)
+        //{
+        //    //var instructor = await _instructorService.GetById(id);
+        //    var moderator = TempData["instructor"] as ModeratorResponseModel;
+        //    if (moderator == null)
+        //    {
+        //        TempData["failed"] = moderator.Message;
+        //        return RedirectToAction(nameof(Index), "Home");
+        //    }
 
-            TempData["success"] = moderator.Message;
-            return View(moderator);
-        }
+        //    TempData["success"] = moderator.Message;
+        //    return View(moderator);
+        //}
 
 
 
@@ -86,16 +88,28 @@ namespace EasyLearn.Controllers
             if (!moderator.Status)
             {
                 TempData["failed"] = moderator.Message;
-                return RedirectToAction(nameof(Index), "Home");
+                return RedirectToAction(nameof(GetAllActive));
             }
 
-            //TempData["instructor"] = instructor;
             TempData["success"] = moderator.Message;
-            //return RedirectToAction(nameof(DynamicDetail));
             return View(moderator);
         }
 
 
+
+
+        public async Task<IActionResult> GetAllActive()
+        {
+            var moderator = await _moderatorService.GetAllActive();
+            if (!moderator.Status)
+            {
+                TempData["failed"] = moderator.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = moderator.Message;
+            return View(moderator);
+        }
 
 
         public async Task<IActionResult> GetByEmail(string email)
@@ -107,30 +121,9 @@ namespace EasyLearn.Controllers
                 return RedirectToAction(nameof(Index), "Home");
             }
 
-            //TempData["instructor"] = instructor;
             TempData["success"] = moderator.Message;
-            //return RedirectToAction(nameof(DynamicDetail));
             return View(moderator);
         }
-
-
-
-        //public async Task<IActionResult> GetByEmail(string email)
-        //{
-        //    var instructor = await _instructorService.GetByEmail(email);
-        //    if (!instructor.Status)
-        //    {
-        //        TempData["failed"] = instructor.Message;
-        //        return RedirectToAction(nameof(Index), "Home");
-        //    }
-
-        //    TempData["instructor"] = instructor;
-        //    TempData["success"] = instructor.Message;
-        //    return RedirectToAction(nameof(DynamicDetail));
-
-        //    //return View(instructor);
-        //}
-
 
 
         public async Task<IActionResult> DeletePreview(string id)
@@ -170,23 +163,6 @@ namespace EasyLearn.Controllers
         }
 
 
-        //public async Task<IActionResult> PaginatedSample(int page)
-        //{
-        //    // page = 1;
-        //    int recordPerPage = 5;
-        //    var instructors = await _instructorService.PaginatedSample();
-        //    var pagedList = instructors.ToPagedList(page, recordPerPage);
-        //    //if (!instructors.Status)
-        //    //{
-        //    //    TempData["failed"] = instructors.Message;
-        //    //    return RedirectToAction(nameof(Index), "Home");
-        //    //}
-
-        //    //TempData["success"] = instructors.Message;
-        //    return View(pagedList);
-        //}
-
-
 
         //public async Task<IActionResult> customerDatatable(int page)
         //{
@@ -197,140 +173,97 @@ namespace EasyLearn.Controllers
         //}
 
 
-        //public async Task<IActionResult> GetAllActive()
-        //{
-        //    var instructors = await _instructorService.GetAllActive();
-        //    if (!instructors.Status)
-        //    {
-        //        TempData["failed"] = instructors.Message;
-        //        return RedirectToAction(nameof(Index), "Home");
-        //    }
 
-        //    TempData["success"] = instructors.Message;
-        //    return View(instructors);
-        //}
+        public async Task<IActionResult> GetAllInActive()
+        {
+            var moderator = await _moderatorService.GetAllInActive();
+            if (!moderator.Status)
+            {
+                TempData["failed"] = moderator.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
 
-
-        //public async Task<IActionResult> GetAllInActive()
-        //{
-        //    var instructors = await _instructorService.GetAllInActive();
-        //    if (!instructors.Status)
-        //    {
-        //        TempData["failed"] = instructors.Message;
-        //        return RedirectToAction(nameof(Index), "Home");
-        //    }
-
-        //    TempData["success"] = instructors.Message;
-        //    return View(instructors);
-        //}
+            TempData["success"] = moderator.Message;
+            return View(moderator);
+        }
 
 
-        ////public async Task<IActionResult> Update(string id)
-        ////{
-        ////    var instructors = await _instructorService.GetById(id);
-        ////    if (instructors.Status) return View(instructors);
-        ////    TempData["failed"] = instructors.Message;
-        ////    return RedirectToAction(nameof(Index), "Home");
-        ////}
+        public async Task<IActionResult> UpdateProfile(string id)
+        {
+            var moderator = await _moderatorService.GetById(id);
+            if (moderator.Status) return View(moderator);
+            TempData["failed"] = moderator.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
 
 
-        ////[ValidateAntiForgeryToken]
-        ////[HttpPost]
-        ////public async Task<IActionResult> Update(UpdateInstructorProfileRequestModel model)
-        ////{
-        ////    if (!ModelState.IsValid)
-        ////    {
-        ////        TempData["failed"] = "Invalid detail...";
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(UpdateModeratorProfileRequestModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["failed"] = "Invalid detail...";
 
-        ////        return View();
-        ////    }
+                return View();
+            }
 
-        ////    var update = await _instructorService.UpdateProfile(model);
-        ////    if (update.Status)
-        ////    {
-        ////        TempData["success"] = update.Message;
-        ////        return RedirectToAction(nameof(Index), "Home");
-        ////    }
+            var moderator = await _moderatorService.UpdateProfile(model);
+            if (moderator.Status)
+            {
+                TempData["success"] = moderator.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
 
-        ////    TempData["failed"] = update.Message;
-        ////    return RedirectToAction(nameof(Index), "Home");
-        ////}
+            TempData["failed"] = moderator.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
 
 
 
-        //public async Task<IActionResult> UpdateProfile(string id)
-        //{
-        //    var instructors = await _instructorService.GetById(id);
-        //    if (instructors.Status) return View(instructors);
-        //    TempData["failed"] = instructors.Message;
-        //    return RedirectToAction(nameof(Index), "Home");
-        //}
+
+        public async Task<IActionResult> ListOfBankDetail(string id)
+        {
+            var moderator = await _moderatorService.GetListOfModeratorBankDetails(id);
+            if (moderator.Status)
+            {
+                TempData["Success"] = moderator.Message;
+                return View(moderator);
+            }
+            TempData["failed"] = moderator.Message;
+            return RedirectToAction(nameof(Index), "Home");
+            //TempData["success"] = admin.Message;
+        }
 
 
-        //[ValidateAntiForgeryToken]
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateProfile(UpdateInstructorProfileRequestModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        TempData["failed"] = "Invalid detail...";
-        //        return View();
-        //    }
-
-        //    var updateProfile = await _instructorService.UpdateProfile(model);
-        //    if (updateProfile.Status)
-        //    {
-        //        TempData["success"] = updateProfile.Message;
-        //        return RedirectToAction(nameof(Index), "Home");
-        //    }
-
-        //    TempData["failed"] = updateProfile.Message;
-        //    return RedirectToAction(nameof(Index), "Home");
-        //}
+        public async Task<IActionResult> UpdateBankDetail(string id)
+        {
+            var moderator = await _moderatorService.GetByPaymentDetail(id);
+            if (moderator.Status) return View(moderator);
+            TempData["failed"] = moderator.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
 
 
-        //public async Task<IActionResult> ListOfBankDetail(string id)
-        //{
-        //    var instructor = await _instructorService.GetListOfInstructorBankDetails(id);
-        //    if (instructor.Status)
-        //    {
-        //        TempData["Success"] = instructor.Message;
-        //        return View(instructor);
-        //    }
-        //    TempData["failed"] = instructor.Message;
-        //    return RedirectToAction(nameof(Index), "Home");
-        //    //TempData["success"] = admin.Message;
-        //}
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> UpdateBankDetail(UpdateModeratorBankDetailRequestModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["failed"] = "Invalid detail...";
+                return View();
+            }
 
+            var admin = await _moderatorService.UpdateBankDetail(model);
 
-        //public async Task<IActionResult> UpdateBankDetail(string id)
-        //{
-        //    var admin = await _instructorService.GetByPaymentDetail(id);
-        //    if (admin.Status) return View(admin);
-        //    TempData["failed"] = admin.Message;
-        //    return RedirectToAction(nameof(Index), "Home");
-        //}
+            return RedirectToAction(nameof(Index), "Home");
+        }
 
-
-        //[ValidateAntiForgeryToken]
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateBankDetail(UpdateInstructorBankDetailRequestModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        TempData["failed"] = "Invalid detail...";
-        //        return View();
-        //    }
-
-        //    var admin = await _instructorService.UpdateBankDetail(model);
-
-        //    return RedirectToAction(nameof(Index), "Home");
-        //}
-
-        //public IActionResult UpdateAddressDetail()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public IActionResult UpdateAddressDetail()
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }
