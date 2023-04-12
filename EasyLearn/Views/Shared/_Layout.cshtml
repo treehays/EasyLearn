@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -11,10 +13,13 @@
 
 <body data-sidebar="dark">
 @{
-    ViewBag.Title = "Light Sidebar";
-    ViewBag.pTitle = "Light Sidebar";
+    ViewBag.Title = "EasyLearn ";
+    ViewBag.pTitle = "EasyLearn ";
     ViewBag.pageTitle = "Layouts";
-    Layout = "~/Views/Shared/Layouts/_layout_light_sidebar.cshtml"; //This is the layout for the side ba
+    @if (User.FindFirst(ClaimTypes.NameIdentifier) == null)
+    {
+    Layout = "~/Views/Shared/Layouts/_layout_light_sidebar.cshtml"; //This is the layout for the side ba   
+    }
 }
 
 <!-- jquery.vectormap css -->

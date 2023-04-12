@@ -3,15 +3,16 @@
 
 @{
     //ViewBag.Title = "EasyLearn || Register new admin";
-    Layout = "_Layout";
+    @* Layout = "_Layout"; *@
+    ViewData["Title"] = "Home Page";
 }
 
 <partial name="_Notification" />
-
+<div>
 <h2>Add new student</h2>
 <div class="row">
     <div class="col-md-4 text-center">
-        @using (Html.BeginForm("Create", "Student", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("RegisterStudent", "Student", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div class="form-group">
                 @Html.LabelFor(x => x.FirstName, new { @class = "form-label" })
@@ -78,7 +79,7 @@
     </div>
 
 </div>
-
+</div>
 
 @section Scripts {
     @{

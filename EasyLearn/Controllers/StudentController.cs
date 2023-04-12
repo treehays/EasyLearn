@@ -21,7 +21,7 @@ namespace EasyLearn.Controllers
 
 
 
-        public IActionResult Create()
+        public IActionResult RegisterStudent()
         {
             return View();
         }
@@ -29,7 +29,7 @@ namespace EasyLearn.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserRequestModel model)
+        public async Task<IActionResult> RegisterStudent(CreateUserRequestModel model)
         {
             if (!ModelState.IsValid)
             {

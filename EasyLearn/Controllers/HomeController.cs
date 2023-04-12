@@ -23,6 +23,8 @@ namespace EasyLearn.Controllers
 
         public IActionResult Index()
         {
+            // ViewData["Title"] = "Light Sidebar";
+            // ViewData["pTitle"] = "Light Sidebar";
             return View();
         }
 
