@@ -12,12 +12,15 @@
 </head>
 
 <body data-sidebar="dark">
-
-    <!-- Begin page -->
-    <div id="layout-wrapper">
-
-        @Html.Partial("~/Views/Shared/_topbar.cshtml")
-        @Html.Partial("~/Views/Shared/_sidebar.cshtml")
+@{
+    ViewBag.Title = "EasyLearn ";
+    ViewBag.pTitle = "EasyLearn ";
+    ViewBag.pageTitle = "Layouts";
+    @if (User.FindFirst(ClaimTypes.NameIdentifier) == null)
+    {
+    Layout = "~/Views/Shared/Layouts/_layout_light_sidebar.cshtml"; //This is the layout for the side ba   
+    }
+}
 
 <!-- jquery.vectormap css -->
 <link href="~/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
@@ -28,6 +31,12 @@
 <!-- Responsive datatable examples -->
 <link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        @Html.Partial("~/Views/Shared/_topbar.cshtml")
+        @* @Html.Partial("~/Views/Shared/_sidebar.cshtml") *@
+
         <!-- ============================================================== -->
         <!-- Start right Content here -->
         <!-- ============================================================== -->
@@ -36,7 +45,7 @@
             <div class="page-content">
                 <div class="container-fluid">
 
-                    @Html.Partial("~/Views/Shared/_page_title.cshtml")
+                    @* @Html.Partial("~/Views/Shared/_page_title.cshtml") *@
 
                     @RenderBody()
 
@@ -57,7 +66,7 @@
 
     @Html.Partial("~/Views/Shared/_right_sidebar.cshtml")
 
-    @*@Html.Partial("~/Views/Shared/_vendor_scripts.cshtml")*@
+    @*@Html.Partial("~/Views/_Shared/_vendor_scripts.cshtml")*@
 
     @RenderSection("scripts", required: false)
 
@@ -68,7 +77,6 @@
 <script src="~/assets/libs/simplebar/simplebar.min.js"></script>
 <script src="~/assets/libs/node-waves/waves.min.js"></script>
 
-
 <!-- apexcharts -->
 <script src="~/assets/libs/apexcharts/apexcharts.min.js"></script>
 
@@ -76,20 +84,15 @@
 <script src="~/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
 <script src="~/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js"></script>
 
-
-
 <!-- Required datatable js -->
 <script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-
 
 <!-- Responsive examples -->
 <script src="~/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="~/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
 
-
 <script src="~/assets/js/pages/dashboard.init.js"></script>
-
 
 <script src="~/assets/js/app.js"></script>
 </body>

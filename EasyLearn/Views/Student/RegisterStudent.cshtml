@@ -1,0 +1,88 @@
+﻿@using EasyLearn.Models.Enums
+@model EasyLearn.Models.DTOs.UserDTOs.CreateUserRequestModel
+
+@{
+    //ViewBag.Title = "EasyLearn || Register new admin";
+    @* Layout = "_Layout"; *@
+    ViewData["Title"] = "Home Page";
+}
+
+<partial name="_Notification" />
+<div>
+<h2>Add new student</h2>
+<div class="row">
+    <div class="col-md-4 text-center">
+        @using (Html.BeginForm("RegisterStudent", "Student", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="form-group">
+                @Html.LabelFor(x => x.FirstName, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.LastName, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Email, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Password, new { @class = "form-label" })
+                @Html.PasswordFor(x => x.Password, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ConfirmPassword, new { @class = "form-label" })
+                @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Gender, new { @class = "form-label" })
+                @Html.DropDownListFor(x => x.Gender, new SelectList(Enum.GetValues(typeof(Gender))) , new { @class = "btn btn-secondary dropdown-toggle" })
+                @Html.ValidationMessageFor(x => x.Gender, "", new { @class = "text-danger" })
+            </div>
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.StudentshipStatus, new { @class = "" })
+                @Html.DropDownListFor(x => x.StudentshipStatus, new SelectList(Enum.GetValues(typeof(StudentshipStatus))), new {@class="btn btn-secondary dropdown-toggle"})
+                @Html.ValidationMessageFor(x => x.StudentshipStatus, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.FormFile, new { @class = "" })
+                @*<label for="file">Choose file</label>*@
+                <input type="file" name="formFile" id="formFile" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-danger">Reset</button>
+        }
+
+    </div>
+
+    <div class="col-md-6">
+        @* <h2></h2> *@
+
+    </div>
+
+</div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

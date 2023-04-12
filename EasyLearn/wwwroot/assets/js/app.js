@@ -1,5 +1,5 @@
 ﻿/*
-Template Name: EasyLearn - Gate to learning
+Template Name: EasyLearn Learning Made easy
 Author: Themesdesign
 Version: 2.0.0
 Contact: themesdesign.in@gmail.com
