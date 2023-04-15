@@ -280,11 +280,11 @@ public class AdminService : IAdminService
                 StudentshipStatus = admin.StudentshipStatus,
                 RoleId = admin.RoleId,
 
-                Language = admin.Address.Language,
-                City = admin.Address.City,
-                State = admin.Address.State,
-                Country = admin.Address.Country,
-                PaymentDetailData = admin.PaymentDetails.Select(x => new PaymentDetailDTO
+                Language = admin.Address?.Language,
+                City = admin.Address?.City,
+                State = admin.Address?.State,
+                Country = admin.Address?.Country,
+                PaymentDetailData = admin.PaymentDetails?.Select(x => new PaymentDetailDTO
                 {
                     AccountName = x.AccountName,
                     BankName = x.BankName,

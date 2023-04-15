@@ -35,14 +35,15 @@ namespace EasyLearn.Controllers
         }
 
         //[Route("v{version:apiVersion}/[controller]")]
-       // [Route("{Login}")]
+        //[Route("{Login}")]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        // [Route("{Login}")]
+        // [Route("{Account/login}")]
+        //[Route("{Login}")]
         public async Task<IActionResult> Login(LoginRequestModel model)
         {
             if (!ModelState.IsValid)
@@ -63,6 +64,7 @@ namespace EasyLearn.Controllers
                 new Claim(ClaimTypes.NameIdentifier,user.UserId),
                 new Claim(ClaimTypes.Actor, user.Id),
                 new Claim(ClaimTypes.Name,user.FirstName),
+                new Claim(ClaimTypes.Name,user.FirstName),
             };
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authenticationProperties = new AuthenticationProperties();
@@ -72,7 +74,7 @@ namespace EasyLearn.Controllers
             if (user.RoleId == "Admin")
             {
                 TempData["success"] = "Login successful";
-                return RedirectToAction("GetAllActive", "Admin");
+                return RedirectToAction("Index", "Admin");
             }
             else if (user.RoleId == "Instructor")
             {
@@ -91,6 +93,8 @@ namespace EasyLearn.Controllers
             }
         }
 
+
+        // [Route("Account/login")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

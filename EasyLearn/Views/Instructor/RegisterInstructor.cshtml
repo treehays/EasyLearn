@@ -1,0 +1,94 @@
+﻿@using EasyLearn.Models.Enums
+@model EasyLearn.Models.DTOs.UserDTOs.CreateUserRequestModel
+
+@{
+    //ViewBag.Title = "EasyLearn || Register new admin";
+
+    Layout = "_Layout";
+}
+
+<partial name="_Notification" />
+
+<h2>Add new instructor</h2>
+
+<div class="row">
+    <div class="col-md-4 text-left">
+
+        @using (Html.BeginForm("egisterInstructor", "Instructor", FormMethod.Post, new
+        {
+            enctype = "multipart/form-data"
+        }))
+
+        {
+            <div class="form-group">
+                @Html.LabelFor(x => x.FirstName, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.LastName, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Email, new { @class = "form-label" })
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Password, new { @class = "form-label" })
+                @Html.PasswordFor(x => x.Password, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ConfirmPassword, new { @class = "form-label" })
+                @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control", @placeholder = "Real Name" })
+                @Html.ValidationMessageFor(x => x.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<Gender>()"></select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="StudentshipStatus" class="control-label"></label>
+                <select asp-for="StudentshipStatus" class="form-control"
+                asp-items="Html.GetEnumSelectList<StudentshipStatus>()"></select>
+                <span asp-validation-for="StudentshipStatus" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.FormFile, new { @class = "" })
+                @*<label for="file">Choose file</label>*@
+                <input type="file" name="formFile" id="formFile" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-danger">Reset</button>
+        }
+
+    </div>
+
+    <div class="col-md-6">
+        @* <h2></h2> *@
+    </div>
+
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -16,6 +16,7 @@ public class ModeratorDto
     public string Skill { get; set; }
     public string Interest { get; set; }
     public string PhoneNumber { get; set; }
+    public DateTime CreatedOn { get; set; }
     public Gender Gender { get; set; }
     public StudentshipStatus StudentshipStatus { get; set; }
     public string RoleId { get; set; }
@@ -33,6 +34,7 @@ public class ModeratorDto
     public string State { get; set; }
     public string City { get; set; }
     public string Language { get; set; }
+
 }
 
 public class CreateModeratorRequestModel

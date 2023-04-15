@@ -9,13 +9,13 @@
 
 <partial name="_Notification" />
 <div>
-<h2>Add new student</h2>
+<h2>Sign up and start learning</h2>
 <div class="row">
-    <div class="col-md-4 text-center">
+    <div class="col-md-4 text-left">
         @using (Html.BeginForm("RegisterStudent", "Student", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div class="form-group">
-                @Html.LabelFor(x => x.FirstName, new { @class = "form-label" })
+                @Html.LabelFor(x => x.FirstName, new { @class = "text-left" })
                 @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @placeholder = "Real Name" })
                 @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
             </div>

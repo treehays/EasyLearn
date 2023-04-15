@@ -22,7 +22,7 @@ namespace EasyLearn.Controllers
         }
 
 
-        public IActionResult Create()
+        public IActionResult RegisterModerator()
         {
             return View();
         }
@@ -30,7 +30,7 @@ namespace EasyLearn.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserRequestModel model)
+        public async Task<IActionResult> RegisterModerator (CreateUserRequestModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -88,7 +88,7 @@ namespace EasyLearn.Controllers
             if (!moderator.Status)
             {
                 TempData["failed"] = moderator.Message;
-                return RedirectToAction(nameof(GetAllActive));
+                return RedirectToAction(nameof(GetAllActiveModerators));
             }
 
             TempData["success"] = moderator.Message;
@@ -98,7 +98,7 @@ namespace EasyLearn.Controllers
 
 
 
-        public async Task<IActionResult> GetAllActive()
+        public async Task<IActionResult> GetAllActiveModerators()
         {
             var moderator = await _moderatorService.GetAllActive();
             if (!moderator.Status)

@@ -16,12 +16,21 @@ public partial class AdminController : Controller
     }
 
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var admins = await _adminService.GetAll();
+        if (!admins.Status)
+        {
+            TempData["failed"] = admins.Message;
+            return RedirectToAction(nameof(GetAllActive));
+
+        }
+
+        TempData["success"] = admins.Message;
+        return View(admins);
     }
 
-    public IActionResult Create()
+    public IActionResult RegisterAdmin()
     {
 
         return View();
@@ -29,7 +38,7 @@ public partial class AdminController : Controller
 
     [ValidateAntiForgeryToken]
     [HttpPost]
-    public async Task<IActionResult> Create(CreateUserRequestModel model)
+    public async Task<IActionResult> RegisterAdmin(CreateUserRequestModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -45,7 +54,7 @@ public partial class AdminController : Controller
         }
 
         TempData["success"] = registerAdmin.Message;
-        return RedirectToAction("Login", "");
+        return RedirectToAction("", "Login");
     }
 
     public async Task<IActionResult> Detail(string id)

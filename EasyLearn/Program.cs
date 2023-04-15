@@ -166,7 +166,7 @@ namespace EasyLearn
             //seeding into databse secondmethos
             //EasyLearnDbSeedingData.InitializeDb(app.Services.CreateScope().ServiceProvider);
             //seeding into databse first methos
-            EasyLearnDbInitializer.Seed(app);
+            // EasyLearnDbInitializer.Seed(app);
 
             app.MapControllerRoute(
                 name: "default",
