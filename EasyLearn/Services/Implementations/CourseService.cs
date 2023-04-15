@@ -1,6 +1,7 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CourseDTOs;
 using EasyLearn.Models.Entities;
+using EasyLearn.Models.ViewModels;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -92,29 +93,10 @@ public class CourseService : ICourseService
             CreatedBy = instructorId,
             CreatedOn = course.CreatedOn,
         }).ToList();
-
-        //foreach (var item in model.CourseCategories)
-        //{
-        //    var courseCategory = new CourseCategory
-        //    {
-        //        Id = Guid.NewGuid().ToString(),
-        //        CourseId = course.Id,
-        //        CategoryId = item,
-        //        CreatedBy =instructorId, 
-        //        CreatedOn = course.CreatedOn,
-        //    };
-        //    course.CourseCategories.Add(courseCategory);
-        //}
         course.CourseCategories = categoryList;
 
         await _courseRepository.AddAsync(course);
         await _courseRepository.SaveChangesAsync();
-        //var cc = new List<CourseCategory>();
-
-
-
-        //await _courseCategoryRepository.AddAsync(courseCategory);
-        //await _courseRepository.SaveChangesAsync();
 
 
         return new BaseResponse
@@ -281,8 +263,14 @@ public class CourseService : ICourseService
 
     public async Task<CoursesRequestModel> GetByName(string name)
     {
-        var courses = await _courseRepository.GetListAsync(x => x.Title == name && x.IsActive && !x.IsDeleted);
-        if (courses == null)
+        var courses = await _courseRepository.GetListAsync(x => 
+        x.IsActive 
+        && !x.IsDeleted 
+        && x.Title.ToUpper().Contains(name.ToUpper()) 
+        || x.Description.ToUpper().Contains(name.ToUpper()) 
+        || x.CourseLanguage.ToUpper().Contains(name.ToUpper()));
+        
+        if (courses.Count() > 0)
         {
             return new CoursesRequestModel
             {
@@ -304,7 +292,7 @@ public class CourseService : ICourseService
                 DifficultyLevel = x.DifficultyLevel,
                 Requirement = x.Requirement,
                 CourseDuration = x.CourseDuration,
-                InstructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                //InstructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 Price = x.Price,
             })
         };
@@ -398,6 +386,19 @@ public class CourseService : ICourseService
             })
         };
         return coursesModel;
+    }
+
+    public async Task<GlobalSearchResultViewModel> GlobalSearch(string name)
+    {
+        var coursesResult = await _courseRepository.GetListAsync(x =>
+        x.IsActive
+        && !x.IsDeleted
+        && x.Title.ToUpper().Contains(name.ToUpper())
+        || x.Description.ToUpper().Contains(name.ToUpper())
+        || x.CourseLanguage.ToUpper().Contains(name.ToUpper()));
+        
+        
+        return null;
     }
 }
 

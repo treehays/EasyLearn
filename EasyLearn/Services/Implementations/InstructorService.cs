@@ -351,9 +351,15 @@ public class InstructorService : IInstructorService
     public async Task<InstructorsResponseModel> GetByName(string name)
     {
         var instructor = await _userRepository.GetListAsync(x =>
-           (x.FirstName.ToUpper() == name.ToUpper() || x.LastName.ToUpper() == name.ToUpper() || (x.FirstName.ToUpper() + " " + x.LastName.ToUpper()) == name) && x.RoleId == "Instructor" && x.IsActive && !x.IsDeleted);
+          x.RoleId == "Instructor" 
+          && x.IsActive 
+          && !x.IsDeleted
+          && x.FirstName.ToUpper().Contains(name.ToUpper())
+          && x.LastName.ToUpper().Contains(name.ToUpper())
+          && x.UserName.ToUpper().Contains(name.ToUpper())
+          && x.Interest.ToUpper().Contains(name.ToUpper()));
 
-        if (instructor == null)
+        if (instructor.Count() > 0)
         {
             return new InstructorsResponseModel
             {

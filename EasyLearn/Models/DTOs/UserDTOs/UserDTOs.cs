@@ -1,4 +1,5 @@
 ﻿using EasyLearn.Models.Enums;
+using EasyLearn.Models.Validators;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,6 +27,7 @@ public class CreateUserRequestModel
     [EmailAddress(ErrorMessage = "Enter a valid email..")]
     public string Email { get; set; }
     [DataType(DataType.Password)]
+    [PasswordValidation]
     public string Password { get; set; }
     [DataType(DataType.Password)]
     [DisplayName("Re-enter Password")]

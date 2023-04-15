@@ -1,5 +1,6 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CourseDTOs;
+using EasyLearn.Models.ViewModels;
 
 namespace EasyLearn.Services.Interfaces;
 
@@ -11,6 +12,7 @@ public interface ICourseService
     Task<CoursesRequestModel> GetAllCourse();
     Task<CoursesRequestModel> GetAllActiveInstructorCourse(string instructorId);
     Task<CoursesRequestModel> GetAllInActiveInstructorCourse(string instructorId);
+    Task<GlobalSearchResultViewModel> GlobalSearch (string name);
     Task<BaseResponse> Update(UpdateCourseRequestModel model);
     Task<BaseResponse> UpdateActiveStatus(UpdateCourseActiveStatusRequestModel model);
     Task<CourseRequestModel> GetById(string id);

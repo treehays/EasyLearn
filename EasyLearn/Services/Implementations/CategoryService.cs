@@ -162,5 +162,39 @@ namespace EasyLearn.Services.Implementations
             };
             return categoriesModel;
         }
+
+
+
+        public async Task<CategoriesResponseModel> GetByName(string name)
+        {
+            var categories = await _categoryRepository.GetListAsync(x => 
+            x.IsAvailable
+            && !x.IsDeleted
+            && x.Name.ToUpper().Contains(name.ToUpper()));
+            
+            if (categories == null)
+            {
+                return new CategoriesResponseModel
+                {
+                    Message = "Category not found..",
+                    Status = false,
+                };
+            }
+
+            var categoriesModel = new CategoriesResponseModel
+            {
+                Status = true,
+                Message = "Categories successfully retrieved...",
+                Data = categories.Select(x => new CategoryDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    CategoryImage = x.CategoryImage,
+                    IsAvailable = x.IsAvailable,
+                }),
+            };
+            return categoriesModel;
+        }
     }
 }

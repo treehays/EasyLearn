@@ -38,6 +38,10 @@ namespace EasyLearn.Controllers
         //[Route("{Login}")]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("index");
+            }
             return View();
         }
 
@@ -64,7 +68,7 @@ namespace EasyLearn.Controllers
                 new Claim(ClaimTypes.NameIdentifier,user.UserId),
                 new Claim(ClaimTypes.Actor, user.Id),
                 new Claim(ClaimTypes.Name,user.FirstName),
-                new Claim(ClaimTypes.Name,user.FirstName),
+                new Claim(ClaimTypes.UserData,user.ProfilePicture),
             };
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authenticationProperties = new AuthenticationProperties();

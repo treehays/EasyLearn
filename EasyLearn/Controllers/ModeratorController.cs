@@ -30,7 +30,7 @@ namespace EasyLearn.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> RegisterModerator (CreateUserRequestModel model)
+        public async Task<IActionResult> RegisterModerator(CreateUserRequestModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -39,7 +39,7 @@ namespace EasyLearn.Controllers
             }
             var baseUrl = $"https://{Request.Host}";
 
-            var create = await _moderatorService.ModeratorRegistration(model,baseUrl);
+            var create = await _moderatorService.ModeratorRegistration(model, baseUrl);
             if (!create.Status)
             {
                 TempData["failed"] = create.Message;
@@ -48,7 +48,7 @@ namespace EasyLearn.Controllers
             }
 
             TempData["success"] = create.Message;
-            return RedirectToAction("GetAllActive");
+            return RedirectToAction("", "Login");
 
         }
 
