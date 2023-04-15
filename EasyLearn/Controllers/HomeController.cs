@@ -35,14 +35,14 @@ namespace EasyLearn.Controllers
         }
 
         //[Route("v{version:apiVersion}/[controller]")]
-        [Route("{Login}")]
+       // [Route("{Login}")]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        [Route("{Login}")]
+        // [Route("{Login}")]
         public async Task<IActionResult> Login(LoginRequestModel model)
         {
             if (!ModelState.IsValid)
