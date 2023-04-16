@@ -48,7 +48,7 @@ namespace EasyLearn.Controllers
             }
 
             TempData["success"] = create.Message;
-            return RedirectToAction("", "Login");
+            return RedirectToAction("Login", "Home");
 
         }
 

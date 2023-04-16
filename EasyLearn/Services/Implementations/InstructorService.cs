@@ -50,7 +50,16 @@ public class InstructorService : IInstructorService
                 Message = "Email already exist.",
             };
         }
+        var userInstructor = new Instructor
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = instructor.Id,
+            CreatedBy = instructor.CreatedBy,
+            CreatedOn = instructor.CreatedOn,
+
+        };
         instructor.RoleId = "Instructor";
+        instructor.Instructor = userInstructor;
         await _userRepository.AddAsync(instructor);
         await _userRepository.SaveChangesAsync();
 
@@ -359,7 +368,7 @@ public class InstructorService : IInstructorService
           && x.UserName.ToUpper().Contains(name.ToUpper())
           && x.Interest.ToUpper().Contains(name.ToUpper()));
 
-        if (instructor.Count() > 0)
+        if (instructor.Count() == 0)
         {
             return new InstructorsResponseModel
             {
@@ -368,7 +377,7 @@ public class InstructorService : IInstructorService
             };
         }
 
-        var adminModel = new InstructorsResponseModel
+        var instructorModel = new InstructorsResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
@@ -389,7 +398,7 @@ public class InstructorService : IInstructorService
                 RoleId = x.RoleId,
             }),
         };
-        return adminModel;
+        return instructorModel;
     }
 
     public async Task<InstructorResponseModel> GetFullDetailById(string id)

@@ -266,5 +266,21 @@ namespace EasyLearn.Controllers
 
 
 
+        public async Task<IActionResult> GlobalSearch(string name)
+        {
+
+            var globalResult = await _courseService.GlobalSearch(name);
+            if (globalResult == null)
+            {
+                TempData["failed"] = "No result found";
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            return View(globalResult);
+            //return View();
+        }
+
+
+
     }
 }

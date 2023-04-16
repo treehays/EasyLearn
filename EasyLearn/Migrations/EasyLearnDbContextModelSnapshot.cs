@@ -162,6 +162,9 @@ namespace EasyLearn.Migrations
                     b.Property<string>("CourseLanguage")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("CourseLogo")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
 

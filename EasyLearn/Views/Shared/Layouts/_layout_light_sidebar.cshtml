@@ -16,10 +16,27 @@
     <div id="layout-wrapper">
 
         <partial name="~/Views/Shared/_topbar.cshtml"/>
-        @if (User.FindFirst(ClaimTypes.Role)?.Value == "Admin")
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "admin")
         {
             <partial name="~/Views/Shared/_sidebar.cshtml"/>
         }
+        
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "moderator")
+        {
+            <partial name="~/Views/Shared/_Instructorsidebar.cshtml"/>
+        }
+        
+
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "instructor")
+        {
+            <partial name="~/Views/Shared/_Instructorsidebar.cshtml"/>
+        }
+
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "student")
+        {
+            <partial name="~/Views/Shared/_Instructorsidebar.cshtml"/>
+        }
+
         @*This is the original sidebar located*@
 
         <!-- ============================================================== -->

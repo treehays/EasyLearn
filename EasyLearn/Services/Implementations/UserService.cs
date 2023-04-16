@@ -87,16 +87,8 @@ namespace EasyLearn.Services.Implementations
             }
         };
 
-            var userInstructor = new Instructor
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = user.Id,
-                CreatedBy = user.CreatedBy,
-                CreatedOn = user.CreatedOn,
-
-            };
+            
             user.Address = userAddress;
-            user.Instructor = userInstructor;
             user.PaymentDetails = userPayment;
             return user;
 

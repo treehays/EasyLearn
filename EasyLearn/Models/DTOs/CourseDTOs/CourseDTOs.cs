@@ -15,6 +15,7 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public double Price { get; set; }
+        public string CourseLogo{ get; set; }
         public string InstructorId { get; set; }
 
     }

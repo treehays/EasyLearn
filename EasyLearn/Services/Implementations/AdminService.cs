@@ -7,6 +7,7 @@ using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
+using Mysqlx.Expr;
 using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
@@ -50,6 +51,15 @@ public class AdminService : IAdminService
                 Message = "Email already exist.",
             };
         }
+
+        var userAdmin= new Admin
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = admin.Id,
+            CreatedBy = admin.CreatedBy,
+            CreatedOn = admin.CreatedOn,
+        };
+        admin.Admin = userAdmin;
         admin.RoleId = "Admin";
         await _userRepository.AddAsync(admin);
         await _userRepository.SaveChangesAsync();
