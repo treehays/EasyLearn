@@ -23,7 +23,7 @@
         
         @if (User.FindFirst(ClaimTypes.Role)?.Value == "moderator")
         {
-            <partial name="~/Views/Shared/_Instructorsidebar.cshtml"/>
+            <partial name="~/Views/Shared/_Moderatorsidebar.cshtml" />
         }
         
 
@@ -34,9 +34,9 @@
 
         @if (User.FindFirst(ClaimTypes.Role)?.Value == "student")
         {
-            <partial name="~/Views/Shared/_Instructorsidebar.cshtml"/>
+            <partial name="~/Views/Shared/_Studentsidebar.cshtml" />
         }
-
+                                    
         @*This is the original sidebar located*@
 
         <!-- ============================================================== -->

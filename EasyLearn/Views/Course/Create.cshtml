@@ -58,9 +58,14 @@
                 <select asp-for="CourseCategories" asp-items="ViewBag.Category" required multiple>
                     <option value="" selected>--Select Category--</option>
                 </select>
+                
 
+                <select asp-for="CourseCategories" asp-items="ViewBag.Category" required multiple>
+                    <option value="" selected>--Select Category--</option>
+                </select>
 
-                @*@Html.DropDownListFor(x => x.CourseCategories, new SelectList(Model.PCategory,"Data.CategoryCode","Data.Name"),"Select Category" ,new {@class = "form-control"})*@
+@*
+                @Html.DropDownListFor(x => x.CourseCategories, new SelectList(Model.PCategory,"Data.CategoryCode","Data.Name"),"Select Category" ,new {@class = "form-control"})*@
                 @*
                 @Html.DropDownListFor(x => x.CourseCategories, Model.multiSelectList, new {@class = "form-control", @multiple = "multiple"})*@
                 @Html.ValidationMessageFor(x => x.CourseCategories,"", new {@class="text-danger"})
