@@ -273,7 +273,7 @@ public class CourseService : ICourseService
         && !x.IsDeleted
         && x.Title.ToUpper().Contains(name.ToUpper())
         || x.Description.ToUpper().Contains(name.ToUpper())
-        || x.CourseLanguage.ToUpper().Contains(name.ToUpper()));
+        || x.CourseLanguage.ToString().ToUpper().Contains(name.ToUpper()));
 
         if (courses.Count() > 0)
         {
@@ -400,7 +400,7 @@ public class CourseService : ICourseService
         && !x.IsDeleted
         && x.Title.ToUpper().Contains(name.ToUpper())
         || x.Description.ToUpper().Contains(name.ToUpper())
-        || x.CourseLanguage.ToUpper().Contains(name.ToUpper()));
+        || x.CourseLanguage.ToString().ToUpper().Contains(name.ToUpper()));
         var courseResponse = new CoursesRequestModel();
         if (coursesResult.Count() > 0)
         {

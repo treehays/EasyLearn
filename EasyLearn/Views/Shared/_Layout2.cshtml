@@ -3,9 +3,9 @@
 
 <head>
 
-    @Html.Partial("~/Views/Shared/_title_meta.cshtml")
+    <partial name="~/Views/Shared/_title_meta.cshtml"/>
     @RenderSection("styles", false)
-    @Html.Partial("~/Views/Shared/_head_css.cshtml")
+    <partial name="~/Views/Shared/_head_css.cshtml"/>
 
 </head>
 
@@ -46,8 +46,8 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
 
-        @Html.Partial("~/Views/Shared/_topbar.cshtml")
-        @Html.Partial("~/Views/Shared/_sidebar.cshtml")
+        <partial name="~/Views/Shared/_topbar.cshtml"/>
+        <partial name="~/Views/Shared/_sidebar.cshtml"/>
 
         <!-- ============================================================== -->
         <!-- Start right Content here -->
@@ -57,7 +57,7 @@
             <div class="page-content">
                 <div class="container-fluid">
 
-                    @Html.Partial("~/Views/Shared/_page_title.cshtml")
+                    <partial name="~/Views/Shared/_page_title.cshtml"/>
 
                     @RenderBody()
 
@@ -65,7 +65,7 @@
             </div>
             <!-- End Page-content -->
 
-            @Html.Partial("~/Views/Shared/_footer.cshtml")
+            <partial name="~/Views/Shared/_footer.cshtml"/>
 
         </div>
         <!-- end main content-->
@@ -76,9 +76,9 @@
 
     <!-- END layout-wrapper -->
 
-    @Html.Partial("~/Views/Shared/_right_sidebar.cshtml")
+    <partial name="~/Views/Shared/_right_sidebar.cshtml"/>
 
-    @*@Html.Partial("~/Views/Shared/_vendor_scripts.cshtml")*@
+    @*<partial name="~/Views/Shared/_vendor_scripts.cshtml")*@
 
     @RenderSection("scripts", required: false)
 

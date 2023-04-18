@@ -1,5 +1,6 @@
 ﻿using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.Entities;
+using EasyLearn.Models.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EasyLearn.Models.DTOs.CourseDTOs
@@ -9,8 +10,8 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string CourseLanguage { get; set; }
-        public string DifficultyLevel { get; set; }
+        public CourseLanguage CourseLanguage { get; set; }
+        public DifficultyLevel DifficultyLevel { get; set; }
         //public string Rating { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
@@ -24,8 +25,8 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string CourseLanguage { get; set; }
-        public string DifficultyLevel { get; set; }
+        public CourseLanguage CourseLanguage { get; set; }
+        public DifficultyLevel DifficultyLevel { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public string InstructorId { get; set; }
@@ -40,8 +41,8 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string CourseLanguage { get; set; }
-        public string DifficultyLevel { get; set; }
+        public CourseLanguage CourseLanguage { get; set; }
+        public DifficultyLevel DifficultyLevel { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public double Price { get; set; }

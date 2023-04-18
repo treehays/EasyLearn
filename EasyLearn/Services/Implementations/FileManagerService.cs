@@ -16,7 +16,7 @@ public class FileManagerService : IFileManagerService
                 Directory.CreateDirectory(filePath);
             }
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
+            var fileName = Guid.NewGuid().ToString().Replace('-', 's') + Path.GetExtension(file.FileName);
             var fullPath = Path.Combine(filePath, fileName);
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {

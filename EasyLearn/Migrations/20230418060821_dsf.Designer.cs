@@ -3,6 +3,7 @@ using System;
 using EasyLearn.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    partial class EasyLearnDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230418060821_dsf")]
+    partial class dsf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,8 +161,8 @@ namespace EasyLearn.Migrations
                     b.Property<double>("CourseDuration")
                         .HasColumnType("double");
 
-                    b.Property<int>("CourseLanguage")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseLanguage")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("CourseLogo")
                         .HasColumnType("longtext");

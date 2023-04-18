@@ -75,12 +75,12 @@ namespace EasyLearn.Controllers
             var principal = new ClaimsPrincipal(claimIdentity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
 
-            if (user.RoleId == "admin")
+            if (user.RoleId == "Admin")
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("Index", "Admin");
             }
-            else if (user.RoleId == "instructor")
+            else if (user.RoleId == "Instructor")
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Instructor");
@@ -89,7 +89,7 @@ namespace EasyLearn.Controllers
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Student");
-            }  else if (user.RoleId == "student")
+            }  else if (user.RoleId == "Student")
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Student");

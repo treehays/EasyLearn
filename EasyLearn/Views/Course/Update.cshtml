@@ -1,4 +1,5 @@
-﻿@model EasyLearn.Models.DTOs.CourseDTOs.CourseRequestModel
+﻿@using EasyLearn.Models.Enums;
+@model EasyLearn.Models.DTOs.CourseDTOs.CourseRequestModel
 
 @{
     //ViewBag.Title = "title";
@@ -26,12 +27,18 @@
                     </div>
                     <div>
                         <label asp-for="Data.CourseLanguage" class="control-label"></label>
-                        <input name="CourseLanguage" value="@Model.Data.CourseLanguage" type="text" class="form-control" required />
+
+                        <select asp-for="Data.CourseLanguage" class="form-control"
+                                asp-items="Html.GetEnumSelectList<CourseLanguage>()"></select>
+
                     </div>
 
                     <div>
                         <label asp-for="Data.DifficultyLevel" class="control-label"></label>
-                        <input name="DifficultyLevel" value="@Model.Data.DifficultyLevel" type="text" class="form-control" required />
+
+                        <select asp-for="Data.DifficultyLevel" class="form-control"
+                                asp-items="Html.GetEnumSelectList<DifficultyLevel>()"></select>
+
                     </div>
 
                     <div>
