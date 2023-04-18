@@ -1,10 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
 
-    @Html.Partial("~/Views/Shared/_title_meta.cshtml")
-    @Html.Partial("~/Views/Shared/_head_css.cshtml")
+    <partial name="~/Views/Shared/_title_meta.cshtml"/>
+    <partial name="~/Views/Shared/_head_css.cshtml"/>
 
 </head>
 
@@ -13,27 +15,47 @@
     <!-- Begin page -->
     <div id="layout-wrapper">
 
-        @Html.Partial("~/Views/Shared/_topbar.cshtml")
-        @Html.Partial("~/Views/Shared/_sidebar.cshtml") 
+        <partial name="~/Views/Shared/_topbar.cshtml"/>
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "admin")
+        {
+            <partial name="~/Views/Shared/_sidebar.cshtml"/>
+        }
+        
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "moderator")
+        {
+            <partial name="~/Views/Shared/_Moderatorsidebar.cshtml" />
+        }
+        
+
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "instructor")
+        {
+            <partial name="~/Views/Shared/_Instructorsidebar.cshtml"/>
+        }
+
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "student")
+        {
+            <partial name="~/Views/Shared/_Studentsidebar.cshtml" />
+        }
+                                    
         @*This is the original sidebar located*@
 
         <!-- ============================================================== -->
         <!-- Start right Content here -->
         <!-- ============================================================== -->
 
-        <div class="main-content">
+        @*<div class="main-content">*@
             <div class="page-content">
                 <div class="container-fluid">
 
-                    @Html.Partial("~/Views/Shared/_page_title.cshtml")
+                    <partial name="~/Views/Shared/_page_title.cshtml"/>
 
                     @RenderBody()
 
-                </div> <!-- container-fluid -->
+               @* </div> <!-- container-fluid -->*@
             </div>
             <!-- End Page-content -->
 
-            @Html.Partial("~/Views/Shared/_footer.cshtml")
+            <partial name="~/Views/Shared/_footer.cshtml"/>
 
         </div>
         <!-- end main content-->
@@ -41,9 +63,9 @@
     </div>
     <!-- END layout-wrapper -->
 
-    @Html.Partial("~/Views/Shared/_right_sidebar.cshtml")
+    <partial name="~/Views/Shared/_right_sidebar.cshtml"/>
 
-    @*@ Html.Partial("~/Views/Shared/_vendor_scripts.cshtml")*@
+    @*<partial name="~/Views/Shared/_vendor_scripts.cshtml"/>*@
 
     @RenderSection("scripts", required: false)
 

@@ -50,7 +50,15 @@ public class ModeratorService : IModeratorService
                 Message = "Email already exist.",
             };
         }
-        moderator.RoleId = "Instructor";
+        var userModerator = new Moderator
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = moderator.Id,
+            CreatedBy = moderator.CreatedBy,
+            CreatedOn = moderator.CreatedOn,
+        };
+        moderator.Moderator = userModerator;
+        moderator.RoleId = "Moderator";
         await _userRepository.AddAsync(moderator);
         await _userRepository.SaveChangesAsync();
 

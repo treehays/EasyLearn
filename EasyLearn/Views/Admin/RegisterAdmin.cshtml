@@ -9,13 +9,13 @@
 }
 
 @{
-    <h1>Create Admin</h1>
+    <h1>Register Admin</h1>
 
-    <h4>CreateUserRequestModel</h4>
+    <h4>Register Admin</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
-            <form asp-action="Create" enctype="multipart/form-data">
+            <form asp-action="RegisterAdmin" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="form-group">
@@ -56,9 +56,9 @@
                     <label asp-for="StudentshipStatus" class="control-label"></label>
 
                     <select asp-for="StudentshipStatus" class="form-control"
-                        asp-items="Html.GetEnumSelectList<PaymentMethods>()"></select>
-                    @*<select asp-for="StudentshipStatus" class="form-control"></select>*@
+                    asp-items="Html.GetEnumSelectList<StudentshipStatus>()"></select>
                     <span asp-validation-for="StudentshipStatus" class="text-danger"></span>
+                    @*<select asp-for="StudentshipStatus" class="form-control"></select>*@
                 </div>
 
                 <div class="form-group">

@@ -4,5 +4,5 @@ namespace EasyLearn.Repositories.Interfaces;
 
 public interface ICourseRepository : IRepository<Course>
 {
-
+    //Task<Course> SearchCourse(string word);
 }

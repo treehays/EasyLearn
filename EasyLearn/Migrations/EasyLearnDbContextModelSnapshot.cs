@@ -159,7 +159,10 @@ namespace EasyLearn.Migrations
                     b.Property<double>("CourseDuration")
                         .HasColumnType("double");
 
-                    b.Property<string>("CourseLanguage")
+                    b.Property<int>("CourseLanguage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CourseLogo")
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
@@ -177,8 +180,8 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("DifficultyLevel")
-                        .HasColumnType("longtext");
+                    b.Property<int>("DifficultyLevel")
+                        .HasColumnType("int");
 
                     b.Property<string>("InstructorId")
                         .HasColumnType("varchar(255)");

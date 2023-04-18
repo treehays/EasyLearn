@@ -39,6 +39,14 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
         return entity;
     }
 
+
+    //public async Task<T> GetByTitleAsync(Expression<Func<T, bool>> expression)
+    //{
+    //    //var entities = _context.Set.Where(t => t.Title.Contains(word)).ToList();
+    //    var entity = await _context.Set<T>().FirstOrDefaultAsync(expression);
+    //    return entity;
+    //}
+
     public async Task<IEnumerable<T>> GetAllAsync()
     {
         var entities = await _context.Set<T>().AsNoTracking().ToListAsync();

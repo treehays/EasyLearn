@@ -35,16 +35,21 @@ namespace EasyLearn.Controllers
         }
 
         //[Route("v{version:apiVersion}/[controller]")]
-        [Route("{Login}")]
+        //[Route("{Login}")]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("index");
+            }
             return View();
         }
 
         [HttpPost]
-        [Route("{Login}")]
+        // [Route("{Account/login}")]
+        //[Route("{Login}")]
         public async Task<IActionResult> Login(LoginRequestModel model)
-        {
+             {
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -59,10 +64,11 @@ namespace EasyLearn.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role,user.RoleId),
+                new Claim(ClaimTypes.Role,user.RoleId.ToLower()),
                 new Claim(ClaimTypes.NameIdentifier,user.UserId),
                 new Claim(ClaimTypes.Actor, user.Id),
                 new Claim(ClaimTypes.Name,user.FirstName),
+                new Claim(ClaimTypes.UserData,user.ProfilePicture),
             };
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authenticationProperties = new AuthenticationProperties();
@@ -72,14 +78,18 @@ namespace EasyLearn.Controllers
             if (user.RoleId == "Admin")
             {
                 TempData["success"] = "Login successful";
-                return RedirectToAction("GetAllActive", "Admin");
+                return RedirectToAction("Index", "Admin");
             }
             else if (user.RoleId == "Instructor")
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Instructor");
             }
-            else if (user.RoleId == "Student")
+            else if (user.RoleId == "Moderator")
+            {
+                TempData["success"] = "Login successful";
+                return RedirectToAction("GetAllActive", "Student");
+            }  else if (user.RoleId == "Student")
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Student");
@@ -91,6 +101,8 @@ namespace EasyLearn.Controllers
             }
         }
 
+
+        // [Route("Account/login")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

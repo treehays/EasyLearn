@@ -4,6 +4,7 @@ using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
+using Mysqlx.Expr;
 using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
@@ -44,6 +45,15 @@ public class StudentService : IStudentService
                 Message = "Email already exist.",
             };
         }
+
+        var userStudent = new Student
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = student.Id,
+            CreatedBy = student.CreatedBy,
+            CreatedOn = student.CreatedOn,
+        };
+        student.Student = userStudent;
         student.RoleId = "Student";
         await _userRepository.AddAsync(student);
         await _userRepository.SaveChangesAsync();

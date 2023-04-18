@@ -1,4 +1,5 @@
 ﻿using EasyLearn.Models.Contracts;
+using EasyLearn.Models.Enums;
 
 namespace EasyLearn.Models.Entities
 {
@@ -6,13 +7,14 @@ namespace EasyLearn.Models.Entities
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string CourseLanguage { get; set; }
-        public string DifficultyLevel { get; set; }
+        public CourseLanguage CourseLanguage { get; set; }
+        public DifficultyLevel DifficultyLevel { get; set; }
         //public string Rating { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public double Price { get; set; }
         public bool IsActive { get; set; }
+        public string CourseLogo{ get; set; }
         public string InstructorId { get; set; }
 
         public string Coupon { get; set; }

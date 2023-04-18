@@ -52,7 +52,7 @@ namespace EasyLearn.Services.Implementations
                 Gender = model.Gender,
                 StudentshipStatus = model.StudentshipStatus,
                 //RoleId = "Instructor",
-                UserName = userName,
+                UserName = $"{userName}{new Random().Next(100,999)}",
                 CreatedOn = DateTime.Now,
                 IsActive = true,
                 EmailToken = Guid.NewGuid().ToString().Replace('-', '0'),
@@ -87,16 +87,8 @@ namespace EasyLearn.Services.Implementations
             }
         };
 
-            var userInstructor = new Instructor
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = user.Id,
-                CreatedBy = user.CreatedBy,
-                CreatedOn = user.CreatedOn,
-
-            };
+            
             user.Address = userAddress;
-            user.Instructor = userInstructor;
             user.PaymentDetails = userPayment;
             return user;
 
@@ -145,14 +137,14 @@ namespace EasyLearn.Services.Implementations
             var studentId = user.Student != null ? user.Student.Id : null;
             var loginModel = new LoginRequestModel
             {
-                Message = "Login successfully..",
+                Message = "You’ve successfully logged in to EasyLearn. Wellcome back soon!..",
                 Status = true,
                 Email = user.Email,
                 Password = user.Password,
                 RoleId = user.RoleId,
                 LastName = user.LastName,
                 FirstName = user.FirstName,
-                ProfilePicture = user.ProfilePicture,
+                ProfilePicture = user.ProfilePicture ?? "/uploads/profilePictures/Default.jpg",
                 Id = instructorId ?? moderatorId ?? adminId ?? studentId,
                 UserId = user.Id,
             };

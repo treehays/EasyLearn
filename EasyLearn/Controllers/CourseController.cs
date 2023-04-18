@@ -30,7 +30,7 @@ namespace EasyLearn.Controllers
         }
 
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateCourse()
         {
             var categoryList = await _categoryService.GetAll();
 
@@ -48,7 +48,7 @@ namespace EasyLearn.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCourseRequestModel model)
+        public async Task<IActionResult> CreateCourse(CreateCourseRequestModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -119,9 +119,9 @@ namespace EasyLearn.Controllers
 
 
         //[Route("[controller]/ListAllCourses")]
-        public async Task<IActionResult> GetAllInstructorCourses()
+        public async Task<IActionResult> GetAllCoursesByInstructorId()
         {
-            var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var instructorId = User.FindFirst(ClaimTypes.Actor)?.Value;
             var course = await _courseService.GetAllInstructorCourse(instructorId);
             if (!course.Status)
             {
@@ -263,6 +263,22 @@ namespace EasyLearn.Controllers
             return RedirectToAction(nameof(Index), "Home");
         }
 
+
+
+
+        public async Task<IActionResult> GlobalSearch(string name)
+        {
+
+            var globalResult = await _courseService.GlobalSearch(name);
+            if (globalResult == null)
+            {
+                TempData["failed"] = "No result found";
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            return View(globalResult);
+            //return View();
+        }
 
 
 

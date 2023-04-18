@@ -29,6 +29,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         var user = await _context.Users
             .Include(x => x.Instructor)
             .Include(x => x.Student)
+            .Include(x => x.Moderator)
+            .Include(x => x.Admin)
             .FirstOrDefaultAsync(expression);
         return user;
 

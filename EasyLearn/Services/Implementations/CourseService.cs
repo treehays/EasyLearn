@@ -1,6 +1,11 @@
 ﻿using EasyLearn.Models.DTOs;
+using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.DTOs.CourseDTOs;
+using EasyLearn.Models.DTOs.CourseReviewDTOs;
+using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.Entities;
+using EasyLearn.Models.ViewModels;
+using EasyLearn.Repositories.Implementations;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -12,17 +17,17 @@ public class CourseService : ICourseService
     private readonly ICourseRepository _courseRepository;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ICourseCategoryRepository _courseCategoryRepository;
-    private readonly ICategoryRepository _CategoryRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IUserRepository _userRepository;
 
 
-    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, ICourseCategoryRepository courseCategoryRepository, IWebHostEnvironment webHostEnvironment, ICategoryRepository categoryRepository)
+    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment, IUserRepository userRepository, ICategoryRepository categoryRepository)
     {
         _courseRepository = courseRepository;
         _httpContextAccessor = httpContextAccessor;
-        _courseCategoryRepository = courseCategoryRepository;
         _webHostEnvironment = webHostEnvironment;
-        _CategoryRepository = categoryRepository;
+        _userRepository = userRepository;
+        _categoryRepository = categoryRepository;
     }
 
     /// <summary>
@@ -79,6 +84,7 @@ public class CourseService : ICourseService
             CourseDuration = model.CourseDuration,
             CreatedBy = instructorId,
             CreatedOn = DateTime.Now,
+            CourseLogo = fileRelativePathx,
             Price = model.Price,
             IsActive = true,
             //CourseCategories = dd,
@@ -92,29 +98,10 @@ public class CourseService : ICourseService
             CreatedBy = instructorId,
             CreatedOn = course.CreatedOn,
         }).ToList();
-
-        //foreach (var item in model.CourseCategories)
-        //{
-        //    var courseCategory = new CourseCategory
-        //    {
-        //        Id = Guid.NewGuid().ToString(),
-        //        CourseId = course.Id,
-        //        CategoryId = item,
-        //        CreatedBy =instructorId, 
-        //        CreatedOn = course.CreatedOn,
-        //    };
-        //    course.CourseCategories.Add(courseCategory);
-        //}
         course.CourseCategories = categoryList;
 
         await _courseRepository.AddAsync(course);
         await _courseRepository.SaveChangesAsync();
-        //var cc = new List<CourseCategory>();
-
-
-
-        //await _courseCategoryRepository.AddAsync(courseCategory);
-        //await _courseRepository.SaveChangesAsync();
 
 
         return new BaseResponse
@@ -281,8 +268,14 @@ public class CourseService : ICourseService
 
     public async Task<CoursesRequestModel> GetByName(string name)
     {
-        var courses = await _courseRepository.GetListAsync(x => x.Title == name && x.IsActive && !x.IsDeleted);
-        if (courses == null)
+        var courses = await _courseRepository.GetListAsync(x =>
+        x.IsActive
+        && !x.IsDeleted
+        && x.Title.ToUpper().Contains(name.ToUpper())
+        || x.Description.ToUpper().Contains(name.ToUpper())
+        || x.CourseLanguage.ToString().ToUpper().Contains(name.ToUpper()));
+
+        if (courses.Count() > 0)
         {
             return new CoursesRequestModel
             {
@@ -304,7 +297,7 @@ public class CourseService : ICourseService
                 DifficultyLevel = x.DifficultyLevel,
                 Requirement = x.Requirement,
                 CourseDuration = x.CourseDuration,
-                InstructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                //InstructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 Price = x.Price,
             })
         };
@@ -398,6 +391,106 @@ public class CourseService : ICourseService
             })
         };
         return coursesModel;
+    }
+
+    public async Task<GlobalSearchResultViewModel> GlobalSearch(string name)
+    {
+        var coursesResult = await _courseRepository.GetListAsync(x =>
+        x.IsActive
+        && !x.IsDeleted
+        && x.Title.ToUpper().Contains(name.ToUpper())
+        || x.Description.ToUpper().Contains(name.ToUpper())
+        || x.CourseLanguage.ToString().ToUpper().Contains(name.ToUpper()));
+        var courseResponse = new CoursesRequestModel();
+        if (coursesResult.Count() > 0)
+        {
+            courseResponse = new CoursesRequestModel
+            {
+                Status = true,
+                Message = "Course retrieved successfully ...",
+                Data = coursesResult.Select(x => new CourseDTO
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    CourseLanguage = x.CourseLanguage,
+                    DifficultyLevel = x.DifficultyLevel,
+                    Requirement = x.Requirement,
+                    CourseDuration = x.CourseDuration,
+                    InstructorId = x.InstructorId,
+                    Price = x.Price,
+                    CourseLogo = x.CourseLogo,
+                })
+            };
+        }
+
+        var instructorResult = await _userRepository.GetListAsync(x =>
+         x.RoleId == "Instructor"
+         && x.IsActive
+         && !x.IsDeleted
+         && x.FirstName.ToUpper().Contains(name.ToUpper())
+         && x.LastName.ToUpper().Contains(name.ToUpper())
+         && x.UserName.ToUpper().Contains(name.ToUpper())
+         && x.Interest.ToUpper().Contains(name.ToUpper()));
+        var instructorResponse = new InstructorsResponseModel();
+        if (instructorResult.Count() > 0)
+        {
+            instructorResponse = new InstructorsResponseModel
+            {
+                Status = true,
+                Message = "Details successfully retrieved...",
+                Data = instructorResult.Select(x => new InstructorDto
+                {
+                    Id = x.Id,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email,
+                    Password = x.Password,
+                    ProfilePicture = x.ProfilePicture,
+                    Biography = x.Biography,
+                    Skill = x.Skill,
+                    Interest = x.Interest,
+                    PhoneNumber = x.PhoneNumber,
+                    Gender = x.Gender,
+                    StudentshipStatus = x.StudentshipStatus,
+                    RoleId = x.RoleId,
+                }),
+            };
+        }
+
+
+        var categoriesResult = await _categoryRepository.GetListAsync(x =>
+           x.IsAvailable
+           && !x.IsDeleted
+           && x.Name.ToUpper().Contains(name.ToUpper()));
+        var categoriesRespons = new CategoriesResponseModel();
+
+        if (categoriesResult.Count() > 0)
+        {
+            categoriesRespons = new CategoriesResponseModel
+            {
+                Status = true,
+                Message = "Categories successfully retrieved...",
+                Data = categoriesResult.Select(x => new CategoryDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    CategoryImage = x.CategoryImage,
+                    IsAvailable = x.IsAvailable,
+                }),
+            };
+        }
+
+
+        var globalResult = new GlobalSearchResultViewModel
+        {
+            CategoriesResponseModel = categoriesRespons,
+            InstructorsResponseModel = instructorResponse,
+            CoursesRequestModel = courseResponse,
+        };
+
+        return globalResult;
     }
 }
 

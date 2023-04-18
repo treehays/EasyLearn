@@ -24,7 +24,7 @@ public class InstructorController : Controller
     }
 
 
-    public IActionResult Create()
+    public IActionResult RegisterInstructor()
     {
         return View();
     }
@@ -32,7 +32,7 @@ public class InstructorController : Controller
 
     [ValidateAntiForgeryToken]
     [HttpPost]
-    public async Task<IActionResult> Create(CreateUserRequestModel model)
+    public async Task<IActionResult> RegisterInstructor(CreateUserRequestModel model)
     {
         if (!ModelState.IsValid)
         {

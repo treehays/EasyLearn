@@ -3,10 +3,12 @@
 @{
     ViewData["Title"] = "Login";
 }
+    <partial name="_Notification" />
+
 
 <h1>Login</h1>
 
-<h4>LoginRequestModel</h4>
+<h4>Enter valid login details</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,8 +21,8 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <label asp-for="Password"  class="control-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
           

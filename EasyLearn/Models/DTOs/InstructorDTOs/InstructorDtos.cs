@@ -37,24 +37,24 @@ public class InstructorDto
     public string Language { get; set; }
 }
 
-public class CreateInstructorRequestModel
-{
-    [DisplayName("First Name")] public string FirstName { get; set; }
-    [DisplayName("Last Name")] public string LastName { get; set; }
+//public class CreateInstructorRequestModel
+//{
+//    [DisplayName("First Name")] public string FirstName { get; set; }
+//    [DisplayName("Last Name")] public string LastName { get; set; }
 
-    [EmailAddress(ErrorMessage = "Enter a valid email..")]
-    public string Email { get; set; }
-    [DataType(DataType.Password)]
-    public string Password { get; set; }
-    [DataType(DataType.Password)]
-    [DisplayName("Re-enter Password")]
-    [Compare(nameof(Password), ErrorMessage = "Password not match")]
-    public string ConfirmPassword { get; set; }
-    public Gender Gender { get; set; }
-    public StudentshipStatus StudentshipStatus { get; set; }
-    public IFormFile formFile { get; set; }
+//    [EmailAddress(ErrorMessage = "Enter a valid email..")]
+//    public string Email { get; set; }
+//    [DataType(DataType.Password)]
+//    public string Password { get; set; }
+//    [DataType(DataType.Password)]
+//    [DisplayName("Re-enter Password")]
+//    [Compare(nameof(Password), ErrorMessage = "Password not match")]
+//    public string ConfirmPassword { get; set; }
+//    public Gender Gender { get; set; }
+//    public StudentshipStatus StudentshipStatus { get; set; }
+//    public IFormFile formFile { get; set; }
 
-}
+//}
 
 public class UpdateInstructorProfileRequestModel
 {

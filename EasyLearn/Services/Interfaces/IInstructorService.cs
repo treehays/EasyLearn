@@ -1,4 +1,5 @@
 ﻿using EasyLearn.Models.DTOs;
+using EasyLearn.Models.DTOs.CourseDTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
@@ -14,6 +15,7 @@ public interface IInstructorService
     Task<InstructorsResponseModel> GetAllActive();
     Task<InstructorsResponseModel> GetAllInActive();
     Task<InstructorResponseModel> GetById(string id);
+    //Task<InstructorsResponseModel> GetByName(string name);
     Task<InstructorResponseModel> GetByEmail(string email);
     Task<PaymentDetailRequestModel> GetByPaymentDetail(string id);
     Task<InstructorResponseModel> GetFullDetailById(string id);
