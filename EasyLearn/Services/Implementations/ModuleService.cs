@@ -11,13 +11,13 @@ namespace EasyLearn.Services.Implementations
     {
         private readonly IModuleRepository _moduleRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IFileManagerService _fileManagerService;
 
-        public ModuleService(IModuleRepository moduleRepository, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
+        public ModuleService(IModuleRepository moduleRepository, IHttpContextAccessor httpContextAccessor, IFileManagerService fileManagerService)
         {
             _moduleRepository = moduleRepository;
-            _webHostEnvironment = webHostEnvironment;
             _httpContextAccessor = httpContextAccessor;
+            _fileManagerService = fileManagerService;
         }
 
         public async Task<BaseResponse> Create(CreateModuleRequestModel model)
@@ -30,25 +30,11 @@ namespace EasyLearn.Services.Implementations
                     Message = "No video has been uploaded....",
                 };
             }
-
             int i = await _moduleRepository.GetLastElement() + 1;
-            string fileRelativePathx = null;
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "videos");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+            var fileNames = await _fileManagerService.GetListOfFileName(model.FormFiles, "uploads", "videos", "modules");
             var listOfModules = new List<Module>();
-            foreach (var item in model.FormFiles)
+            foreach (var item in fileNames)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetFileName(item.FileName);
-                fileRelativePathx = "/uploads/videos/" + fileName;
-                var filePath = Path.Combine(uploadsFolder, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await item.CopyToAsync(stream);
-                }
-
                 var module = new Module
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -59,23 +45,20 @@ namespace EasyLearn.Services.Implementations
                     Objective = model.Objective,
                     ModuleDuration = model.ModuleDuration,
                     SequenceOfModule = i++,
-                    VideoPath = fileRelativePathx,
+                    VideoPath = item,
                     CourseId = model.CourseId,
                     CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                     CreatedOn = DateTime.Now,
                 };
-
                 listOfModules.Add(module);
             }
             await _moduleRepository.AddRangeAsync(listOfModules);
             await _moduleRepository.SaveChangesAsync();
-
             return new BaseResponse
             {
                 Status = true,
                 Message = "video has been successfully uploaded...",
             };
-
         }
 
         public async Task<BaseResponse> Delete(string id)

@@ -13,7 +13,7 @@
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string CategoryImage { get; set; }
+        //public string CategoryImage { get; set; }
         public IFormFile FormFile { get; set; }
 
     }

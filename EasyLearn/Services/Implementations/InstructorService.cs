@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.Email;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
@@ -17,23 +18,21 @@ public class InstructorService : IInstructorService
     private readonly IInstructorRepository _instructorRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IFileManagerService _fileManagerService;
     private readonly IAddressRepository _addressRepository;
-    private readonly IEmailService _emailService;
+    private readonly ISendInBlueEmailService _emailService;
     private readonly IUserService _userService;
 
 
 
     public InstructorService(IInstructorRepository instructorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IEmailService emailService, IUserService userService)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, ISendInBlueEmailService emailService, IUserService userService)
     {
         _instructorRepository = instructorRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
-        _webHostEnvironment = webHostEnvironment;
         _fileManagerService = fileManagerService;
         _emailService = emailService;
         _userService = userService;
@@ -360,8 +359,8 @@ public class InstructorService : IInstructorService
     public async Task<InstructorsResponseModel> GetByName(string name)
     {
         var instructor = await _userRepository.GetListAsync(x =>
-          x.RoleId == "Instructor" 
-          && x.IsActive 
+          x.RoleId == "Instructor"
+          && x.IsActive
           && !x.IsDeleted
           && x.FirstName.ToUpper().Contains(name.ToUpper())
           && x.LastName.ToUpper().Contains(name.ToUpper())

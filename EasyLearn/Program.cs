@@ -1,4 +1,6 @@
 using EasyLearn.Data;
+using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.FileManager;
 using EasyLearn.Repositories.Implementations;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Implementations;
@@ -58,7 +60,7 @@ namespace EasyLearn
             builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
             builder.Services.AddScoped<IModuleService, ModuleService>();
 
-            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<ISendInBlueEmailService, SendInBlueEmailService>();
             builder.Services.AddScoped<IFileManagerService, FileManagerService>();
 
             builder.Services.AddScoped<IEnrolmentRepository, EnrolmentRepository>();

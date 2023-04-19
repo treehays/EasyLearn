@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    [Migration("20230416055947_dfsfs")]
-    partial class dfsfs
+    [Migration("20230419023443_Starting fresh")]
+    partial class Startingfresh
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -161,8 +161,8 @@ namespace EasyLearn.Migrations
                     b.Property<double>("CourseDuration")
                         .HasColumnType("double");
 
-                    b.Property<string>("CourseLanguage")
-                        .HasColumnType("longtext");
+                    b.Property<int>("CourseLanguage")
+                        .HasColumnType("int");
 
                     b.Property<string>("CourseLogo")
                         .HasColumnType("longtext");
@@ -182,8 +182,8 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("DifficultyLevel")
-                        .HasColumnType("longtext");
+                    b.Property<int>("DifficultyLevel")
+                        .HasColumnType("int");
 
                     b.Property<string>("InstructorId")
                         .HasColumnType("varchar(255)");

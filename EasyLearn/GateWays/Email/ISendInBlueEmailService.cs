@@ -1,9 +1,9 @@
 ﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
 
-namespace EasyLearn.Services.Interfaces;
+namespace EasyLearn.GateWays.Email;
 
-public interface IEmailService
+public interface ISendInBlueEmailService
 {
     Task<BaseResponse> SendEmailWithoutAttachment(EmailSenderNoAttachmentDTO model);
     Task<BaseResponse> EmailVerificationTemplate(EmailSenderDetails model, string baseUrl);

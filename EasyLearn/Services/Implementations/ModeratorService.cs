@@ -21,12 +21,11 @@ public class ModeratorService : IModeratorService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAddressRepository _addressRepository;
     private readonly IFileManagerService _fileManagerService;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IUserService _userService;
 
 
     public ModeratorService(IModeratorRepository moderatorRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, IWebHostEnvironment webHostEnvironment, IUserService userService)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, IUserService userService)
     {
         _moderatorRepository = moderatorRepository;
         _userRepository = userRepository;
@@ -34,7 +33,6 @@ public class ModeratorService : IModeratorService
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
         _fileManagerService = fileManagerService;
-        _webHostEnvironment = webHostEnvironment;
         _userService = userService;
     }
 
