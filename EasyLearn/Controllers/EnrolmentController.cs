@@ -17,8 +17,7 @@ namespace EasyLearn.Controllers
         {
             return View();
         }
-
-
+        
         public IActionResult Create()
         {
 
@@ -43,7 +42,7 @@ namespace EasyLearn.Controllers
             return RedirectToAction("ListAllCourses", "Course");
         }
 
-        public IActionResult GenerateReciept()
+        public IActionResult GenerateReceipt()
         {
 
             return View();

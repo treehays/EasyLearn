@@ -1,18 +1,16 @@
-﻿using EasyLearn.GateWays.Email;
-using EasyLearn.Models.DTOs;
+﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
-using EasyLearn.Services.Interfaces;
 using sib_api_v3_sdk.Api;
 using sib_api_v3_sdk.Client;
 using sib_api_v3_sdk.Model;
 
-namespace EasyLearn.Services.Implementations;
+namespace EasyLearn.GateWays.Email;
 
-public class EmailService : IEmailService
+public class SendInBlueEmailService : ISendInBlueEmailService
 {
     private readonly IConfiguration _configuration;
 
-    public EmailService(IConfiguration configuration)
+    public SendInBlueEmailService(IConfiguration configuration)
     {
         _configuration = configuration;
     }

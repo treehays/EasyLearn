@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.FileManager;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.DTOs.CourseDTOs;
 using EasyLearn.Models.DTOs.CourseReviewDTOs;
@@ -15,19 +16,18 @@ namespace EasyLearn.Services.Implementations;
 public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IFileManagerService _fileManagerService;
 
-
-    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment, IUserRepository userRepository, ICategoryRepository categoryRepository)
+    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ICategoryRepository categoryRepository, IFileManagerService fileManagerService)
     {
         _courseRepository = courseRepository;
         _httpContextAccessor = httpContextAccessor;
-        _webHostEnvironment = webHostEnvironment;
         _userRepository = userRepository;
         _categoryRepository = categoryRepository;
+        _fileManagerService = fileManagerService;
     }
 
     /// <summary>
@@ -45,33 +45,9 @@ public class CourseService : ICourseService
             };
         }
 
-        string fileRelativePathx = null;
 
-        if (model.FormFile != null)
-        {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "images");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+        var filePName = await _fileManagerService.GetFileName(model.FormFile, "uploads", "images", "course");
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
-            fileRelativePathx = "/uploads/images/" + fileName;
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.FormFile.CopyToAsync(stream);
-            }
-        }
-        //var category = new List<Category>();
-        //foreach (var item in model.CourseCategories)
-        //{
-        //    //var get = await _CategoryRepository.GetAsync(x => x.Id == item);
-
-        //    //category.Add(get);
-        //}
-
-        //var cate = model.CourseCategories.Select(async (y) => await _courseCategoryRepository.GetAsync((x => x.Id == y)));
         var course = new Course
         {
             Id = Guid.NewGuid().ToString(),
@@ -84,7 +60,7 @@ public class CourseService : ICourseService
             CourseDuration = model.CourseDuration,
             CreatedBy = instructorId,
             CreatedOn = DateTime.Now,
-            CourseLogo = fileRelativePathx,
+            CourseLogo = filePName,
             Price = model.Price,
             IsActive = true,
             //CourseCategories = dd,

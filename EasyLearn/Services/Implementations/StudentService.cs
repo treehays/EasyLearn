@@ -4,7 +4,6 @@ using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
-using Mysqlx.Expr;
 using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
@@ -15,21 +14,19 @@ public class StudentService : IStudentService
     private readonly IStudentRepository _studentRepository;
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IFileManagerService _fileManagerService;
     private readonly IAddressRepository _addressRepository;
     private readonly IUserService _userService;
 
 
     public StudentService(IStudentRepository studentRepository, IUserRepository userRepository,
-        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment = null, IFileManagerService fileManagerService = null, IUserService userService = null)
+        IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IFileManagerService fileManagerService, IUserService userService)
     {
         _studentRepository = studentRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
-        _webHostEnvironment = webHostEnvironment;
         _fileManagerService = fileManagerService;
         _userService = userService;
     }

@@ -9,12 +9,12 @@ namespace EasyLearn.Services.Implementations
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IFileManagerService _fileManagerService;
 
-        public CategoryService(ICategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironment)
+        public CategoryService(ICategoryRepository categoryRepository, IFileManagerService fileManagerService)
         {
             _categoryRepository = categoryRepository;
-            _webHostEnvironment = webHostEnvironment;
+            _fileManagerService = fileManagerService;
         }
 
         public async Task<BaseResponse> Create(CreateCategoryRequestModel model)
@@ -29,31 +29,31 @@ namespace EasyLearn.Services.Implementations
                 };
             }
 
-            if (model.FormFile != null && model.FormFile.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "images");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+            //if (model.FormFile != null && model.FormFile.Length > 0)
+            //{
+            //    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "images");
+            //    if (!Directory.Exists(uploadsFolder))
+            //    {
+            //        Directory.CreateDirectory(uploadsFolder);
+            //    }
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
-                model.CategoryImage = "/uploads/images/" + fileName;
-                var filePath = Path.Combine(uploadsFolder, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.FormFile.CopyToAsync(stream);
-                }
-            }
+            //    var fileName = Guid.NewGuid().ToString() + Path.GetFileName(model.FormFile.FileName);
+            //    model.CategoryImage = "/uploads/images/" + fileName;
+            //    var filePath = Path.Combine(uploadsFolder, fileName);
+            //    using (var stream = new FileStream(filePath, FileMode.Create))
+            //    {
+            //        await model.FormFile.CopyToAsync(stream);
+            //    }
+            //}
 
-
+            var filePName = await _fileManagerService.GetFileName(model.FormFile, "uploads", "images", "categories");
 
             var category = new Category
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = model.Name,
                 Description = model.Description,
-                CategoryImage = model.CategoryImage,
+                CategoryImage = filePName,
                 IsAvailable = true,
             };
             await _categoryRepository.AddAsync(category);
@@ -167,11 +167,11 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<CategoriesResponseModel> GetByName(string name)
         {
-            var categories = await _categoryRepository.GetListAsync(x => 
+            var categories = await _categoryRepository.GetListAsync(x =>
             x.IsAvailable
             && !x.IsDeleted
             && x.Name.ToUpper().Contains(name.ToUpper()));
-            
+
             if (categories == null)
             {
                 return new CategoriesResponseModel

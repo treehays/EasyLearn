@@ -1,4 +1,5 @@
 ﻿using BCrypt.Net;
+using EasyLearn.GateWays.Email;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
@@ -14,22 +15,20 @@ namespace EasyLearn.Services.Implementations
     {
         private readonly IUserRepository _userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IFileManagerService _fileManagerService;
-        private readonly IEmailService _emailService;
+        private readonly ISendInBlueEmailService _emailService;
 
 
-        public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IEmailService emailService)
+        public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IFileManagerService fileManagerService, ISendInBlueEmailService emailService)
         {
             _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
-            _webHostEnvironment = webHostEnvironment;
             _fileManagerService = fileManagerService;
             _emailService = emailService;
         }
 
 
-        public async Task<User> UserRegistration (CreateUserRequestModel model, string baseUrl)
+        public async Task<User> UserRegistration(CreateUserRequestModel model, string baseUrl)
         {
             var emailExist = await _userRepository.ExistByEmailAsync(model.Email);
             if (emailExist)
@@ -37,10 +36,8 @@ namespace EasyLearn.Services.Implementations
                 return null;
             }
 
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "profilePictures");
-            var filePath = await _fileManagerService.GetFileName(model.FormFile, uploadsFolder);
-            var truncUserName = model.Email.IndexOf('@');
-            var userName = model.Email.Remove(truncUserName);
+            var filePath = await _fileManagerService.GetFileName(model.FormFile, "uploads", "images", "profilePictures");
+            var userName = model.Email.Remove(model.Email.IndexOf('@'));
             var password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
             var user = new User
             {
@@ -51,22 +48,21 @@ namespace EasyLearn.Services.Implementations
                 Password = password,
                 Gender = model.Gender,
                 StudentshipStatus = model.StudentshipStatus,
-                //RoleId = "Instructor",
-                UserName = $"{userName}{new Random().Next(100,999)}",
+                UserName = $"{userName}{new Random().Next(100, 999)}",
                 CreatedOn = DateTime.Now,
                 IsActive = true,
                 EmailToken = Guid.NewGuid().ToString().Replace('-', '0'),
                 ProfilePicture = filePath,
                 CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             };
-           
+
             var senderDetail = new EmailSenderDetails
             {
                 EmailToken = $"{baseUrl}/Home/ConfirmEmail?emailToken={user.EmailToken}",
                 ReceiverEmail = user.Email,
                 ReceiverName = model.FirstName,
             };
-            var emailSender = _emailService.EmailVerificationTemplate(senderDetail,baseUrl);
+            var emailSender = _emailService.EmailVerificationTemplate(senderDetail, baseUrl);
 
             var userAddress = new Address
             {
@@ -87,14 +83,12 @@ namespace EasyLearn.Services.Implementations
             }
         };
 
-            
+
             user.Address = userAddress;
             user.PaymentDetails = userPayment;
             return user;
 
         }
-
-
 
 
         public async Task<LoginRequestModel> Login(LoginRequestModel model)

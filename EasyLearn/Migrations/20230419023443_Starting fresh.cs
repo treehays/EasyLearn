@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EasyLearn.Migrations
 {
-    public partial class bbn : Migration
+    public partial class Startingfresh : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -394,15 +394,15 @@ namespace EasyLearn.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CourseLanguage = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DifficultyLevel = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CourseLanguage = table.Column<int>(type: "int", nullable: false),
+                    DifficultyLevel = table.Column<int>(type: "int", nullable: false),
                     Requirement = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CourseDuration = table.Column<double>(type: "double", nullable: false),
                     Price = table.Column<double>(type: "double", nullable: false),
                     IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    CourseLogo = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     InstructorId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Coupon = table.Column<string>(type: "longtext", nullable: true)
