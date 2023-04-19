@@ -52,7 +52,7 @@ namespace EasyLearn.Controllers
         {
             if (courseId == null)
             {
-                TempData["failed"] = "Empty course";
+                TempData["failed"] = "Course no found..";
                 return RedirectToAction(nameof(Index), "Home");
             }
             var module = await _moduleService.GetByCourse(courseId);

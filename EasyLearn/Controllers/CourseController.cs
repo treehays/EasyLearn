@@ -60,11 +60,11 @@ namespace EasyLearn.Controllers
             if (!createCourse.Status)
             {
                 TempData["failed"] = createCourse.Message;
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
 
             TempData["success"] = createCourse.Message;
-            return RedirectToAction(nameof(GetAll));
+            return RedirectToAction(nameof(GetAllCoursesByInstructorId));
         }
 
         public async Task<IActionResult> Detail(string id)

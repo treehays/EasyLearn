@@ -138,7 +138,7 @@ namespace EasyLearn.Services.Implementations
                 RoleId = user.RoleId,
                 LastName = user.LastName,
                 FirstName = user.FirstName,
-                ProfilePicture = user.ProfilePicture ?? "/uploads/profilePictures/Default.jpg",
+                ProfilePicture = user.ProfilePicture ?? "Default.jpg",
                 Id = instructorId ?? moderatorId ?? adminId ?? studentId,
                 UserId = user.Id,
             };

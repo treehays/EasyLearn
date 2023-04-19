@@ -11,6 +11,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="wwwroot\uploads\NewFolder\**" />
+	  <Content Remove="wwwroot\uploads\NewFolder\**" />
+	  <EmbeddedResource Remove="wwwroot\uploads\NewFolder\**" />
+	  <None Remove="wwwroot\uploads\NewFolder\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Remove="Controllers\HomeController.cs~RF55069.TMP" />
 		<None Remove="Views\Admin\CreateC.cshtml~RF4cc05c7.TMP" />
 	</ItemGroup>

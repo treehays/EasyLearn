@@ -53,7 +53,7 @@ public class FileManagerService : IFileManagerService
             {
                 var fileName = Guid.NewGuid().ToString().Replace('-', 's') + Path.GetExtension(item.FileName);
                 var fullPath = Path.Combine(filePath, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     await item.CopyToAsync(stream);
                 }

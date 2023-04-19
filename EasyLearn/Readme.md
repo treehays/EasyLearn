@@ -1,4 +1,4 @@
- Layout = "~/Views/Shared/Layouts/_layout_light_sidebar.cshtml"; // this is the origianl sidebar layout (complre)
+ Layout = "~/Views/Shared/Layouts/_layout_light_sidebar.cshtml"; // this is the ,  origianl sidebar layout (complre)
 
 
 
@@ -10,3 +10,5 @@
                     <partial name="~/Views/Shared/_page_title.cshtml"/>// this is used for thr breadcrumb
 
                     
+
+#Images structure (/uploads/images/profilePictures/, /uploads/logos/, /uploads/videos/modules/)

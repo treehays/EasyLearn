@@ -144,7 +144,7 @@ namespace EasyLearn
                     configuration.LogoutPath = "/Home/Login";
                     configuration.Cookie.Name = "EasyLearn2.0";
                     //configuration.Cookie.Expiration = TimeSpan.FromHours(18);
-                    configuration.Cookie.MaxAge = TimeSpan.FromDays(1);
+                    //configuration.Cookie.MaxAge = TimeSpan.FromDays(1);
                 });
             var app = builder.Build();
 

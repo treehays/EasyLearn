@@ -398,7 +398,7 @@
                         </div>
                     </div>
                 </div>
-var profilePicture = $"{User.FindFirst(ClaimTypes.UserData)?.Value}";
+var profilePicture = $"/uploads/images/profilePictures/{User.FindFirst(ClaimTypes.UserData)?.Value}";
                 <div class="dropdown d-inline-block user-dropdown">
                     <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

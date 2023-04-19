@@ -1,13 +1,15 @@
 ﻿@model EasyLearn.Models.DTOs.ModulesDTOs.ModuleResponseModel
 
 
-
+@{
+    var videoPath = $"/uploads/videos/modules/{Model.Data.VideoPath}";
     <video width="320" height="240" controls>
-    <source src="@Model.Data.VideoPath" type="video/mp4">
-        <source src="@Model.Data.VideoPath" type="video/ogg">
+        <source src="@videoPath" type="video/mp4">
+        <source src="@videoPath" type="video/ogg">
         Your browser does not support the video tag.
     </video>
 
+}
 
 
 @*

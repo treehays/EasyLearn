@@ -31,7 +31,7 @@ namespace EasyLearn.Services.Implementations
                 };
             }
             int i = await _moduleRepository.GetLastElement() + 1;
-            var fileNames = await _fileManagerService.GetListOfFileName(model.FormFiles, "uploads", "videos", "modules");
+            var fileNames = await _fileManagerService.GetListOfFileName(model.FormFiles, "uploads", "Videos", "Modules");
             var listOfModules = new List<Module>();
             foreach (var item in fileNames)
             {
