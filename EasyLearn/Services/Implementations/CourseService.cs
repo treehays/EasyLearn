@@ -1,12 +1,9 @@
-﻿using EasyLearn.GateWays.FileManager;
-using EasyLearn.Models.DTOs;
+﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.DTOs.CourseDTOs;
-using EasyLearn.Models.DTOs.CourseReviewDTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.ViewModels;
-using EasyLearn.Repositories.Implementations;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -19,15 +16,17 @@ public class CourseService : ICourseService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IEnrolmentRepository _enrolmentRepository;
     private readonly IFileManagerService _fileManagerService;
 
-    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ICategoryRepository categoryRepository, IFileManagerService fileManagerService)
+    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ICategoryRepository categoryRepository, IFileManagerService fileManagerService, IEnrolmentRepository enrolmentRepository)
     {
         _courseRepository = courseRepository;
         _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
         _categoryRepository = categoryRepository;
         _fileManagerService = fileManagerService;
+        _enrolmentRepository = enrolmentRepository;
     }
 
     /// <summary>
@@ -88,9 +87,10 @@ public class CourseService : ICourseService
     }
 
 
-    public async Task<BaseResponse> Delete(string id)
+    public async Task<BaseResponse> Delete(string id, string userId)
     {
         var course = await _courseRepository.GetAsync(x => x.Id == id);
+
         if (course == null)
         {
             return new BaseResponse
@@ -142,6 +142,43 @@ public class CourseService : ICourseService
             })
         };
         return coursesModel;
+    }
+
+    public async Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId)
+    {
+        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(studentId);
+        if (courses == null)
+        {
+            return new CoursesEnrolledRequestModel
+            {
+                Message = "Course has not enrolled into any course yet...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesEnrolledRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Course?.Id,
+                Title = x.Course?.Title,
+                Description = x.Course?.Description,
+                CourseLanguage = x.Course.CourseLanguage,
+                DifficultyLevel = x.Course.DifficultyLevel,
+                Requirement = x.Course?.Requirement,
+                CourseDuration = x.Course.CourseDuration,
+                InstructorId = x.Course?.InstructorId,
+                Price = x.Course.Price,
+                CourseLogo = x.Course?.CourseLogo,
+                ShortDescription = x.Course?.ShortDescription,
+                IsPaid = x.IsPaid,
+                CompletionStatus = x.CompletionStatus,
+            })
+        };
+        return coursesModel;
+
     }
 
     public async Task<CoursesRequestModel> GetAllActiveInstructorCourse(string instructorId)
@@ -364,6 +401,7 @@ public class CourseService : ICourseService
                 CourseDuration = x.CourseDuration,
                 InstructorId = x.InstructorId,
                 Price = x.Price,
+                CourseLogo = x.CourseLogo,
             })
         };
         return coursesModel;

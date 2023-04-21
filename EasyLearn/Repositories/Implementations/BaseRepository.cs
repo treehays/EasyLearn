@@ -1,8 +1,8 @@
-﻿using System.Linq.Expressions;
-using EasyLearn.Data;
+﻿using EasyLearn.Data;
 using EasyLearn.Models.Contracts;
 using EasyLearn.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EasyLearn.Repositories.Implementations;
 
@@ -69,6 +69,8 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
 
     public async Task<int> SaveChangesAsync()
     {
-        return await _context.SaveChangesAsync();
+        var save = await _context.SaveChangesAsync();
+        return save;
     }
+
 }

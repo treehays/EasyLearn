@@ -20,7 +20,7 @@
                         </a>
                     </li>
 
-                    <!--Manage moderators -->
+                    <!--Manage moderators
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-store-2-line"></i>
@@ -34,7 +34,9 @@
                         </ul>
                     </li>
 
-                    <!--Manage Instrustors -->
+                    -->
+                    <!--Manage Instrustors
+
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-book-2-line"></i>
@@ -51,11 +53,9 @@
                             <li><a asp-controller="Instructor" asp-action="ListOfBankDetail">instructors bank details</a></li>
                         </ul>
                     </li>
+                    -->
+                    <!--Manage Courses category
 
-
-
-
-                    <!--Manage Courses category-->
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-book-2-line"></i>
@@ -73,7 +73,7 @@
                         </ul>
                     </li>
 
-
+                    -->
                     <!--Manage Courses -->
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -81,14 +81,18 @@
                             <span>Manage Courses</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
+                            <li><a asp-controller="Course" asp-action="GetAllActive">Available Courses</a></li>
+                            <li><a asp-controller="Course" asp-action="GetEnrolledCourses">Enrolled Courses</a></li>
+                            <li><a asp-controller="Course" asp-action="GetAllActive">Completed Courses</a></li>
+                            <!--Manage students
                             <li><a asp-controller="Course" asp-action="CreateCourse">Add new course</a></li>
-                            <li><a asp-controller="Course" asp-action="GetAllActive">Active Course</a></li>
 
                             <li><a asp-controller="Course" asp-action="GetAllInActive">View all inactive instructors</a></li>
 
                             <li><a asp-controller="Course" asp-action="">Moderate instructor</a></li>
 
                             <li><a asp-controller="Course" asp-action="">instructors bank details</a></li>
+                            -->
                         </ul>
                     </li>
 
@@ -99,13 +103,16 @@
                             <span>Manage students</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a asp-controller="Student" asp-action="RegisterStudent">Add new student</a></li>
-
                             <li><a asp-controller="Student" asp-action="Activestudent">Inactive students</a></li>
 
-                            <li><a asp-controller="Student" asp-action="Inactivestudent">Active students</a></li>
+                            <!--Manage students
+                                    <li><a asp-controller="Student" asp-action="RegisterStudent">Add new student</a></li>
 
-                            <li><a asp-controller="Student" asp-action="">students</a></li>
+
+                                    <li><a asp-controller="Student" asp-action="Inactivestudent">Active students</a></li>
+
+                                    <li><a asp-controller="Student" asp-action="">students</a></li>
+                            -->
 
 
 

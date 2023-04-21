@@ -126,16 +126,6 @@ namespace EasyLearn
 
             */
 
-
-
-
-
-
-
-
-
-
-
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
                 configuration =>

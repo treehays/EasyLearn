@@ -8,6 +8,7 @@ public class Enrolment : AuditableEntity
     public CompletionStatus CompletionStatus { get; set; }
     public string Grade { get; set; }
     public string CertificateNumber { get; set; }
+    public bool IsPaid { get; set; }
     public DateTime? AccessExpiration { get; set; }
     public string PaymentId { get; set; }
     public string StudentId { get; set; }

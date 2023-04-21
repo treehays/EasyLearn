@@ -49,7 +49,7 @@ namespace EasyLearn.Controllers
         // [Route("{Account/login}")]
         //[Route("{Login}")]
         public async Task<IActionResult> Login(LoginRequestModel model)
-             {
+        {
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -89,10 +89,11 @@ namespace EasyLearn.Controllers
             {
                 TempData["success"] = "Login successful";
                 return RedirectToAction("GetAllActive", "Student");
-            }  else if (user.RoleId == "Student")
+            }
+            else if (user.RoleId == "Student")
             {
                 TempData["success"] = "Login successful";
-                return RedirectToAction("GetAllActive", "Student");
+                return RedirectToAction("index", "course");
             }
             else
             {

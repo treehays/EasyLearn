@@ -9,5 +9,6 @@ namespace EasyLearn.Models.Entities
         public Student Student { get; set; }
         public string CourseId { get; set; }
         public Course Course { get; set; }
+        //public CourseStatus { get; set; }
     }
 }

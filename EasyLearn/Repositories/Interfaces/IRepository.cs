@@ -1,5 +1,5 @@
-﻿using System.Linq.Expressions;
-using EasyLearn.Models.Contracts;
+﻿using EasyLearn.Models.Contracts;
+using System.Linq.Expressions;
 
 namespace EasyLearn.Repositories.Interfaces
 {

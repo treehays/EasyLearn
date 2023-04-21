@@ -2,66 +2,66 @@
 @model EasyLearn.Models.DTOs.UserDTOs.CreateUserRequestModel
 
 @{
+    /*
     //ViewBag.Title = "EasyLearn || Register new admin";
-    @* Layout = "_Layout"; *@
-    ViewData["Title"] = "Home Page";
-}
+        @* Layout = "_Layout"; *@
+        ViewData["Title"] = "Home Page";
 
-<partial name="_Notification" />
-<div>
-<h2>Sign up and start learning</h2>
-<div class="row">
-    <div class="col-md-4 text-left">
+        <partial name="_Notification" />
+        <div>
+        <h2>Sign up and start learning</h2>
+        <div class="row">
+        <div class="col-md-4 text-left">
         @using (Html.BeginForm("RegisterStudent", "Student", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            <div class="form-group">
+                {
+                <div class="form-group">
                 @Html.LabelFor(x => x.FirstName, new { @class = "text-left" })
                 @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @placeholder = "Real Name" })
                 @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
-            </div>
+                </div>
 
-            <div class="form-group">
+                <div class="form-group">
                 @Html.LabelFor(x => x.LastName, new { @class = "form-label" })
                 @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @placeholder = "Real Name" })
                 @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
-            </div>
+                </div>
 
-            <div class="form-group">
+                <div class="form-group">
                 @Html.LabelFor(x => x.Email, new { @class = "form-label" })
                 @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @placeholder = "Real Name" })
                 @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
-            </div>
+                </div>
 
 
-            <div class="form-group">
+                <div class="form-group">
                 @Html.LabelFor(x => x.Password, new { @class = "form-label" })
                 @Html.PasswordFor(x => x.Password, new { @class = "form-control", @placeholder = "Real Name" })
                 @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
-            </div>
+                </div>
 
 
-            <div class="form-group">
+                <div class="form-group">
                 @Html.LabelFor(x => x.ConfirmPassword, new { @class = "form-label" })
                 @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control", @placeholder = "Real Name" })
                 @Html.ValidationMessageFor(x => x.ConfirmPassword, "", new { @class = "text-danger" })
-            </div>
+                </div>
 
 
-            <div class="form-group">
+                <div class="form-group">
                 @Html.LabelFor(x => x.Gender, new { @class = "form-label" })
                 @Html.DropDownListFor(x => x.Gender, new SelectList(Enum.GetValues(typeof(Gender))) , new { @class = "btn btn-secondary dropdown-toggle" })
                 @Html.ValidationMessageFor(x => x.Gender, "", new { @class = "text-danger" })
-            </div>
+                </div>
 
 
 
-            <div class="form-group">
+                <div class="form-group">
                 @Html.LabelFor(x => x.StudentshipStatus, new { @class = "" })
                 @Html.DropDownListFor(x => x.StudentshipStatus, new SelectList(Enum.GetValues(typeof(StudentshipStatus))), new {@class="btn btn-secondary dropdown-toggle"})
                 @Html.ValidationMessageFor(x => x.StudentshipStatus, "", new { @class = "text-danger" })
-            </div>
+                </div>
 
-            <div class="form-group">
+                <div class="form-group">
                 @Html.LabelFor(x => x.FormFile, new { @class = "" })
                 @*<label for="file">Choose file</label>*@
                     <input type="file" name="formFile" id="formFile" accept=".png, .jpg, .jpeg" />
@@ -71,18 +71,163 @@
             <button type="reset" class="btn btn-danger">Reset</button>
         }
 
-    </div>
+        </div>
 
     <div class="col-md-6">
         @* <h2></h2> *@
 
-    </div>
+        </div>
 
+        </div>
+        </div>
+
+        @section Scripts {
+        @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+                        }
+                                }
+
+                                        */
+}
+
+
+
+
+
+
+
+
+
+
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_BlankLayout.cshtml";
+}
+
+<div>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <div class="col-lg-4">
+                <div class="authentication-page-content p-4 d-flex align-items-center min-vh-100">
+                    <div class="w-100">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-9">
+                                <div>
+                                    <div class="text-center">
+                                        <div>
+                                            <a asp-controller="Home" class="">
+                                                <img src="/uploads/Logos/logo.jpg" alt="" height="20" class="auth-logo logo-dark mx-auto">
+                                                <img src="/uploads/Logos/logo.jpg" alt="" height="20" class="auth-logo logo-light mx-auto">
+                                            </a>
+                                        </div>
+
+                                        <h4 class="font-size-18 mt-4">Register account</h4>
+                                        <p class="text-muted">Get your free learning account now.<br /><span>and start learning</span></p>
+
+
+                                    </div>
+
+                                    <div class="p-2 mt-5">
+                                        <form class="" asp-controller="Student" asp-action="RegisterStudent" enctype="multipart/form-data">
+
+
+                                            <div class="auth-form-group-custom mb-4">
+                                                <i class="ri-user-2-line auti-custom-input-icon"></i>
+                                                <label for="FirstName">First name</label>
+                                                <input type="text" class="form-control" id="FirstName" placeholder="Enter FirstName" name="FirstName">
+                                            </div>
+                                            @*
+
+
+                                            <div class="auth-form-group-custom mb-4">
+                                            <i class="ri-user-2-line auti-custom-input-icon"></i>
+                                            <label for="LastName">Last name</label>
+                                            <input type="text" class="form-control" id="LastName" placeholder="Enter FirstName" name="LastName">
+                                            </div>
+                                            *@
+                                            <div class="auth-form-group-custom mb-4">
+                                                <i class="ri-mail-line auti-custom-input-icon"></i>
+                                                <label for="useremail">Email</label>
+                                                <input type="email" class="form-control" id="useremail" placeholder="Enter email" name="Email">
+                                            </div>
+
+
+                                            <div class="auth-form-group-custom mb-4">
+                                                <i class="ri-user-2-line auti-custom-input-icon"></i>
+                                                <label for="Password">Password</label>
+                                                <input type="password" class="form-control" id="Password" placeholder="Enter Password" name="Password">
+                                            </div>
+
+
+
+                                            <div class="auth-form-group-custom mb-4">
+                                                <i class="ri-user-2-line auti-custom-input-icon"></i>
+                                                <label for="ConfirmPassword">Re-enter Password</label>
+                                                <input type="password" class="form-control" id="ConfirmPassword" placeholder="Re-enter Password" name="ConfirmPassword">
+                                            </div>
+
+
+                                            <div class="auth-form-group-custom mb-4">
+                                                <i class="mdi mdi-arrow-down-drop-circle-outline auti-custom-input-icon"></i>
+                                                <label for="Gender">Gender</label>
+                                                <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<Gender>()"></select>
+
+                                            </div>
+
+                                            @*
+
+                                            <div class="auth-form-group-custom mb-4">
+                                            <i class="mdi mdi-arrow-down-drop-circle-outline auti-custom-input-icon"></i>
+                                            <label for="StudentshipStatus">Studentship Status</label>
+                                            <select asp-for="StudentshipStatus" class="form-control" id="StudentshipStatus" asp-items="Html.GetEnumSelectList<StudentshipStatus>()"></select>
+                                            </div>
+
+                                            <div class="auth-form-group-custom mb-4">
+                                            <i class="ri-user-2-line auti-custom-input-icon"></i>
+                                            <label for="FormFile">Profile picture</label>
+                                            <input type="file" class="form-control" id="FormFile" accept=".png, .jpg, .jpeg">
+                                            </div>
+                                            *@
+
+                                            <div class="text-center">
+                                                <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Register</button>
+                                            </div>
+
+                                            <div class="mt-4 text-center">
+                                                <p class="mb-0">By registering you agree to the EasyLearn <a href="#" class="text-primary">Terms of Use</a></p>
+                                            </div>
+                                        </form>
+                                        <div class="mt-5 text-center">
+                                            <span>
+                                                Already have an account ? <a asp-controller="Home" asp-action="Login" class="fw-medium text-primary"> Login</a> <br />  <span> ©<script>document.write(new Date().getFullYear())</script> EasyLearn. Crafted with <i class="mdi mdi-heart text-danger"></i> by S3m1c0l0n
+                                                </span>
+                                            </span>
+                                           
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="authentication-bg position-relative">
+                    <div class="bg-overlay"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
+
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+                                }
+
