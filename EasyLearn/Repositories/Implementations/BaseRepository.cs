@@ -47,7 +47,7 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
     //    return entity;
     //}
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<ICollection<T>> GetAllAsync()
     {
         var entities = await _context.Set<T>().AsNoTracking().ToListAsync();
         return entities;
@@ -61,7 +61,7 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
         return Task.CompletedTask;
     }
 
-    public async Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> expression)
+    public async Task<ICollection<T>> GetListAsync(Expression<Func<T, bool>> expression)
     {
         var entities = await _context.Set<T>().AsNoTracking().Where(expression).ToListAsync();
         return entities;

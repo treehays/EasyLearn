@@ -10,6 +10,8 @@ public interface ICourseService
     Task<BaseResponse> Delete(string id, string userId);
     Task<CoursesRequestModel> GetAllInstructorCourse(string instructorId);
     Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId);
+    Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId);
+    Task<CoursesEnrolledRequestModel> GetCompletedCourses(string studentId);
     Task<CoursesRequestModel> GetAllCourse();
     Task<CoursesRequestModel> GetAllActiveInstructorCourse(string instructorId);
     Task<CoursesRequestModel> GetAllInActiveInstructorCourse(string instructorId);

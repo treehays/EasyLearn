@@ -2,6 +2,7 @@
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EasyLearn.Repositories.Implementations;
 
@@ -12,11 +13,11 @@ public class EnrolmentRepository : BaseRepository<Enrolment>, IEnrolmentReposito
     {
         _context = context;
     }
-    public async Task<ICollection<Enrolment>> GetStudentEnrolledCourses(string studentId)
+    public async Task<ICollection<Enrolment>> GetStudentEnrolledCourses(Expression<Func<Enrolment, bool>> expression)
     {
         var enrolments = await _context.Enrolments
             .Include(x => x.Course)
-            .Where(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId).ToListAsync();
+            .Where(expression).ToListAsync();
         return enrolments;
     }
 }

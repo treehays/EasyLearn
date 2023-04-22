@@ -161,6 +161,38 @@ namespace EasyLearn.Controllers
         }
 
 
+
+        public async Task<IActionResult> StudentActiveCourses()
+        {
+            var studentId = User.FindFirst(ClaimTypes.Actor)?.Value;
+            var courses = await _courseService.StudentActiveCourses(studentId);
+            if (!courses.Status)
+            {
+                TempData["failed"] = courses.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = courses.Message;
+            return View(courses);
+        }
+
+
+
+        public async Task<IActionResult> GetCompletedCourses()
+        {
+            var studentId = User.FindFirst(ClaimTypes.Actor)?.Value;
+            var courses = await _courseService.GetCompletedCourses(studentId);
+            if (!courses.Status)
+            {
+                TempData["failed"] = courses.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = courses.Message;
+            return View(courses);
+        }
+
+
         public async Task<IActionResult> GetByStatus(bool status)
         {
             var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
