@@ -1,44 +1,48 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.Payments;
+using EasyLearn.GateWays.Payments.PaymentGatewayDTOs;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EnrolmentDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
-using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
 
 public class EnrolmentService : IEnrolmentService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IEnrolmentRepository _enrolmentRepository;
     private readonly ICourseRepository _courseRepository;
+    private readonly IStudentRepository _studentRepository;
+    private readonly IPayStackService _payStackService;
 
-    public EnrolmentService(IEnrolmentRepository enrolmentRepository, IHttpContextAccessor httpContextAccessor, ICourseRepository courseRepository)
+    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IStudentRepository studentRepository, IPayStackService payStackService)
     {
         _enrolmentRepository = enrolmentRepository;
-        _httpContextAccessor = httpContextAccessor;
         _courseRepository = courseRepository;
+        _studentRepository = studentRepository;
+        _payStackService = payStackService;
     }
 
-    public async Task<BaseResponse> Create(CreateEnrolmentRequestModel model)
+    public async Task<CreateEnrolmentRequestModel> Create(CreateEnrolmentRequestModel model, string studentId, string userId)
     {
-        var StudentId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var CreatedBy = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Actor);
-
-        var course = new StudentCourse
+        var enrollmentStatus = await _courseRepository.StudentIsEnrolled(model.CourseId, studentId);
+        if (enrollmentStatus != null)
         {
-            CourseId = model.CourseId,
-            StudentId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Actor)?.Value,
-            CreatedBy = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Actor),
-            CreatedOn = DateTime.Now,
-            Id = Guid.NewGuid().ToString(),
-        };
-        var courses = new List<StudentCourse>();
-        courses.Add(course);
-
-        var stdt = await _courseRepository.GetAsync(x => x.Id == model.CourseId);
-
+            if (enrollmentStatus.IsPaid)
+            {
+                return new CreateEnrolmentRequestModel
+                {
+                    Message = "You've already paid for this course...",
+                    Status = true,
+                };
+            }
+            return new CreateEnrolmentRequestModel
+            {
+                Message = "You've enrolled but not paid, proceed to pay...",
+                Status = false,
+            };
+        }
 
         var payment = new Payment
         {
@@ -46,34 +50,57 @@ public class EnrolmentService : IEnrolmentService
             PaymentMethod = model.PaymentMethods,
             PaymentStatus = PaymentStatus.Pending,
             //CouponUsed = model.Coupon,
-            StudentId = course.StudentId,
+            StudentId = studentId,
             CourseId = model.CourseId,
-            CreatedBy = course.CreatedBy,
-            CreatedOn = course.CreatedOn,
+            CreatedBy = userId,
+            CreatedOn = DateTime.Now,
             PaymentAmount = model.AmountPaid,
+            ReferrenceNumber = Guid.NewGuid().ToString().Replace('-', 'y'),
         };
 
-        var enrolment = new Enrolment
+        var enrolments = new List<Enrolment>
         {
+            new Enrolment
+            {
+                Id = Guid.NewGuid().ToString(),
+                CompletionStatus = CompletionStatus.NotCompleted,
+                StudentId = studentId,
+                CreatedBy = userId,
+                CreatedOn = payment.CreatedOn,
+                PaymentId = payment.Id,
+                CourseId = payment.CourseId,
+                Payment = payment,
+            },
+        };
+
+        var studentCourses = new List<StudentCourse>();
+        var studentCourse = new StudentCourse
+        {
+            CourseId = model.CourseId,
+            StudentId = studentId,
+            CreatedBy = userId,
+            CreatedOn = payment.CreatedOn,
             Id = Guid.NewGuid().ToString(),
-            CompletionStatus = CompletionStatus.NotCompleted,
-            CreatedBy = course.StudentId,
-            CreatedOn = course.CreatedOn,
-            PaymentId = payment.Id,
-            CourseId = course.CourseId,
         };
-        stdt.StudentCourses = courses;
-        enrolment.Payment = payment;
-        //enrolment.Course.StudentCourses = courses;
+        studentCourses.Add(studentCourse);
 
-
-        await _enrolmentRepository.AddAsync(enrolment);
-        await _enrolmentRepository.SaveChangesAsync();
-
-        return new BaseResponse
+        var student = new Student
         {
-            Message = "Payment processing..",
-            Status = true,
+            StudentCourses = studentCourses,
+            Enrolments = enrolments,
+        };
+        await _studentRepository.AddAsync(student);
+        await _studentRepository.SaveChangesAsync();
+
+        return new CreateEnrolmentRequestModel
+        {
+            PaymentRequest = new InitializePaymentRequestModel
+            {
+                RefrenceNo = payment.ReferrenceNumber,
+                CoursePrice = model.AmountPaid,
+            },
+            Message = "Procced to Payment..",
+            Status = false,
         };
 
     }

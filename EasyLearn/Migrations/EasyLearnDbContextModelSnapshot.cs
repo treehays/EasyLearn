@@ -19,6 +19,43 @@ namespace EasyLearn.Migrations
                 .HasAnnotation("ProductVersion", "6.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("EasyLearn.Models.Entities.AcceptedNigerianBank", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("BankCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("BankName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AcceptedNigerianBanks");
+                });
+
             modelBuilder.Entity("EasyLearn.Models.Entities.Address", b =>
                 {
                     b.Property<string>("Id")
@@ -204,6 +241,9 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Requirement")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
@@ -350,6 +390,9 @@ namespace EasyLearn.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsPaid")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ModifiedBy")
@@ -715,7 +758,7 @@ namespace EasyLearn.Migrations
                     b.Property<string>("AccountType")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("BankName")
+                    b.Property<string>("BankCode")
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedBy")
@@ -846,6 +889,9 @@ namespace EasyLearn.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
@@ -946,6 +992,49 @@ namespace EasyLearn.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("EasyLearn.Models.Entities.Wallet", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("Credit")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("Debit")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Wallet");
                 });
 
             modelBuilder.Entity("EasyLearn.Models.Entities.Address", b =>
@@ -1140,6 +1229,15 @@ namespace EasyLearn.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("EasyLearn.Models.Entities.Wallet", b =>
+                {
+                    b.HasOne("EasyLearn.Models.Entities.User", "User")
+                        .WithOne("Wallet")
+                        .HasForeignKey("EasyLearn.Models.Entities.Wallet", "UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("EasyLearn.Models.Entities.Category", b =>
                 {
                     b.Navigation("CourseCategories");
@@ -1205,6 +1303,8 @@ namespace EasyLearn.Migrations
                     b.Navigation("PaymentDetails");
 
                     b.Navigation("Student");
+
+                    b.Navigation("Wallet");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,8 @@
 ﻿using EasyLearn.Models.DTOs;
-using EasyLearn.Services.Interfaces;
 using EasyLearn.Models.DTOs.RoleDTOs;
-using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Models.Entities;
+using EasyLearn.Repositories.Interfaces;
+using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
@@ -13,7 +13,7 @@ public class RoleService : IRoleService
     private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-    public RoleService(IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor = null)
+    public RoleService(IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor)
     {
         _roleRepository = roleRepository;
         _httpContextAccessor = httpContextAccessor;

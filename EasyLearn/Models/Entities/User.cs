@@ -29,6 +29,7 @@ namespace EasyLearn.Models.Entities
         public Admin Admin { get; set; }
         public Instructor Instructor { get; set; }
         public Address Address { get; set; }
+        public Wallet Wallet { get; set; }
         public ICollection<Notification> Notifications { get; set; } = new HashSet<Notification>();
         public ICollection<PaymentDetails> PaymentDetails { get; set; } = new HashSet<PaymentDetails>();
 

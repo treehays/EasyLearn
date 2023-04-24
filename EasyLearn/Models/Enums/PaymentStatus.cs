@@ -2,7 +2,7 @@
 {
     public enum PaymentStatus
     {
-        Pending,
+        Pending = 1,
         Processing,
         Authorized,
         Captured,

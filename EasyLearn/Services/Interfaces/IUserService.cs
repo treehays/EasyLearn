@@ -6,9 +6,11 @@ namespace EasyLearn.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User> UserRegistration (CreateUserRequestModel model,string baseUrl);
+        Task<User> UserRegistration(CreateUserRequestModel model, string baseUrl);
         Task<BaseResponse> EmailVerification(string emailToken);
         //Task<bool> Testing(string email, string OTPKey);
         Task<LoginRequestModel> Login(LoginRequestModel model);
+        Task<BaseResponse> UpgradeUser(UserUpgradeRequestModel model, string userId);
+        Task<UserResponseModel> GetByIdAsync(string userId);
     }
 }

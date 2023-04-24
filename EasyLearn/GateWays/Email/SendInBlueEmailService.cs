@@ -57,7 +57,7 @@ public class SendInBlueEmailService : ISendInBlueEmailService
 
         try
         {
-            var result = apiInstance.SendTransacEmail(sendSmtpEmail);
+            var result = await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
 
             return new BaseResponse
             {
@@ -122,7 +122,8 @@ public class SendInBlueEmailService : ISendInBlueEmailService
         //var result = await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
         try
         {
-            var result = apiInstance.SendTransacEmail(sendSmtpEmail);
+            //var result1 = apiInstance.SendTransacEmail(sendSmtpEmail);
+            var result = await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
 
             return new BaseResponse
             {

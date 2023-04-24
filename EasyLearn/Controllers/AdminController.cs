@@ -1,6 +1,9 @@
 ﻿using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace EasyLearn.Controllers;
 
@@ -8,11 +11,13 @@ public partial class AdminController : Controller
 {
     private readonly IAdminService _adminService;
     private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
 
-    public AdminController(IAdminService adminService, IUserService userService)
+    public AdminController(IAdminService adminService, IUserService userService, IRoleService roleService)
     {
         _adminService = adminService;
         _userService = userService;
+        _roleService = roleService;
     }
 
     // GET
@@ -68,6 +73,30 @@ public partial class AdminController : Controller
 
         TempData["success"] = admin.Message;
         return View(admin);
+    }
+
+    public async Task<IActionResult> UpgradeUser(string userId)
+    {
+
+        var user = await _userService.GetByIdAsync("43c31652-50cc-491b-9c45-99b27a1dfb2b");
+        var roles = await _roleService.GetAll();
+        ViewData["roles"] = new SelectList(roles.Data, "Id", "RoleName");
+        return View(user);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpgradeUser(UserUpgradeRequestModel model)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userService.UpgradeUser(model, userId);
+        if (!user.Status)
+        {
+            TempData["failed"] = user.Message;
+            return RedirectToAction("Index");
+        }
+
+        TempData["success"] = user.Message;
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> DeletePreview(string id)

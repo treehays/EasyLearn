@@ -1,8 +1,8 @@
-﻿using System.Linq.Expressions;
-using EasyLearn.Data;
+﻿using EasyLearn.Data;
 using EasyLearn.Models.Contracts;
 using EasyLearn.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EasyLearn.Repositories.Implementations;
 
@@ -47,7 +47,7 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
     //    return entity;
     //}
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<ICollection<T>> GetAllAsync()
     {
         var entities = await _context.Set<T>().AsNoTracking().ToListAsync();
         return entities;
@@ -61,7 +61,7 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
         return Task.CompletedTask;
     }
 
-    public async Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> expression)
+    public async Task<ICollection<T>> GetListAsync(Expression<Func<T, bool>> expression)
     {
         var entities = await _context.Set<T>().AsNoTracking().Where(expression).ToListAsync();
         return entities;
@@ -69,6 +69,8 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
 
     public async Task<int> SaveChangesAsync()
     {
-        return await _context.SaveChangesAsync();
+        var save = await _context.SaveChangesAsync();
+        return save;
     }
+
 }

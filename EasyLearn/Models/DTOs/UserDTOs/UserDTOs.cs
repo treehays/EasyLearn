@@ -7,13 +7,26 @@ namespace EasyLearn.Models.DTOs.UserDTOs;
 
 public class UserDTO
 {
+
+    public string Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
+    public string UserName { get; set; }
     public string Password { get; set; }
     public string ProfilePicture { get; set; }
+    public string Biography { get; set; }
+    public string Skill { get; set; }
+    public string Interest { get; set; }
+    public string PhoneNumber { get; set; }
+    public Gender Gender { get; set; }
+    public StudentshipStatus StudentshipStatus { get; set; }
     public string RoleId { get; set; }
-    public string UserName { get; set; }
+    public bool IsActive { get; set; }
+    public bool EmailConfirmed { get; set; }
+    public string EmailToken { get; set; }
+    public bool PhoneNumberConfirmed { get; set; }
+
 }
 
 
@@ -96,6 +109,12 @@ public class UpdateUserActiveStatusRequestModel
     public bool IsActive { get; set; }
 }
 
+public class UserUpgradeRequestModel
+{
+    public string UserId { get; set; }
+    public string RoleId { get; set; }
+}
+
 
 public class UserRequestModel
 {
@@ -107,14 +126,15 @@ public class UserRequestModel
     // public string RoleId { get; set; }   
 }
 
-public class UserResponseModel
+public class UserResponseModel : BaseResponse
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string ProfilePicture { get; set; }
-    public string RoleId { get; set; }
+    public UserDTO Data { get; set; }
+}
+public class UsersResponseModel : BaseResponse
+{
+
+    public ICollection<UserDTO> Data { get; set; }
+
 }
 
 public class LoginRequestModel : BaseResponse

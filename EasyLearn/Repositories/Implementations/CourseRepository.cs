@@ -1,6 +1,7 @@
 ﻿using EasyLearn.Data;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyLearn.Repositories.Implementations;
 
@@ -10,6 +11,20 @@ public class CourseRepository : BaseRepository<Course>, ICourseRepository
     {
         _context = context;
     }
+
+    public async Task<Course> GetCourseByIdDetailed(string courseId, string studentId)
+    {
+        var course = await _context.Courses.Include(l => l.StudentCourses).FirstOrDefaultAsync(m => m.Id == courseId && m.StudentCourses.Any(x => x.StudentId == studentId && x.CourseId == courseId));
+        return course;
+    }
+
+    public async Task<StudentCourse> StudentIsEnrolled(string courseId, string studentId)
+    {
+        var studentCourse = await _context.StudentCourses.Include(x => x.Course).FirstOrDefaultAsync(x => x.StudentId == studentId && x.CourseId == courseId);
+        return studentCourse;
+    }
+
+
 
     //public Task<Course> SearchCourse(string word)
     //{

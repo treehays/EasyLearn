@@ -1,4 +1,4 @@
-﻿using BCrypt.Net;
+﻿using EasyLearn.GateWays.Mappers.UserMappers;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.AdminDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
@@ -7,7 +7,6 @@ using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
-using Mysqlx.Expr;
 using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
@@ -19,25 +18,22 @@ public class AdminService : IAdminService
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IAddressRepository _addressRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IUserService _userService;
-    private readonly IFileManagerService _fileManagerService;
+    private readonly IUserMapperService _userMapperService;
 
 
     public AdminService(IAdminRepository adminRepository, IUserRepository userRepository,
         IHttpContextAccessor httpContextAccessor, IPaymentDetailRepository paymentDetailsRepository,
-        IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, IFileManagerService fileManagerService, IUserService userService)
+        IAddressRepository addressRepository, IUserService userService, IUserMapperService userMapperService)
     {
         _adminRepository = adminRepository;
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
-        _webHostEnvironment = webHostEnvironment;
-        _fileManagerService = fileManagerService;
         _userService = userService;
+        _userMapperService = userMapperService;
     }
-
 
     public async Task<BaseResponse> AdminRegistration(CreateUserRequestModel model, string baseUrl)
     {
@@ -52,7 +48,7 @@ public class AdminService : IAdminService
             };
         }
 
-        var userAdmin= new Admin
+        var userAdmin = new Admin
         {
             Id = Guid.NewGuid().ToString(),
             UserId = admin.Id,
@@ -148,7 +144,7 @@ public class AdminService : IAdminService
             };
         }
 
-        admin.BankName = model.BankName ?? admin.BankName;
+        admin.BankCode = model.BankName ?? admin.BankCode;
         admin.AccountNumber = model.AccountNumber ?? admin.AccountNumber;
         admin.AccountName = model.AccountName ?? admin.AccountName;
         admin.AccountType = model.AccountType ?? admin.AccountType;
@@ -235,28 +231,27 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<AdminResponseModel> GetById(string id)
+    public async Task<UserResponseModel> GetById(string id)
     {
-        var admin = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted && x.RoleId == "Admin");
+        var user = await _userRepository.GetAsync(x => x.Id == id && x.IsActive && !x.IsDeleted && x.RoleId == "Admin");
 
-        if (admin == null)
+        if (user == null)
         {
-            return new AdminResponseModel
+            return new UserResponseModel
             {
                 Message = "User not found..",
                 Status = false,
             };
         }
 
-        var adminModel = new AdminResponseModel
+        var userModel = new UserResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = ConvertToAdminResponseModel(admin),
+            Data = _userMapperService.ConvertToUserResponseModel(user),
         };
-        return adminModel;
+        return userModel;
     }
-
 
     public async Task<AdminResponseModel> GetFullDetailById(string id)
     {
@@ -297,7 +292,7 @@ public class AdminService : IAdminService
                 PaymentDetailData = admin.PaymentDetails?.Select(x => new PaymentDetailDTO
                 {
                     AccountName = x.AccountName,
-                    BankName = x.BankName,
+                    BankName = x.BankCode,
                     AccountNumber = x.AccountNumber,
                     AccountType = x.AccountType,
                 }),
@@ -306,31 +301,28 @@ public class AdminService : IAdminService
         return adminModel;
     }
 
-    public async Task<AdminResponseModel> GetByEmail(string email)
+    public async Task<UserResponseModel> GetByEmail(string email)
     {
         // throw new NotImplementedException();
-        var admin = await _userRepository.GetAsync(x => x.Email == email && x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
+        var user = await _userRepository.GetAsync(x => x.Email == email && x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
 
-        if (admin == null)
+        if (user == null)
         {
-            return new AdminResponseModel
+            return new UserResponseModel
             {
                 Message = "User not found..",
                 Status = false,
             };
         }
 
-        var adminModel = new AdminResponseModel
+        var userModel = new UserResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = ConvertToAdminResponseModel(admin),
+            Data = _userMapperService.ConvertToUserResponseModel(user),
         };
-        return adminModel;
+        return userModel;
     }
-
-
-
 
     public async Task<PaymentDetailRequestModel> GetByPaymentDetail(string id)
     {
@@ -354,36 +346,37 @@ public class AdminService : IAdminService
                 AccountName = instructor.AccountName,
                 AccountNumber = instructor.AccountNumber,
                 AccountType = instructor.AccountType,
-                BankName = instructor.BankName,
+                BankName = instructor.BankCode,
                 UserId = instructor.UserId,
             }
         };
         return instructorModel;
     }
 
-
-
-    public async Task<AdminsResponseModel> GetByName(string name)
+    public async Task<UsersResponseModel> GetByName(string name)
     {
-        var admins = await _userRepository.GetListAsync(x =>
-           (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name) && !x.IsActive && x.RoleId == "Admin" && !x.IsDeleted);
+        var user = await _userRepository.GetListAsync(x =>
+       (x.FirstName == name || x.LastName == name || (x.FirstName + x.LastName) == name)
+       && !x.IsActive
+       && x.RoleId == "Admin"
+       && !x.IsDeleted);
 
-        if (admins.Count() == 0)
+        if (user.Count() == 0)
         {
-            return new AdminsResponseModel
+            return new UsersResponseModel
             {
                 Message = "User not found..",
                 Status = false,
             };
         }
 
-        var adminModel = new AdminsResponseModel
+        var userModel = new UsersResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
+            Data = user.Select(x => _userMapperService.ConvertToUserResponseModel(x)).ToList(),
         };
-        return adminModel;
+        return userModel;
     }
 
     public async Task<PaymentsDetailRequestModel> GetListOfAdminBankDetails(string userId)
@@ -406,7 +399,7 @@ public class AdminService : IAdminService
             Data = admins.Select(x => new PaymentDetailDTO
             {
                 Id = x.Id,
-                BankName = x.BankName,
+                BankName = x.BankCode,
                 AccountName = x.AccountName,
                 AccountNumber = x.AccountNumber,
                 AccountType = x.AccountType,
@@ -415,94 +408,74 @@ public class AdminService : IAdminService
         return adminModel;
     }
 
-    public async Task<AdminsResponseModel> GetAll()
+    public async Task<UsersResponseModel> GetAll()
     {
-        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin");
+        var user = await _userRepository.GetListAsync(x => x.RoleId == "Admin");
 
-        if (admins.Count() == 0)
+        if (user.Count() == 0)
         {
-            return new AdminsResponseModel
+            return new UsersResponseModel
             {
                 Message = "User not found..",
                 Status = false,
             };
         }
 
-        var adminModel = new AdminsResponseModel
+        var userModel = new UsersResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
+            Data = user.Select(x => _userMapperService.ConvertToUserResponseModel(x)).ToList(),
         };
-        return adminModel;
+        return userModel;
     }
 
-    public async Task<AdminsResponseModel> GetAllActive()
+    public async Task<UsersResponseModel> GetAllActive()
     {
-        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
+        var user = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && x.IsActive && !x.IsDeleted);
 
-        if (admins.Count() == 0)
+        if (user.Count() == 0)
         {
-            return new AdminsResponseModel
+            return new UsersResponseModel
             {
                 Message = "User not found..",
                 Status = false,
             };
         }
 
-        var adminModel = new AdminsResponseModel
+        var userModel = new UsersResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
+            Data = user.Select(x => _userMapperService.ConvertToUserResponseModel(x)).ToList(),
         };
-        return adminModel;
+        return userModel;
     }
 
-    public async Task<AdminsResponseModel> GetAllInActive()
+    public async Task<UsersResponseModel> GetAllInActive()
     {
-        var admins = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && !x.IsActive && !x.IsDeleted);
+        var user = await _userRepository.GetListAsync(x => x.RoleId == "Admin" && !x.IsActive && !x.IsDeleted);
 
-        if (admins.Count() == 0)
+        if (user.Count() == 0)
         {
-            return new AdminsResponseModel
+            return new UsersResponseModel
             {
                 Message = "User not found..",
                 Status = false,
             };
         }
 
-        var adminModel = new AdminsResponseModel
+        var userModel = new UsersResponseModel
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = admins.Select(x => ConvertToAdminResponseModel(x)),
+            Data = user.Select(x => _userMapperService.ConvertToUserResponseModel(x)).ToList(),
         };
-        return adminModel;
+        return userModel;
     }
 
 
 
 
-    public AdminDto ConvertToAdminResponseModel(User user)
-    {
-        var adminModel = new AdminDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            Password = user.Password,
-            ProfilePicture = user.ProfilePicture,
-            Biography = user.Biography,
-            Skill = user.Skill,
-            Interest = user.Interest,
-            PhoneNumber = user.PhoneNumber,
-            Gender = user.Gender,
-            StudentshipStatus = user.StudentshipStatus,
-            RoleId = user.RoleId,
-        };
-        return adminModel;
-    }
 }
 

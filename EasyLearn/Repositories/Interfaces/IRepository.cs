@@ -1,5 +1,5 @@
-﻿using System.Linq.Expressions;
-using EasyLearn.Models.Contracts;
+﻿using EasyLearn.Models.Contracts;
+using System.Linq.Expressions;
 
 namespace EasyLearn.Repositories.Interfaces
 {
@@ -9,9 +9,9 @@ namespace EasyLearn.Repositories.Interfaces
         Task AddRangeAsync(List<T> entity);
         Task<T> UpdateAsync(T entity);
         Task<T> GetAsync(Expression<Func<T, bool>> expression);
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<ICollection<T>> GetAllAsync();
         Task DeleteAsync(T entity);
-        Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> expression);
+        Task<ICollection<T>> GetListAsync(Expression<Func<T, bool>> expression);
         Task<int> SaveChangesAsync();
 
 
