@@ -327,7 +327,7 @@ public class StudentService : IStudentService
             };
         }
 
-        student.BankName = model.BankName;
+        student.BankCode = model.BankName;
         student.AccountNumber = model.AccountNumber;
         student.AccountName = model.AccountName;
         student.AccountType = model.AccountType;

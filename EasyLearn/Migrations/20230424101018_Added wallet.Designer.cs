@@ -3,6 +3,7 @@ using System;
 using EasyLearn.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    partial class EasyLearnDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230424101018_Added wallet")]
+    partial class Addedwallet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -889,9 +891,6 @@ namespace EasyLearn.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("longtext");
 
@@ -1005,11 +1004,11 @@ namespace EasyLearn.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<decimal>("Credit")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("Credit")
+                        .HasColumnType("double");
 
-                    b.Property<decimal>("Debit")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("Debit")
+                        .HasColumnType("double");
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("longtext");

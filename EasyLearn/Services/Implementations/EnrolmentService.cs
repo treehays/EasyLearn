@@ -1,4 +1,6 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.Payments;
+using EasyLearn.GateWays.Payments.PaymentGatewayDTOs;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EnrolmentDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
@@ -11,30 +13,36 @@ public class EnrolmentService : IEnrolmentService
 {
     private readonly IEnrolmentRepository _enrolmentRepository;
     private readonly ICourseRepository _courseRepository;
+    private readonly IStudentRepository _studentRepository;
+    private readonly IPayStackService _payStackService;
 
-    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository)
+    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IStudentRepository studentRepository, IPayStackService payStackService)
     {
         _enrolmentRepository = enrolmentRepository;
         _courseRepository = courseRepository;
+        _studentRepository = studentRepository;
+        _payStackService = payStackService;
     }
 
-    public async Task<BaseResponse> Create(CreateEnrolmentRequestModel model, string studentId, string userId)
+    public async Task<CreateEnrolmentRequestModel> Create(CreateEnrolmentRequestModel model, string studentId, string userId)
     {
-
-
-        var course = new StudentCourse
+        var enrollmentStatus = await _courseRepository.StudentIsEnrolled(model.CourseId, studentId);
+        if (enrollmentStatus != null)
         {
-            CourseId = model.CourseId,
-            StudentId = studentId,
-            CreatedBy = userId,
-            CreatedOn = DateTime.Now,
-            Id = Guid.NewGuid().ToString(),
-        };
-        var courses = new List<StudentCourse>();
-        courses.Add(course);
-
-        var stdt = await _courseRepository.GetAsync(x => x.Id == model.CourseId);
-
+            if (enrollmentStatus.IsPaid)
+            {
+                return new CreateEnrolmentRequestModel
+                {
+                    Message = "You've already paid for this course...",
+                    Status = true,
+                };
+            }
+            return new CreateEnrolmentRequestModel
+            {
+                Message = "You've enrolled but not paid, proceed to pay...",
+                Status = false,
+            };
+        }
 
         var payment = new Payment
         {
@@ -45,33 +53,54 @@ public class EnrolmentService : IEnrolmentService
             StudentId = studentId,
             CourseId = model.CourseId,
             CreatedBy = userId,
-            CreatedOn = course.CreatedOn,
+            CreatedOn = DateTime.Now,
             PaymentAmount = model.AmountPaid,
+            ReferrenceNumber = Guid.NewGuid().ToString().Replace('-', 'y'),
         };
 
-        var enrolment = new Enrolment
+        var enrolments = new List<Enrolment>
         {
-            Id = Guid.NewGuid().ToString(),
-            CompletionStatus = CompletionStatus.NotCompleted,
+            new Enrolment
+            {
+                Id = Guid.NewGuid().ToString(),
+                CompletionStatus = CompletionStatus.NotCompleted,
+                StudentId = studentId,
+                CreatedBy = userId,
+                CreatedOn = payment.CreatedOn,
+                PaymentId = payment.Id,
+                CourseId = payment.CourseId,
+                Payment = payment,
+            },
+        };
+
+        var studentCourses = new List<StudentCourse>();
+        var studentCourse = new StudentCourse
+        {
+            CourseId = model.CourseId,
             StudentId = studentId,
             CreatedBy = userId,
-            CreatedOn = course.CreatedOn,
-            PaymentId = payment.Id,
-            CourseId = course.CourseId,
+            CreatedOn = payment.CreatedOn,
+            Id = Guid.NewGuid().ToString(),
         };
+        studentCourses.Add(studentCourse);
 
-
-
-        stdt.StudentCourses = courses;
-        enrolment.Payment = payment;
-        //enrolment.Course.StudentCourses = courses;
-        await _enrolmentRepository.AddAsync(enrolment);
-        await _enrolmentRepository.SaveChangesAsync();
-
-        return new BaseResponse
+        var student = new Student
         {
-            Message = "Payment processing..",
-            Status = true,
+            StudentCourses = studentCourses,
+            Enrolments = enrolments,
+        };
+        await _studentRepository.AddAsync(student);
+        await _studentRepository.SaveChangesAsync();
+
+        return new CreateEnrolmentRequestModel
+        {
+            PaymentRequest = new InitializePaymentRequestModel
+            {
+                RefrenceNo = payment.ReferrenceNumber,
+                CoursePrice = model.AmountPaid,
+            },
+            Message = "Procced to Payment..",
+            Status = false,
         };
 
     }

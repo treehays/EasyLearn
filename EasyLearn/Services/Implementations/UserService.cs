@@ -2,7 +2,6 @@
 using EasyLearn.GateWays.Email;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
-using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
@@ -54,6 +53,7 @@ public class UserService : IUserService
             Password = password,
             Gender = model.Gender,
             StudentshipStatus = model.StudentshipStatus,
+
             UserName = $"{userName}{new Random().Next(100, 999)}",
             CreatedOn = DateTime.Now,
             IsActive = true,
@@ -198,7 +198,7 @@ public class UserService : IUserService
             Message = "Details successfully retrieved...",
             Data = new UserDTO
             {
-                UserId = user.Id,
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,

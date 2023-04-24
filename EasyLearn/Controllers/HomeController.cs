@@ -1,8 +1,11 @@
-﻿using EasyLearn.Models;
+﻿using EasyLearn.GateWays.Payments;
+using EasyLearn.GateWays.Payments.PaymentGatewayDTOs;
+using EasyLearn.Models;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -13,18 +16,19 @@ namespace EasyLearn.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
+        private readonly IPayStackService _payStackService;
 
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IPayStackService payStackService)
         {
             _logger = logger;
             _userService = userService;
+            _payStackService = payStackService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // ViewData["Title"] = "Light Sidebar";
-            // ViewData["pTitle"] = "Light Sidebar";
+
             return View();
         }
 
@@ -38,6 +42,47 @@ namespace EasyLearn.Controllers
         //[Route("{Login}")]
         public IActionResult Login()
         {
+            //var baseUrl = $"https://{Request.Host}";
+            //var c = $"https://{Request.Host.Value}";
+            //var d = $"https://{Request.GetEncodedPathAndQuery}";
+            //var a = Request.GetDisplayUrl();
+            //var b = Request.PathBase.ToString();
+            //// ViewData["Title"] = "Light Sidebar";
+            //// ViewData["pTitle"] = "Light Sidebar";
+
+            //var model = new InitializePaymentRequestModel
+            //{
+            //    CallbackUrl = baseUrl,
+            //    CoursePrice = 44000,
+            //    Email = "treehays90@gmail.com",
+            //};
+            //var initializee = await _payStackService.InitializePayment(model);
+
+
+            //var model = new VerifyAccountNumberRequestModel
+            //{
+            //    AccountNumber = "5004279517",
+            //    BankCode = "058",
+            //};
+            //var varifyaccout = await _payStackService.VerifyAccountNumber(model);
+
+
+            //var model = new CreateTransferRecipientRequestModel
+            //{
+            //    AccountNumber = "0159192507",
+            //    BankCode="058",
+            //    Description = "Testing payment",
+            //    Name = "Abdulsalam Ahmad Ayoola",
+
+            //};
+            //var createrec = await _payStackService.CreateTransferRecipient(model);
+            //var trans = await _payStackService.TransferMoneyToUser(createrec);
+
+
+
+
+
+
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("index");
@@ -69,6 +114,7 @@ namespace EasyLearn.Controllers
                 new Claim(ClaimTypes.Actor, user.Id),
                 new Claim(ClaimTypes.Name,user.FirstName),
                 new Claim(ClaimTypes.UserData,user.ProfilePicture),
+                new Claim(ClaimTypes.Email,user.Email),
             };
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authenticationProperties = new AuthenticationProperties();

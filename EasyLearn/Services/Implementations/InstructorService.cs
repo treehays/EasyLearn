@@ -122,7 +122,7 @@ public class InstructorService : IInstructorService
             Data = admins.Select(x => new PaymentDetailDTO
             {
                 Id = x.Id,
-                BankName = x.BankName,
+                BankName = x.BankCode,
                 AccountName = x.AccountName,
                 AccountNumber = x.AccountNumber,
                 AccountType = x.AccountType,
@@ -348,12 +348,11 @@ public class InstructorService : IInstructorService
                 AccountName = instructor.AccountName,
                 AccountNumber = instructor.AccountNumber,
                 AccountType = instructor.AccountType,
-                BankName = instructor.BankName,
+                BankName = instructor.BankCode,
                 UserId = instructor.UserId,
             }
         };
         return instructorModel;
-
     }
 
     public async Task<InstructorsResponseModel> GetByName(string name)
@@ -492,7 +491,7 @@ public class InstructorService : IInstructorService
             };
         }
 
-        instructor.BankName = model.BankName;
+        instructor.BankCode = model.BankName;
         instructor.AccountNumber = model.AccountNumber;
         instructor.AccountName = model.AccountName;
         instructor.AccountType = model.AccountType;

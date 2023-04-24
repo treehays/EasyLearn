@@ -1,11 +1,8 @@
-﻿using BCrypt.Net;
-using EasyLearn.Models.DTOs;
-using EasyLearn.Models.Entities;
-using EasyLearn.Repositories.Implementations;
-using EasyLearn.Models.DTOs.AdminDTOs;
+﻿using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.ModeratorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
+using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -125,7 +122,7 @@ public class ModeratorService : IModeratorService
             Data = moderator.Select(x => new PaymentDetailDTO
             {
                 Id = x.Id,
-                BankName = x.BankName,
+                BankName = x.BankCode,
                 AccountName = x.AccountName,
                 AccountNumber = x.AccountNumber,
                 AccountType = x.AccountType,
@@ -425,7 +422,7 @@ public class ModeratorService : IModeratorService
                 AccountName = instructor.AccountName,
                 AccountNumber = instructor.AccountNumber,
                 AccountType = instructor.AccountType,
-                BankName = instructor.BankName,
+                BankName = instructor.BankCode,
                 UserId = instructor.UserId,
             }
         };
@@ -498,7 +495,7 @@ public class ModeratorService : IModeratorService
             };
         }
 
-        moderator.BankName = model.BankName;
+        moderator.BankCode = model.BankName;
         moderator.AccountNumber = model.AccountNumber;
         moderator.AccountName = model.AccountName;
         moderator.AccountType = model.AccountType;

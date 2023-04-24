@@ -5,7 +5,7 @@ namespace EasyLearn.Services.Interfaces
 {
     public interface IEnrolmentService
     {
-        Task<BaseResponse> Create(CreateEnrolmentRequestModel model, string studentId, string userId);
+        Task<CreateEnrolmentRequestModel> Create(CreateEnrolmentRequestModel model, string studentId, string userId);
         Task<BaseResponse> Delete(string id);
         Task<BaseResponse> Update(UpdateEnrolmentRequestModel model);
         Task<EnrolmentResponseModel> GetById(string id);
