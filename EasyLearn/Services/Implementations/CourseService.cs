@@ -145,6 +145,43 @@ public class CourseService : ICourseService
         return coursesModel;
     }
 
+    public async Task<CoursesEnrolledRequestModel> UnpaidCourse(string studentId)
+    {
+        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && !y.IsPaid && y.StudentId == studentId);
+        if (courses == null)
+        {
+            return new CoursesEnrolledRequestModel
+            {
+                Message = "Course has not enrolled into any course yet...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesEnrolledRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Course?.Id,
+                Title = x.Course?.Title,
+                Description = x.Course?.Description,
+                CourseLanguage = x.Course.CourseLanguage,
+                DifficultyLevel = x.Course.DifficultyLevel,
+                Requirement = x.Course?.Requirement,
+                CourseDuration = x.Course.CourseDuration,
+                InstructorId = x.Course?.InstructorId,
+                Price = x.Course.Price,
+                CourseLogo = x.Course?.CourseLogo,
+                ShortDescription = x.Course?.ShortDescription,
+                IsPaid = x.IsPaid,
+                CompletionStatus = x.CompletionStatus,
+            })
+        };
+        return coursesModel;
+
+    }
+
     public async Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId)
     {
         var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId);

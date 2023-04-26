@@ -11,6 +11,7 @@ public interface ICourseService
     Task<BaseResponse> Delete(string id, string userId);
     Task<CoursesResponseModel> GetAllInstructorCourse(string instructorId);
     Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId);
+    Task<CoursesEnrolledRequestModel> UnpaidCourse(string studentId);
     Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId);
     Task<CoursesEnrolledRequestModel> GetCompletedCourses(string studentId);
     Task<CoursesResponseModel> GetAllCourse();

@@ -160,6 +160,20 @@ namespace EasyLearn.Controllers
             return View(courses);
         }
 
+        public async Task<IActionResult> UnpaidCourse()
+        {
+            var studentId = User.FindFirst(ClaimTypes.Actor)?.Value;
+            var courses = await _courseService.UnpaidCourse(studentId);
+            if (!courses.Status)
+            {
+                TempData["failed"] = courses.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = courses.Message;
+            return View(courses);
+        }
+
 
 
         public async Task<IActionResult> StudentActiveCourses()

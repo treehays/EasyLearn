@@ -64,7 +64,7 @@ namespace EasyLearn.Controllers
             if (!enrol.status)
             {
                 TempData["failed"] = enrol.message;
-                return RedirectToAction("UnPaidCourse", "Course");
+                return RedirectToAction("GetEnrolledCourses", "Course");
             }
 
             TempData["success"] = enrol.message;
