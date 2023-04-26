@@ -18,7 +18,7 @@
         <partial name="~/Views/Shared/_topbar.cshtml"/>
         @if (User.FindFirst(ClaimTypes.Role)?.Value == "admin")
         {
-            <partial name="~/Views/Shared/_sidebar.cshtml"/>
+            <partial name="~/Views/Shared/_Adminsidebar.cshtml"/>
         }
         
         @if (User.FindFirst(ClaimTypes.Role)?.Value == "moderator")

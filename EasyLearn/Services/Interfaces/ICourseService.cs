@@ -7,17 +7,20 @@ namespace EasyLearn.Services.Interfaces;
 public interface ICourseService
 {
     Task<BaseResponse> Create(CreateCourseRequestModel model);
+    Task<CourseResponseModel> GetCourseByIdFull(string id);
     Task<BaseResponse> Delete(string id, string userId);
-    Task<CoursesRequestModel> GetAllInstructorCourse(string instructorId);
+    Task<CoursesResponseModel> GetAllInstructorCourse(string instructorId);
     Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId);
     Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId);
     Task<CoursesEnrolledRequestModel> GetCompletedCourses(string studentId);
-    Task<CoursesRequestModel> GetAllCourse();
-    Task<CoursesRequestModel> GetAllActiveInstructorCourse(string instructorId);
-    Task<CoursesRequestModel> GetAllInActiveInstructorCourse(string instructorId);
+    Task<CoursesResponseModel> GetAllCourse();
+    Task<CoursesResponseModel> GetAllActiveCourse(string instructorId);
+    Task<CoursesResponseModel> GetAllInActiveCourse();
+    Task<CoursesResponseModel> GetAllInActiveCourse(string instructorId);
+    Task<CoursesResponseModel> GetAllActiveCourse();
     Task<GlobalSearchResultViewModel> GlobalSearch(string name);
     Task<BaseResponse> Update(UpdateCourseRequestModel model);
     Task<BaseResponse> UpdateActiveStatus(UpdateCourseActiveStatusRequestModel model);
-    Task<CourseRequestModel> GetById(string id);
-    Task<CoursesRequestModel> GetByName(string name);
+    Task<CourseResponseModel> GetById(string id);
+    Task<CoursesResponseModel> GetByName(string name);
 }

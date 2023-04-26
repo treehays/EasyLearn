@@ -68,9 +68,10 @@ public class Program
         builder.Services.AddScoped<IEnrolmentRepository, EnrolmentRepository>();
         builder.Services.AddScoped<IEnrolmentService, EnrolmentService>();
 
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+
         builder.Services.AddScoped<IUserMapperService, UserMapperService>();
         builder.Services.AddScoped<IPayStackService, PayStackService>();
-
 
 
 
@@ -167,11 +168,11 @@ public class Program
         //EasyLearnDbSeedingData.InitializeDb(app.Services.CreateScope().ServiceProvider);
         //seeding into databse first methos
 
-        // EasyLearnDbInitializer.Seed(app);
+        //EasyLearnDbInitializer.Seed(app);
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Course}/{action=Index}/{id?}");
 
         app.Run();
     }

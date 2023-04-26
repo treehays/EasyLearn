@@ -1,11 +1,9 @@
 ﻿using EasyLearn.GateWays.Payments;
-using EasyLearn.GateWays.Payments.PaymentGatewayDTOs;
 using EasyLearn.Models;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -28,7 +26,8 @@ namespace EasyLearn.Controllers
 
         public async Task<IActionResult> Index()
         {
-
+            //var ff = new VerifyTransactionRequestModel { ReferenceNumber = "5cb18b3ay6e0ay442dyb89dy17e78e7596b0", };
+            //var pp = await _payStackService.VerifyTransaction(ff);
             return View();
         }
 
@@ -114,7 +113,7 @@ namespace EasyLearn.Controllers
                 new Claim(ClaimTypes.Actor, user.Id),
                 new Claim(ClaimTypes.Name,user.FirstName),
                 new Claim(ClaimTypes.UserData,user.ProfilePicture),
-                new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.Email,model.Email),
             };
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authenticationProperties = new AuthenticationProperties();
@@ -129,12 +128,12 @@ namespace EasyLearn.Controllers
             else if (user.RoleId == "Instructor")
             {
                 TempData["success"] = "Login successful";
-                return RedirectToAction("GetAllActive", "Instructor");
+                return RedirectToAction("Index", "Instructor");
             }
             else if (user.RoleId == "Moderator")
             {
                 TempData["success"] = "Login successful";
-                return RedirectToAction("GetAllActive", "Student");
+                return RedirectToAction("index", "Student");
             }
             else if (user.RoleId == "Student")
             {
@@ -143,6 +142,7 @@ namespace EasyLearn.Controllers
             }
             else
             {
+                //var user = 
                 TempData["success"] = "Account has not been activated";
                 return RedirectToAction("Index", "Home");
             }

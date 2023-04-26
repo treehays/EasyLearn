@@ -11,8 +11,12 @@ namespace EasyLearn.Models.DTOs.EnrolmentDTOs
         public string CertificateNumber { get; set; }
         public DateTime AccessExpiration { get; set; }
         //public PaymentStatus PaymentStatus { get; set; }
-        //public string StudentId { get; set; }
-        //public string CourseId { get; set; }
+        public string StudentId { get; set; }
+        public string CourseId { get; set; }
+        public string StudentName { get; set; }
+        public string CourseTitle { get; set; }
+        public DateTime CreatedOn { get; set; }
+
         //public string InstructorFeedBack { get; set; }
         //public string UserFeedBack { get; set; }
     }
@@ -28,7 +32,7 @@ namespace EasyLearn.Models.DTOs.EnrolmentDTOs
         public bool Status { get; set; }
         public string Message { get; set; }
         public PaymentMethods PaymentMethods { get; set; }
-        public InitializePaymentRequestModel PaymentRequest { get; set; }
+        //public InitializePaymentRequestModel PaymentRequest { get; set; }
 
         //public CompletionStatus CompletionStatus { get; set; }
         //public PaymentStatus PaymentStatus { get; set; }
@@ -59,7 +63,7 @@ namespace EasyLearn.Models.DTOs.EnrolmentDTOs
 
     public class EnrolmentsResponseModel : BaseResponse
     {
-
+        public int NumberOfEnrollments { get; set; }
         public IEnumerable<EnrolmentDTO> Data { get; set; }
 
     }

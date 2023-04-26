@@ -13,43 +13,47 @@ public class EnrolmentService : IEnrolmentService
 {
     private readonly IEnrolmentRepository _enrolmentRepository;
     private readonly ICourseRepository _courseRepository;
-    private readonly IStudentRepository _studentRepository;
     private readonly IPayStackService _payStackService;
+    private readonly IPaymentRepository _paymentRepository;
 
-    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IStudentRepository studentRepository, IPayStackService payStackService)
+    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IPayStackService payStackService, IPaymentRepository paymentRepository)
     {
         _enrolmentRepository = enrolmentRepository;
         _courseRepository = courseRepository;
-        _studentRepository = studentRepository;
         _payStackService = payStackService;
+        _paymentRepository = paymentRepository;
     }
 
-    public async Task<CreateEnrolmentRequestModel> Create(CreateEnrolmentRequestModel model, string studentId, string userId)
+    public async Task<InitializePaymentResponseModel> Create(CreateEnrolmentRequestModel model, string studentId, string userId, string email, string baseUrl)
     {
-        var enrollmentStatus = await _courseRepository.StudentIsEnrolled(model.CourseId, studentId);
-        if (enrollmentStatus != null)
+        var paymentExist = await _paymentRepository.GetAsync(x => x.StudentId == studentId && x.CourseId == model.CourseId);
+        if (paymentExist != null)
         {
-            if (enrollmentStatus.IsPaid)
+            if (paymentExist.IsPaid)
             {
-                return new CreateEnrolmentRequestModel
+                return new InitializePaymentResponseModel
                 {
-                    Message = "You've already paid for this course...",
-                    Status = true,
+                    message = "You've already paid for this course...",
+                    status = false,
                 };
             }
-            return new CreateEnrolmentRequestModel
+
+            return new InitializePaymentResponseModel
             {
-                Message = "You've enrolled but not paid, proceed to pay...",
-                Status = false,
+                message = "You've enrolled but not paid, proceed to pay...",
+                status = true,
+                data = new InitializePaymentData
+                {
+                    reference = paymentExist.ReferrenceNumber,
+                    authorization_url = paymentExist.AuthorizationUri,
+                },
             };
         }
-
+        var coursea = await _courseRepository.GetAsync(x => x.Id == model.CourseId);
         var payment = new Payment
         {
             Id = Guid.NewGuid().ToString(),
             PaymentMethod = model.PaymentMethods,
-            PaymentStatus = PaymentStatus.Pending,
-            //CouponUsed = model.Coupon,
             StudentId = studentId,
             CourseId = model.CourseId,
             CreatedBy = userId,
@@ -58,21 +62,17 @@ public class EnrolmentService : IEnrolmentService
             ReferrenceNumber = Guid.NewGuid().ToString().Replace('-', 'y'),
         };
 
-        var enrolments = new List<Enrolment>
+        var enrolments = new Enrolment
         {
-            new Enrolment
-            {
-                Id = Guid.NewGuid().ToString(),
-                CompletionStatus = CompletionStatus.NotCompleted,
-                StudentId = studentId,
-                CreatedBy = userId,
-                CreatedOn = payment.CreatedOn,
-                PaymentId = payment.Id,
-                CourseId = payment.CourseId,
-                Payment = payment,
-            },
+            Id = Guid.NewGuid().ToString(),
+            CompletionStatus = CompletionStatus.NotCompleted,
+            StudentId = studentId,
+            CreatedBy = userId,
+            CreatedOn = payment.CreatedOn,
+            PaymentId = payment.Id,
+            CourseId = payment.CourseId,
+            Payment = payment,
         };
-
         var studentCourses = new List<StudentCourse>();
         var studentCourse = new StudentCourse
         {
@@ -82,66 +82,90 @@ public class EnrolmentService : IEnrolmentService
             CreatedOn = payment.CreatedOn,
             Id = Guid.NewGuid().ToString(),
         };
-        studentCourses.Add(studentCourse);
-
-        var student = new Student
+        var paymentRequest = new InitializePaymentRequestModel
         {
-            StudentCourses = studentCourses,
-            Enrolments = enrolments,
+            CallbackUrl = baseUrl,
+            CoursePrice = model.AmountPaid,
+            Email = email,
+            RefrenceNo = payment.ReferrenceNumber,
         };
-        await _studentRepository.AddAsync(student);
-        await _studentRepository.SaveChangesAsync();
-
-        return new CreateEnrolmentRequestModel
+        var proceedToPay = await _payStackService.InitializePayment(paymentRequest);
+        if (!proceedToPay.status)
         {
-            PaymentRequest = new InitializePaymentRequestModel
+            return new InitializePaymentResponseModel
             {
-                RefrenceNo = payment.ReferrenceNumber,
-                CoursePrice = model.AmountPaid,
-            },
-            Message = "Procced to Payment..",
-            Status = false,
+                status = false,
+                message = "error fro payment gatewy",
+                data = new InitializePaymentData
+                {
+                    authorization_url = baseUrl,
+                },
+            };
+        }
+        payment.AuthorizationUri = proceedToPay.data.authorization_url;
+        studentCourses.Add(studentCourse);
+        coursea.StudentCourses = studentCourses;
+        await _enrolmentRepository.AddAsync(enrolments);
+        await _enrolmentRepository.SaveChangesAsync();
+
+        return proceedToPay;
+    }
+
+    public async Task<EnrolmentsResponseModel> RecentEnrollments(int count)
+    {
+        var enrollments = await _enrolmentRepository.GetStudentEnrolledCourses(x => x.IsPaid);
+        if (enrollments.Count() == 0)
+        {
+            return new EnrolmentsResponseModel
+            {
+                Status = false,
+                Message = "no enrollment found",
+            };
+        }
+        var topCount = enrollments.OrderBy(x => x.CreatedBy).Take(count);
+        return new EnrolmentsResponseModel
+        {
+            Status = true,
+            Message = "all enrolment retrieved...",
+            NumberOfEnrollments = enrollments.Count(),
+            Data = topCount.Select(x => new EnrolmentDTO
+            {
+                Id = x.Id,
+                StudentName = x.Student.User.FirstName,
+                StudentId = x.Student.Id,
+                CourseId = x.Course.Id,
+                CourseTitle = x.Course.Title,
+                CompletionStatus = x.CompletionStatus,
+                CreatedOn = x.CreatedOn,
+            }),
         };
-
     }
 
-    public Task<BaseResponse> Delete(string id)
+    public async Task<BaseResponse> VerifyPayment(string refrenceNumber)
     {
-        throw new NotImplementedException();
-    }
+        var paymentStatus = await _payStackService.VerifyTransaction(refrenceNumber);
+        if (paymentStatus.data.status.ToLower() != "success")
+        {
+            return new BaseResponse
+            {
+                Message = "Payment was not successful",
+                Status = false,
+            };
+        }
+        var payment = await _paymentRepository.GetAsync(x => x.ReferrenceNumber == refrenceNumber);
+        payment.IsPaid = true;
+        payment.ModifiedOn = DateTime.Now;
+        payment.ModifiedBy = "Auto";
+        var enrolmentStatus = await _enrolmentRepository.GetAsync(x => x.PaymentId == payment.Id);
+        enrolmentStatus.IsPaid = true;
+        enrolmentStatus.ModifiedBy = payment.ModifiedBy;
+        enrolmentStatus.ModifiedOn = payment.ModifiedOn;
+        await _paymentRepository.SaveChangesAsync();
 
-    public Task<EnrolmentsResponseModel> GetAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<EnrolmentsResponseModel> GetAllPaid()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<EnrolmentResponseModel> GetById(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<EnrolmentsResponseModel> GetByName(string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<EnrolmentsResponseModel> GetNotPaid()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BaseResponse> Update(UpdateEnrolmentRequestModel model)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BaseResponse> UpdateActiveStatus(UpdateEnrolmentRequestModel model)
-    {
-        throw new NotImplementedException();
+        return new BaseResponse
+        {
+            Message = "Payment succefull, course is now available ",
+            Status = true,
+        };
     }
 }

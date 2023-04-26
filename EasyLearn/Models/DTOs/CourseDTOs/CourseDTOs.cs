@@ -16,9 +16,13 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public double CourseDuration { get; set; }
         public double Price { get; set; }
         public string CourseLogo { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string InstructorId { get; set; }
+        public string InstructorName { get; set; }
+        public List<string> CategoriesName { get; set; }
         public CompletionStatus CompletionStatus { get; set; }
         public bool IsPaid { get; set; }
+        public bool IsActive { get; set; }
 
     }
 
@@ -36,6 +40,7 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public double Price { get; set; }
         public IFormFile FormFile { get; set; }
         public MultiSelectList multiSelectList { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class UpdateCourseRequestModel
@@ -43,23 +48,26 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public string Id { get; set; }
         public string Title { get; set; }
         public string ShortDescription { get; set; }
+        public bool Status { get; set; }
         public string Description { get; set; }
         public CourseLanguage CourseLanguage { get; set; }
         public DifficultyLevel DifficultyLevel { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
+        public bool IsActive { get; set; }
         public double Price { get; set; }
 
     }
 
-    public class CourseRequestModel : BaseResponse
+    public class CourseResponseModel : BaseResponse
     {
         public CourseDTO Data { get; set; }
     }
 
 
-    public class CoursesRequestModel : BaseResponse
+    public class CoursesResponseModel : BaseResponse
     {
+        public int NumberOfCourse { get; set; }
         public IEnumerable<CourseDTO> Data { get; set; }
     }
 

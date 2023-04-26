@@ -1,6 +1,5 @@
 ﻿using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
-using EasyLearn.Models.Entities;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
@@ -55,6 +54,20 @@ public class InstructorController : Controller
     public async Task<IActionResult> Detail(string id)
     {
         var instructor = await _instructorService.GetById(id);
+        if (!instructor.Status)
+        {
+            TempData["failed"] = instructor.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
+        TempData["success"] = instructor.Message;
+        return View(instructor);
+    }
+
+
+    public async Task<IActionResult> InstructorDetail(string id)
+    {
+        var instructor = await _instructorService.InstructorDetail(id);
         if (!instructor.Status)
         {
             TempData["failed"] = instructor.Message;

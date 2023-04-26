@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using EasyLearn.Models.Enums;
+﻿using EasyLearn.Models.Enums;
 
 namespace EasyLearn.Models.DTOs.ModeratorDTOs;
 

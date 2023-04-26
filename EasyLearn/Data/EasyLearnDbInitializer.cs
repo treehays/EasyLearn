@@ -399,6 +399,801 @@ namespace EasyLearn.Data
 
             };
 
+            var listOfCategories = new List<Category>
+            {
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Web Development",
+                    Description="Web Development",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage= "DefaultCategoryImage.jpg",
+                },
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Programming & Dev",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Business & Finance",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Design",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Creative Arts",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Health & Wellness",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Language Learning",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Test Preparation",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Personal Development",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Science & Technology",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Social Sciences",
+                    Description="top",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Web Development",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Mobile Development",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Game Development",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Database Development",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Desktop Development",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Cloud Computing",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Operating Systems",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "DevOps",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Cybersecurity",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Artificial Intelligence and Machine Learning",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Data Science",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Blockchain Development",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Internet of Things (IoT)",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Quality Assurance (QA) and Testing",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Software Engineering",
+                    Description="Programming & Dev",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Accounting and Bookkeeping",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Business Strategy and Operations",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Finance and Investing",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Entrepreneurship",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Marketing and Sales",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Project Management",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Human Resources Management",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Business Communication",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Business Law and Regulations",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Supply Chain Management",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Economics",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Risk Management",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Corporate Governance",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Business Ethics and Corporate Social Responsibility",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "International Business",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Real Estate and Property Management.",
+                    Description="Business & Finance",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Graphic Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Web Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "User Experience Design (UX)",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "User Interface Design (UI)",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Game Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Animation",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Motion Graphics",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Industrial Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Interior Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Architectural Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Landscape Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Fashion Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Jewelry Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Product Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Packaging Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Brand Identity Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Advertising Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Print Design",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Typography",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Illustration",
+                    Description="Design",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Visual Arts",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Performing Arts",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Writing",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Film and Video",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Game Design",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Fashion Design",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Graphic Design",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Interior Design",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Architecture",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                    CategoryImage="DefaultCategoryImage.jpg",
+                },
+
+                new Category
+                {
+                    Id= Guid.NewGuid().ToString(),
+                    Name = "Culinary Arts",
+                    Description="Creative Arts",
+                    CreatedBy=admin.UserId,
+                    CreatedOn=admin.CreatedOn,
+                    IsAvailable=true,
+                CategoryImage="DefaultCategoryImage.jpg",
+                    },
+
+
+
+            };
 
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
@@ -406,7 +1201,7 @@ namespace EasyLearn.Data
 
                 await context.Database.MigrateAsync();
 
-                if (!context.AcceptedNigerianBanks.Any())
+                if (!context.Roles.Any())
                 {
                     var listOfRoles = new List<Role>
                     {
@@ -450,6 +1245,8 @@ namespace EasyLearn.Data
 
 
 
+                    context.Categories.AddRange(listOfCategories);
+                    context.SaveChanges();
                     context.AcceptedNigerianBanks.AddRange(listOfBanks);
                     context.SaveChanges();
                     context.Roles.AddRange(listOfRoles);

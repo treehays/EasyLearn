@@ -1,7 +1,9 @@
 ﻿using EasyLearn.Data;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
+using EasyLearn.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EasyLearn.Repositories.Implementations;
 
@@ -12,9 +14,21 @@ public class CourseRepository : BaseRepository<Course>, ICourseRepository
         _context = context;
     }
 
-    public async Task<Course> GetCourseByIdDetailed(string courseId, string studentId)
+    public async Task<Course> GetCourseByIdWithStudentCourses(string courseId, string studentId)
     {
-        var course = await _context.Courses.Include(l => l.StudentCourses).FirstOrDefaultAsync(m => m.Id == courseId && m.StudentCourses.Any(x => x.StudentId == studentId && x.CourseId == courseId));
+        var course = await _context.Courses
+            .Include(l => l.StudentCourses)
+            .FirstOrDefaultAsync(m => m.Id == courseId && m.StudentCourses
+            .Any(x => x.StudentId == studentId && x.CourseId == courseId));
+        return course;
+    }
+
+    public async Task<Course> GetCourseByIdWithInstructor(Expression<Func<Course, bool>> expression)
+    {
+        var course = await _context.Courses.AsNoTracking()
+            .Include(x => x.CourseCategories).ThenInclude(x => x.Category)
+            .Include(x => x.Instructor).ThenInclude(x => x.User)
+            .FirstOrDefaultAsync(expression);
         return course;
     }
 

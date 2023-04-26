@@ -21,6 +21,7 @@ public class InstructorDto
     public string RoleId { get; set; }
     public bool IsActive { get; set; }
     public string EmailToken { get; set; }
+    public DateTime CreatedOn { get; set; }
 
 
     //Bank Detail

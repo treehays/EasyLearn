@@ -113,19 +113,19 @@ public class CourseService : ICourseService
 
     }
 
-    public async Task<CoursesRequestModel> GetAllInstructorCourse(string instructorId)
+    public async Task<CoursesResponseModel> GetAllInstructorCourse(string instructorId)
     {
         var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId);
         if (courses == null)
         {
-            return new CoursesRequestModel
+            return new CoursesResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
             };
         }
 
-        var coursesModel = new CoursesRequestModel
+        var coursesModel = new CoursesResponseModel
         {
             Status = true,
             Message = "Course retrieved successfully ...",
@@ -256,19 +256,52 @@ public class CourseService : ICourseService
 
     }
 
-    public async Task<CoursesRequestModel> GetAllActiveInstructorCourse(string instructorId)
+    public async Task<CoursesResponseModel> GetAllActiveCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                CourseLanguage = x.CourseLanguage,
+                DifficultyLevel = x.DifficultyLevel,
+                Requirement = x.Requirement,
+                CourseDuration = x.CourseDuration,
+                InstructorId = x.InstructorId,
+                Price = x.Price,
+            })
+        };
+        return coursesModel;
+
+    }
+
+    public async Task<CoursesResponseModel> GetAllActiveCourse(string instructorId)
     {
         var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && x.InstructorId == instructorId);
         if (courses == null)
         {
-            return new CoursesRequestModel
+            return new CoursesResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
             };
         }
 
-        var coursesModel = new CoursesRequestModel
+        var coursesModel = new CoursesResponseModel
         {
             Status = true,
             Message = "Course retrieved successfully ...",
@@ -289,19 +322,54 @@ public class CourseService : ICourseService
 
     }
 
-    public async Task<CoursesRequestModel> GetAllInActiveInstructorCourse(string instructorId)
+    public async Task<CoursesResponseModel> GetAllInActiveCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            NumberOfCourse = courses.Count(),
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                CourseLanguage = x.CourseLanguage,
+                DifficultyLevel = x.DifficultyLevel,
+                Requirement = x.Requirement,
+                CourseDuration = x.CourseDuration,
+                InstructorId = x.InstructorId,
+                Price = x.Price,
+                CreatedOn = x.CreatedOn,
+            })
+        };
+        return coursesModel;
+    }
+
+
+    public async Task<CoursesResponseModel> GetAllInActiveCourse(string instructorId)
     {
         var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted && x.InstructorId == instructorId);
         if (courses == null)
         {
-            return new CoursesRequestModel
+            return new CoursesResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
             };
         }
 
-        var coursesModel = new CoursesRequestModel
+        var coursesModel = new CoursesResponseModel
         {
             Status = true,
             Message = "Course retrieved successfully ...",
@@ -321,20 +389,57 @@ public class CourseService : ICourseService
         return coursesModel;
     }
 
-    public async Task<CourseRequestModel> GetById(string id)
+    public async Task<CourseResponseModel> GetCourseByIdFull(string id)
+    {
+        var course = await _courseRepository.GetCourseByIdWithInstructor(x => x.Id == id);
+
+        if (course == null)
+        {
+            return new CourseResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var categoruesName = course.CourseCategories.Select(x => x.Category.Name).ToList();
+        var courseModel = new CourseResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = new CourseDTO
+            {
+                Id = course.Id,
+                Title = course.Title,
+                Description = course.Description,
+                CourseLanguage = course.CourseLanguage,
+                DifficultyLevel = course.DifficultyLevel,
+                Requirement = course.Requirement,
+                CourseDuration = course.CourseDuration,
+                InstructorId = course.InstructorId,
+                Price = course.Price,
+                InstructorName = $"{course.Instructor.User.FirstName} {course.Instructor.User.FirstName}",
+                CategoriesName = categoruesName,
+            },
+        };
+        return courseModel;
+    }
+
+
+    public async Task<CourseResponseModel> GetById(string id)
     {
         var course = await _courseRepository.GetAsync(x => x.Id == id);
 
         if (course == null)
         {
-            return new CourseRequestModel
+            return new CourseResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
             };
         }
 
-        var courseModel = new CourseRequestModel
+        var courseModel = new CourseResponseModel
         {
             Status = true,
             Message = "Course retrieved successfully ...",
@@ -354,7 +459,7 @@ public class CourseService : ICourseService
         return courseModel;
     }
 
-    public async Task<CoursesRequestModel> GetByName(string name)
+    public async Task<CoursesResponseModel> GetByName(string name)
     {
         var courses = await _courseRepository.GetListAsync(x =>
         x.IsActive
@@ -365,14 +470,14 @@ public class CourseService : ICourseService
 
         if (courses.Count() > 0)
         {
-            return new CoursesRequestModel
+            return new CoursesResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
             };
         }
 
-        var coursesModel = new CoursesRequestModel
+        var coursesModel = new CoursesResponseModel
         {
             Status = true,
             Message = "Course retrieved successfully ...",
@@ -398,25 +503,26 @@ public class CourseService : ICourseService
 
         if (course == null)
         {
-            return new CourseRequestModel
+            return new CourseResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
             };
         }
 
-        course.Title = model.Title;
-        course.Description = model.Description;
+        course.Title = model.Title ?? course.Title;
+        course.Description = model.Description ?? course.Description;
         course.CourseLanguage = model.CourseLanguage;
         course.DifficultyLevel = model.DifficultyLevel;
-        course.Requirement = model.Requirement;
+        course.Requirement = model.Requirement ?? course.Requirement;
         course.CourseDuration = model.CourseDuration;
         course.Price = model.Price;
         course.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         course.ModifiedOn = DateTime.Now;
+        course.IsActive = model.IsActive;
         await _courseRepository.SaveChangesAsync();
 
-        return new CourseRequestModel
+        return new CourseResponseModel
         {
             Message = "Course updated successfully...",
             Status = true,
@@ -430,7 +536,7 @@ public class CourseService : ICourseService
 
         if (course == null)
         {
-            return new CourseRequestModel
+            return new CourseResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
@@ -442,26 +548,26 @@ public class CourseService : ICourseService
         course.ModifiedOn = DateTime.Now;
         await _courseRepository.SaveChangesAsync();
 
-        return new CourseRequestModel
+        return new CourseResponseModel
         {
             Message = "Course updated successfully...",
             Status = true,
         };
     }
 
-    public async Task<CoursesRequestModel> GetAllCourse()
+    public async Task<CoursesResponseModel> GetAllCourse()
     {
         var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
         if (courses == null)
         {
-            return new CoursesRequestModel
+            return new CoursesResponseModel
             {
                 Message = "Course not Found...",
                 Status = false,
             };
         }
 
-        var coursesModel = new CoursesRequestModel
+        var coursesModel = new CoursesResponseModel
         {
             Status = true,
             Message = "Course retrieved successfully ...",
@@ -490,10 +596,10 @@ public class CourseService : ICourseService
         || x.Description.ToLower().Contains(name)
         /*|| x.CourseLanguage.ToString().Contains(name)*/));
 
-        var courseResponse = new CoursesRequestModel();
+        var courseResponse = new CoursesResponseModel();
         if (coursesResult.Count() > 0)
         {
-            courseResponse = new CoursesRequestModel
+            courseResponse = new CoursesResponseModel
             {
                 Status = true,
                 Message = "Course retrieved successfully ...",
@@ -547,7 +653,6 @@ public class CourseService : ICourseService
             };
         }
 
-
         var categoriesResult = await _categoryRepository.GetListAsync(x =>
            x.IsAvailable
            && !x.IsDeleted
@@ -576,7 +681,7 @@ public class CourseService : ICourseService
         {
             CategoriesResponseModel = categoriesRespons,
             InstructorsResponseModel = instructorResponse,
-            CoursesRequestModel = courseResponse,
+            CoursesResponseModel = courseResponse,
         };
 
         return globalResult;

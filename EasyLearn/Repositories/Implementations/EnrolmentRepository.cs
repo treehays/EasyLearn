@@ -17,6 +17,7 @@ public class EnrolmentRepository : BaseRepository<Enrolment>, IEnrolmentReposito
     {
         var enrolments = await _context.Enrolments
             .Include(x => x.Course)
+            .Include(x => x.Student).ThenInclude(x => x.User)
             .Where(expression).ToListAsync();
         return enrolments;
     }
