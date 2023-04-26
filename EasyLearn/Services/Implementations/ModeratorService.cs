@@ -204,6 +204,7 @@ public class ModeratorService : IModeratorService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
+                CreatedOn = x.CreatedOn,
             }),
         };
         return moderatorModel;

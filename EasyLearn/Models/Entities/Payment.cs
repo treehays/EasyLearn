@@ -6,9 +6,11 @@ namespace EasyLearn.Models.Entities
     public class Payment : AuditableEntity
     {
         public string ReferrenceNumber { get; set; }
+        public string AuthorizationUri { get; set; }
         public double PaymentAmount { get; set; }
         public PaymentMethods PaymentMethod { get; set; }
-        public PaymentStatus PaymentStatus { get; set; }
+        public bool IsPaid { get; set; }
+        //public PaymentStatus PaymentStatus { get; set; }
         public string CourseId { get; set; }
         public string StudentId { get; set; }
 

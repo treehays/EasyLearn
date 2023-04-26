@@ -1,5 +1,4 @@
-﻿using EasyLearn.GateWays.Payments;
-using EasyLearn.Models.DTOs.EnrolmentDTOs;
+﻿using EasyLearn.Models.DTOs.EnrolmentDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -9,15 +8,13 @@ namespace EasyLearn.Controllers
     public class EnrolmentController : Controller
     {
         private readonly IEnrolmentService _enrolmentService;
-        private readonly IPayStackService _payStackService;
         private readonly ICourseService _courseService;
 
 
-        public EnrolmentController(IEnrolmentService enrolmentService, ICourseService courseService, IPayStackService payStackService)
+        public EnrolmentController(IEnrolmentService enrolmentService, ICourseService courseService)
         {
             _enrolmentService = enrolmentService;
             _courseService = courseService;
-            _payStackService = payStackService;
         }
 
         public IActionResult Index()
@@ -49,6 +46,8 @@ namespace EasyLearn.Controllers
             var studentId = User.FindFirstValue(ClaimTypes.Actor);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var role = User.FindFirstValue(ClaimTypes.Role).ToString();
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var baseUrl = $"https://{Request.Host}/Enrolment/verifypayment";
             if (!ModelState.IsValid)
             {
                 TempData["failed"] = "Try again..";
@@ -61,21 +60,50 @@ namespace EasyLearn.Controllers
                 return RedirectToAction("Index", "Course");
             }
 
-            var enrol = await _enrolmentService.Create(model, studentId, userId);
-            if (enrol.Status)
+            var enrol = await _enrolmentService.Create(model, studentId, userId, email, baseUrl);
+            if (!enrol.status)
             {
-                TempData["failed"] = enrol.Message;
-                return RedirectToAction("Index", "Course");
+                TempData["failed"] = enrol.message;
+                return RedirectToAction("GetEnrolledCourses", "Course");
             }
-            var baseUrl = $"https://{Request.Host}/Enrolment/verifypayment";
 
-            enrol.PaymentRequest.Email = User.FindFirstValue(ClaimTypes.Email);
-            enrol.PaymentRequest.CallbackUrl = baseUrl;
-            var proceedToPay = await _payStackService.InitializePayment(enrol.PaymentRequest);
-            TempData["success"] = enrol.Message;
-            return Redirect(proceedToPay.data.authorization_url);
-            //return RedirectToAction("ListAllCourses", "Course");
+            TempData["success"] = enrol.message;
+            return Redirect(enrol.data.authorization_url);
         }
+
+        /*
+                public async Task<IActionResult> RecentEnrollments(string trxref)
+                {
+                    var paymentStatus = await _enrolmentService.VerifyPayment(trxref);
+                    if (!paymentStatus.Status)
+                    {
+                        TempData["failed"] = paymentStatus.Message;
+                        //return RedirectToAction("UnPaidCourse", "Course");
+                        return RedirectToAction("index", "Course");
+                    }
+                    TempData["success"] = paymentStatus.Message;
+                    return RedirectToAction("index", "Course");
+                }
+
+        public async Task<IActionResult> Create(string courseId)
+        {
+            var course = await _courseService.GetById(courseId);
+            if (course == null)
+            {
+                TempData["failed"] = "No course found..";
+                return View();
+            }
+            var courseDetail = new CreateEnrolmentRequestModel
+            {
+                AmountPaid = course.Data.Price,
+                CourseName = course.Data.Title,
+                CourseId = course.Data.Id,
+            };
+            //ViewData["enrolCourse"] = course;
+            return View(courseDetail);
+        }
+
+        */
 
         public IActionResult GenerateReceipt()
         {

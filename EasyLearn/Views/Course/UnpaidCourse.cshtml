@@ -1,4 +1,4 @@
-﻿@model EasyLearn.Models.DTOs.CourseDTOs.CoursesResponseModel
+﻿@model EasyLearn.Models.DTOs.CourseDTOs.CoursesEnrolledRequestModel
 
 @{
     //ViewBag.Title = "Customers";
@@ -18,7 +18,7 @@
         <div class="card">
             <div class="card-body">
                 <div>
-                    <a asp-controller="Course" asp-action="CreateCourse" class="btn btn-success mb-2"><i class="mdi mdi-plus me-2"></i> Add new course</a>
+                    @*<a asp-controller="Course" asp-action="CreateCourse" class="btn btn-success mb-2"><i class="mdi mdi-plus me-2"></i> Add new course</a>*@
                 </div>
                 <div class="table-responsive mt-3">
                     <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -61,10 +61,10 @@
                                     <td>@item.Price</td>
                                     <td>@item.DifficultyLevel</td>
 
-                                    @*https://localhost:7143/Module/GetAllByCourseId?courseId=28aa95ff-6f08-4fae-8d38-6681a38fee4f*@ 
-                                   
+                                    @*https://localhost:7143/Module/GetAllByCourseId?courseId=28aa95ff-6f08-4fae-8d38-6681a38fee4f*@
+
                                     <td id="tooltip-container1">
-                         <a asp-controller="Module" asp-action="GetAllByCourseId" asp-route-courseId="@item.Id" class="me-3 text-primary" data-bs-container="#tooltip-container1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="mdi mdi-pencil font-size-18"></i></a>
+                                        <a asp-controller="Enrollment" asp-action="Create" asp-route-courseId="@item.Id" class="me-3 text-primary" data-bs-container="#tooltip-container1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="mdi mdi-pencil font-size-18"></i></a>
 
                                         <a href="javascript:void(0);" class="text-danger" data-bs-container="#tooltip-container1" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"><i class="mdi mdi-trash-can font-size-18"></i></a>
                                     </td>

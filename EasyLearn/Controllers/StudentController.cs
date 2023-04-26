@@ -37,7 +37,7 @@ namespace EasyLearn.Controllers
                 return View(model);
             }
             var baseUrl = $"https://{Request.Host}";
-            var create = await _studentService.StudentRegistration(model,baseUrl);
+            var create = await _studentService.StudentRegistration(model, baseUrl);
             if (!create.Status)
             {
                 TempData["failed"] = create.Message;
@@ -46,7 +46,7 @@ namespace EasyLearn.Controllers
             }
 
             TempData["success"] = create.Message;
-            return RedirectToAction("GetAllActive");
+            return RedirectToAction("index", "Course");
 
         }
 

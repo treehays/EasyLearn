@@ -1,13 +1,14 @@
-﻿@model EasyLearn.Models.DTOs.AdminDTOs.AdminsResponseModel
-
+﻿@using EasyLearn.Models.ViewModels;
+@model AdminIndexViewModel
 <div class="row">
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex">
                     <div class="flex-1 overflow-hidden">
-                        <p class="text-truncate font-size-14 mb-2">Avialable courses</p>
-                        <h4 class="mb-0">&#x20A6 1452</h4>
+                        <p class="text-truncate font-size-14 mb-2">Total enrollments</p>
+                        @*<h4 class="mb-0">&#x20A6 @Model.Enrolments.NumberOfEnrollments</h4>*@
+                        <h4 class="mb-0">&uarr; @Model.Enrolments.NumberOfEnrollments</h4>
                     </div>
                     <div class="text-primary ms-auto">
                         <i class="ri-stack-line font-size-24"></i>
@@ -28,8 +29,8 @@
             <div class="card-body">
                 <div class="d-flex">
                     <div class="flex-1 overflow-hidden">
-                        <p class="text-truncate font-size-14 mb-2">Number of instructors</p>
-                        <h4 class="mb-0">&#x20A6 38452</h4>
+                        <p class="text-truncate font-size-14 mb-2">Number of Courses</p>
+                        <h4 class="mb-0">&#x20A6 @Model.Courses.NumberOfCourse</h4>
                     </div>
                     <div class="text-primary ms-auto">
                         <i class="ri-store-2-line font-size-24"></i>
@@ -44,13 +45,24 @@
             </div>
         </div>
     </div>
+    
+    
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex">
                     <div class="flex-1 overflow-hidden">
-                        <p class="text-truncate font-size-14 mb-2">Active students</p>
-                        <h4 class="mb-0">&#x20A6 15.4</h4>
+                        <p class="text-truncate font-size-14 mb-2">Search User</p>
+                        <form asp-controller="Admin" asp-action="FindUser">
+                            <input type="text" placeholder="Search for user.." name="emailOrname">
+                            <button type="submit"><i class="fa fa-search"></i> Search</button>
+                        </form>
+
+@*
+                        <form asp-controller="Admin" asp-action="UpgradeUser">
+                        <input type="search" name="userId" />
+                        <input  type="submit"/>
+                        </form>*@
                     </div>
                     <div class="text-primary ms-auto">
                         <i class="ri-briefcase-4-line font-size-24"></i>
@@ -65,6 +77,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 
@@ -80,7 +93,7 @@
             <div class="card-body">
                 <div class="dropdown float-end">
                     <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                       aria-expanded="false">
                         <i class="mdi mdi-dots-vertical"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
@@ -99,7 +112,7 @@
 
                 <div class="table-responsive">
                     <table class="table table-centered datatable dt-responsive nowrap" data-bs-page-length="5"
-                        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead class="table-light">
                             <tr>
                                 <th style="width: 20px;">
@@ -109,11 +122,11 @@
                                     </div>
                                 </th>
                                 <th>#</th>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Gender</th>
+                                <th>Course title</th>
+                                <th>Price</th>
+                                <th>Level</th>
+                                <th>Language</th>
+                                <th>Language</th>
                                 <th style="width: 120px;">Action</th>
                             </tr>
                         </thead>
@@ -121,45 +134,48 @@
                         <tbody>
 
                             @{
-                        var serialNumber = 1;
-                    }
-                    @foreach (var item in Model.Data)
-                    {
-                            <tr>
-                                <td>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="ordercheck1">
-                                        <label class="form-check-label mb-0" for="ordercheck1">&nbsp;</label>
-                                    </div>
-                                </td>
+                                var serialNumber = 1;
+                            }
+                            @foreach (var item in Model.Courses.Data)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="ordercheck1">
+                                            <label class="form-check-label mb-0" for="ordercheck1">&nbsp;</label>
+                                        </div>
+                                    </td>
 
-                                <td><a href="javascript: void(0);" class="text-dark fw-bold">@serialNumber</a> </td>
+                                    <td><a href="javascript: void(0);" class="text-dark fw-bold">@serialNumber</a> </td>
 
-                                <td><a href="javascript: void(0);" class="text-dark fw-bold">@item.FirstName</a> </td>
-                                <td>
-                                   @item.LastName
-                                </td>
-                                <td>@item.Email</td>
+                                    <td><a href="javascript: void(0);" class="text-dark fw-bold">@item.Title</a> </td>
+                                    <td>
+                                        @item.CourseDuration
+                                    </td>
+                                    <td>@item.CategoriesName</td>
 
-                                <td>
-                                  @item.Gender
-                                </td>
-                                <td>
-                                    <div class="badge badge-soft-success font-size-12">@item.StudentshipStatus</div>
-                                </td>
-                                <td id="tooltip-container1">
-                                    <a href="javascript:void(0);" class="me-3 text-primary"
-                                        data-bs-container="#tooltip-container1" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Edit"><i
-                                            class="mdi mdi-pencil font-size-18"></i></a>
-                                    <a href="javascript:void(0);" class="text-danger"
-                                        data-bs-container="#tooltip-container1" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Delete"><i
-                                            class="mdi mdi-trash-can font-size-18"></i></a>
-                                </td>
-                            </tr>
-                            @(serialNumber++);
-                    }
+                                    <td>
+                                        @item.DifficultyLevel
+                                    </td>
+                                    <td>
+                                        <div class="badge badge-soft-success font-size-12">@item.CourseLanguage</div>
+                                    </td>
+                                    <td id="tooltip-container1">
+                                        <a href="javascript:void(0);" class="me-3 text-primary"
+                                       data-bs-container="#tooltip-container1" data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Edit">
+                                            <i class="mdi mdi-pencil font-size-18"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="text-danger"
+                                       data-bs-container="#tooltip-container1" data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Delete">
+                                            <i class="mdi mdi-trash-can font-size-18"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @(serialNumber++)
+                                ;
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -183,125 +199,32 @@
 
                 <div data-simplebar style="max-height: 330px;">
                     <ul class="list-unstyled activity-wid">
-                        <li class="activity-list">
-                            <div class="activity-icon avatar-xs">
-                                <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                    <i class="ri-edit-2-fill"></i>
-                                </span>
-                            </div>
-                            <div>
-                                <div>
-                                    <h5 class="font-size-13">28 Apr, 2020 <small class="text-muted">12:07 am</small>
-                                    </h5>
-                                </div>
 
-                                <div>
-                                    <p class="text-muted mb-0">Responded to need “Volunteer Activities”</p>
+                        @foreach (var item in Model.Enrolments.Data)
+                        {
+                            <li class="activity-list">
+                                <div class="activity-icon avatar-xs">
+                                    <span class="avatar-title bg-soft-primary text-primary rounded-circle">
+                                        <i class="ri-edit-2-fill"></i>
+                                    </span>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="activity-list">
-                            <div class="activity-icon avatar-xs">
-                                <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                    <i class="ri-user-2-fill"></i>
-                                </span>
-                            </div>
-                            <div>
                                 <div>
-                                    <h5 class="font-size-13">21 Apr, 2020 <small class="text-muted">08:01 pm</small>
-                                    </h5>
-                                </div>
+                                    <div>
+                                        <h5 class="font-size-13">
+                                            @item.CreatedOn.ToShortDateString()<small class="text-muted">@item.CreatedOn.ToShortTimeString()</small>
+                                        </h5>
+                                    </div>
 
-                                <div>
-                                    <p class="text-muted mb-0">Added an interest “Volunteer Activities”</p>
+                                    <div>
+                                        <p class="text-muted mb-0">@item.CourseTitle</p>
+                                        <p class="text-muted mb-0">@item.StudentName</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="activity-list">
-                            <div class="activity-icon avatar-xs">
-                                <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                    <i class="ri-bar-chart-fill"></i>
-                                </span>
-                            </div>
-                            <div>
-                                <div>
-                                    <h5 class="font-size-13">17 Apr, 2020 <small class="text-muted">09:23 am</small>
-                                    </h5>
-                                </div>
+                            </li>
 
-                                <div>
-                                    <p class="text-muted mb-0">Joined the group “Boardsmanship Forum”</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="activity-list">
-                            <div class="activity-icon avatar-xs">
-                                <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                    <i class="ri-mail-fill"></i>
-                                </span>
-                            </div>
-                            <div>
-                                <div>
-                                    <h5 class="font-size-13">11 Apr, 2020 <small class="text-muted">05:10 pm</small>
-                                    </h5>
-                                </div>
+                        }
 
-                                <div>
-                                    <p class="text-muted mb-0">Responded to need “In-Kind Opportunity”</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="activity-list">
-                            <div class="activity-icon avatar-xs">
-                                <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                    <i class="ri-calendar-2-fill"></i>
-                                </span>
-                            </div>
-                            <div>
-                                <div>
-                                    <h5 class="font-size-13">07 Apr, 2020 <small class="text-muted">12:47 pm</small>
-                                    </h5>
-                                </div>
 
-                                <div>
-                                    <p class="text-muted mb-0">Created need “Volunteer Activities”</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="activity-list">
-                            <div class="activity-icon avatar-xs">
-                                <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                    <i class="ri-edit-2-fill"></i>
-                                </span>
-                            </div>
-                            <div>
-                                <div>
-                                    <h5 class="font-size-13">05 Apr, 2020 <small class="text-muted">03:09 pm</small>
-                                    </h5>
-                                </div>
-
-                                <div>
-                                    <p class="text-muted mb-0">Attending the event “Some New Event”</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="activity-list">
-                            <div class="activity-icon avatar-xs">
-                                <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                    <i class="ri-user-2-fill"></i>
-                                </span>
-                            </div>
-                            <div>
-                                <div>
-                                    <h5 class="font-size-13">02 Apr, 2020 <small class="text-muted">12:07 am</small>
-                                    </h5>
-                                </div>
-
-                                <div>
-                                    <p class="text-muted mb-0">Responded to need “In-Kind Opportunity”</p>
-                                </div>
-                            </div>
-                        </li>
                     </ul>
                 </div>
 
@@ -315,14 +238,6 @@
 
 <!-- end row -->
 <!-- JAVASCRIPT -->
-
-
-
-
-
-
-
-
 @{
             /*
 

@@ -378,6 +378,32 @@ public class AdminService : IAdminService
         };
         return userModel;
     }
+    
+    public async Task<UsersResponseModel> GetByUsersNameOrEmail(string emailOrname)
+    {
+        emailOrname = emailOrname.ToLower();
+        var user = await _userRepository.GetListAsync(x =>
+       (x.FirstName.ToLower() == emailOrname || x.LastName.ToLower() == emailOrname || x.Email == emailOrname)
+       && x.IsActive
+       && !x.IsDeleted);
+
+        if (user.Count() == 0)
+        {
+            return new UsersResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var userModel = new UsersResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = user.Select(x => _userMapperService.ConvertToUserResponseModel(x)).ToList(),
+        };
+        return userModel;
+    }
 
     public async Task<PaymentsDetailRequestModel> GetListOfAdminBankDetails(string userId)
     {

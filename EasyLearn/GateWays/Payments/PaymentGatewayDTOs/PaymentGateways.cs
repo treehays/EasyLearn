@@ -65,6 +65,36 @@ public class VerifyAccountNumberResponseModel
     //"{\"status\":true,\"message\":\"Account number resolved\",\"data\":{\"account_number\":\"0159192507\",\"account_name\":\"ABDULSALAM AHMAD AYOOLA\",\"bank_id\":9}}"
 }
 
+//public class VerifyTransactionRequestModel
+//{
+//    public string ReferenceNumber { get; set; }
+
+//}
+
+public class VerifyTransactionData
+{
+    public uint id { get; set; }
+    public string domain { get; set; }
+    public string status { get; set; }
+    public string gateway_response { get; set; }
+    public string reference { get; set; }
+    public int amount { get; set; }
+    public DateTime paid_at { get; set; }
+    public DateTime created_at { get; set; }
+    public string currency { get; set; }
+    public string channel { get; set; }
+    public string ip_address { get; set; }
+    //public string bank_id { get; set; }
+    //"data\":{\"account_number\":\"0159192507\",\"account_name\":\"ABDULSALAM AHMAD AYOOLA\",\"bank_id\":9}
+}
+public class VerifyTransactionResponseModel
+{
+    public bool status { get; set; }
+    public string message { get; set; }
+    public VerifyTransactionData data { get; set; }
+    //"{\"status\":true,\"message\":\"Account number resolved\",\"data\":{\"account_number\":\"0159192507\",\"account_name\":\"ABDULSALAM AHMAD AYOOLA\",\"bank_id\":9}}"
+}
+
 public class CreateTransferRecipientRequestModel
 {
     public string Type { get; set; } = "nuban";
@@ -88,14 +118,14 @@ public class CreateTransferRecipientDataDetails
 public class CreateTransferRecipientData
 {
     public bool active { get; set; }
-    public string createdAt { get; set; }
+    public DateTime createdAt { get; set; }
     public string domain { get; set; }
-    public int id { get; set; }
+    public uint id { get; set; }
     public int integration { get; set; }
     public string name { get; set; }
     public string type { get; set; }
     public string recipient_code { get; set; }
-    public string updatedAt { get; set; }
+    public DateTime updatedAt { get; set; }
     public bool is_deleted { get; set; }
     public CreateTransferRecipientDataDetails details { get; set; }
 

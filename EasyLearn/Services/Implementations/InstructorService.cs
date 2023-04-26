@@ -168,6 +168,14 @@ public class InstructorService : IInstructorService
     {
         var instructors = await _userRepository.GetListAsync(x => x.RoleId == "Instructor");
         var pagedList = instructors.ToPagedList(instructors.Count(), 5);
+        if (instructors == null)
+        {
+            return new InstructorsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
         var instructorModel = new InstructorsResponseModel
         {
             Status = true,
@@ -225,6 +233,7 @@ public class InstructorService : IInstructorService
                 Gender = x.Gender,
                 StudentshipStatus = x.StudentshipStatus,
                 RoleId = x.RoleId,
+                CreatedOn = x.CreatedOn,
             }),
         };
         return adminModel;
@@ -271,6 +280,14 @@ public class InstructorService : IInstructorService
     public async Task<InstructorResponseModel> GetByEmail(string email)
     {
         var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Email == email && x.IsActive && !x.IsDeleted);
+        if (instructor == null)
+        {
+            return new InstructorResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
         var instructorModel = new InstructorResponseModel
         {
             Status = true,
@@ -299,6 +316,52 @@ public class InstructorService : IInstructorService
     public async Task<InstructorResponseModel> GetById(string id)
     {
         var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == id && x.IsActive && !x.IsDeleted);
+        if (instructor == null)
+        {
+            return new InstructorResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+        var instructorModel = new InstructorResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new InstructorDto
+            {
+                Id = instructor.Id,
+                FirstName = instructor.FirstName,
+                LastName = instructor.LastName,
+                Email = instructor.Email,
+                Password = instructor.Password,
+                ProfilePicture = instructor.ProfilePicture,
+                Biography = instructor.Biography,
+                Skill = instructor.Skill,
+                Interest = instructor.Interest,
+                PhoneNumber = instructor.PhoneNumber,
+                Gender = instructor.Gender,
+                StudentshipStatus = instructor.StudentshipStatus,
+                RoleId = instructor.RoleId,
+            }
+        };
+        return instructorModel;
+
+    }
+
+
+    public async Task<InstructorResponseModel> InstructorDetail(string instructorId)
+    {
+        var instructo = await _instructorRepository.GetAsync(x => x.Id == instructorId && !x.IsDeleted);
+        var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == instructo.UserId && x.IsActive && !x.IsDeleted);//to be refactor after presentation using joiner table
+        if (instructor == null)
+        {
+            return new InstructorResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
         var instructorModel = new InstructorResponseModel
         {
             Status = true,
@@ -402,6 +465,14 @@ public class InstructorService : IInstructorService
     public async Task<InstructorResponseModel> GetFullDetailById(string id)
     {
         var instructor = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == id && x.IsActive && !x.IsDeleted);
+        if (instructor == null)
+        {
+            return new InstructorResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
         var instructorModel = new InstructorResponseModel
         {
             Status = true,

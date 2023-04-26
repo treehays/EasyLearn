@@ -2,6 +2,6 @@
 
 public enum boolOption
 {
-    IsFalse,
-    IsTrue
+    False,
+    True
 }

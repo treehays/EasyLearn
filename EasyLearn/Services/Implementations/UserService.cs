@@ -151,6 +151,19 @@ public class UserService : IUserService
         return loginModel;
     }
 
+    //public async Task<BaseResponse> EmailReVerification(string emailToken)
+    //{
+    //    var user = await _userRepository.GetUserByTokenAsync(emailToken);
+    //    if (user == null)
+    //    {
+    //        return new BaseResponse
+    //        {
+    //            Message = "Wrong verification code...",
+    //            Status = false,
+    //        };
+    //    }
+    //}
+
 
     public async Task<BaseResponse> EmailVerification(string emailToken)
     {
@@ -192,6 +205,14 @@ public class UserService : IUserService
     public async Task<UserResponseModel> GetByIdAsync(string userId)
     {
         var user = await _userRepository.GetAsync(x => x.Id == userId && !x.IsDeleted);
+        if (user == null)
+        {
+            return new UserResponseModel
+            {
+                Status = false,
+                Message = "User not found..."
+            };
+        }
         var userResponseModel = new UserResponseModel
         {
             Status = true,

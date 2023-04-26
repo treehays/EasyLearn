@@ -42,11 +42,11 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a asp-controller="Instructor" asp-action="RegisterInstructor">Add new Instructor</a></li>
-                            <li><a asp-controller="Instructor" asp-action="GetAllActive">View all active</a></li>
+                            <li><a asp-controller="Instructor" asp-action="GetAllActive">Active instructors</a></li>
 
-                            <li><a asp-controller="Instructor" asp-action="GetAllInActive">View all inactive instructors</a></li>
+                            <li><a asp-controller="Instructor" asp-action="GetAllInActive">Inactive instructors</a></li>
 
-                            <li><a asp-controller="Instructor" asp-action="GetAll">Moderate instructor</a></li>
+                            <li><a asp-controller="Instructor" asp-action="GetAll">Upgrade Instructor</a></li>
 
                             <li><a asp-controller="Instructor" asp-action="ListOfBankDetail">instructors bank details</a></li>
                         </ul>
@@ -67,7 +67,7 @@
 
                             <li><a asp-controller="Category" asp-action="">Inactive category</a></li>
 
-                            <li><a asp-controller="Category" asp-action="">Moderate instructor</a></li>
+                           <li><a asp-controller="Category" asp-action="">Moderate instructor</a></li>
 
                             <li><a asp-controller="Category" asp-action="">instructors bank details</a></li>
                         </ul>
@@ -82,13 +82,15 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a asp-controller="Course" asp-action="CreateCourse">Add new course</a></li>
-                            <li><a asp-controller="Course" asp-action="GetAllActive">Active Course</a></li>
+                            <li><a asp-controller="Course" asp-action="GetAllActive">Available Courses</a></li>
 
-                            <li><a asp-controller="Course" asp-action="GetAllInActive">View all inactive instructors</a></li>
+                            <li><a asp-controller="Course" asp-action="GetAllInActive">Inactive Courses</a></li>
 
-                            <li><a asp-controller="Course" asp-action="">Moderate instructor</a></li>
+                            <li><a asp-controller="Course" asp-action="">Review Course</a></li>
 
+                            <!--
                             <li><a asp-controller="Course" asp-action="">instructors bank details</a></li>
+                            -->
                         </ul>
                     </li>
 
@@ -101,9 +103,9 @@
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a asp-controller="Student" asp-action="RegisterStudent">Add new student</a></li>
 
-                            <li><a asp-controller="Student" asp-action="Activestudent">Inactive students</a></li>
-
                             <li><a asp-controller="Student" asp-action="Inactivestudent">Active students</a></li>
+
+                            <li><a asp-controller="Student" asp-action="Activestudent">Inactive students</a></li>
 
                             <li><a asp-controller="Student" asp-action="">students</a></li>
 
@@ -112,7 +114,7 @@
                         </ul>
                     </li>
 
-                      <!--Manage role -->
+                    <!--Manage role -->
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-chat-2-line"></i>
@@ -166,7 +168,7 @@
 
 
 
-
+                    <!--
 
                     <li>
                         <a href=@Url.Action("Index", "Calendar") class=" waves-effect">
@@ -399,6 +401,7 @@
                             </li>
                         </ul>
                     </li>
+                    -->
 
                 </ul>
             </div>

@@ -20,6 +20,7 @@ public interface IAdminService
     Task<UsersResponseModel> GetAllInActive();
     Task<UserResponseModel> GetByEmail(string email);
     Task<UsersResponseModel> GetByName(string name);
+    Task<UsersResponseModel> GetByUsersNameOrEmail(string emailOrname);
     Task<PaymentDetailRequestModel> GetByPaymentDetail(string id);
     Task<AdminResponseModel> GetFullDetailById(string id);
     Task<PaymentsDetailRequestModel> GetListOfAdminBankDetails(string UserId);

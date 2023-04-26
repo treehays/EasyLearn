@@ -8,6 +8,7 @@ namespace EasyLearn.Services.Interfaces
     {
         Task<User> UserRegistration(CreateUserRequestModel model, string baseUrl);
         Task<BaseResponse> EmailVerification(string emailToken);
+        //Task<BaseResponse> EmailReVerification(string emailToken);
         //Task<bool> Testing(string email, string OTPKey);
         Task<LoginRequestModel> Login(LoginRequestModel model);
         Task<BaseResponse> UpgradeUser(UserUpgradeRequestModel model, string userId);

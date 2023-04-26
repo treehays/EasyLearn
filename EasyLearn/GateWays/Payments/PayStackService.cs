@@ -113,4 +113,23 @@ public class PayStackService : IPayStackService
         }
         return responseObj;
     }
+
+    public async Task<VerifyTransactionResponseModel> VerifyTransaction(string referenceNumber)
+    {
+        var key = _configuration.GetSection("Paystack")["APIKey"];
+        var getHttpClient = new HttpClient();
+        getHttpClient.DefaultRequestHeaders.Accept.Clear();
+        getHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        getHttpClient.BaseAddress = new Uri($"https://api.paystack.co/transaction/verify/{referenceNumber}");
+        getHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
+        var response = await getHttpClient.GetAsync(getHttpClient.BaseAddress);
+        var responseString = await response.Content.ReadAsStringAsync();
+        var responseObj = JsonSerializer.Deserialize<VerifyTransactionResponseModel>(responseString);
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            return responseObj;
+        }
+        return responseObj;
+    }
 }

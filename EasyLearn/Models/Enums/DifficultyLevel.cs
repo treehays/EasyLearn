@@ -4,6 +4,7 @@
     {
         Begginer = 1,
         Intermediate,
-        Professional
+        Professional,
+        AllLevel
     }
 }
