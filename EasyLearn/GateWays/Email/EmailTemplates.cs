@@ -692,6 +692,7 @@ public static class EmailTemplates
         //    """";
 
         return confirmEmailTemplate;
+        return confirmEmailTemplate;
 
 
     }
