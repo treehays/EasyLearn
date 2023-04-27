@@ -67,7 +67,7 @@
 
                             <li><a asp-controller="Category" asp-action="">Inactive category</a></li>
 
-                           <li><a asp-controller="Category" asp-action="">Moderate instructor</a></li>
+                            <li><a asp-controller="Category" asp-action="">Moderate instructor</a></li>
 
                             <li><a asp-controller="Category" asp-action="">instructors bank details</a></li>
                         </ul>
@@ -83,7 +83,7 @@
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a asp-controller="Course" asp-action="CreateCourse">Add new course</a></li>
                             <li><a asp-controller="Course" asp-action="GetAllActive">Available Courses</a></li>
-
+                            <li><a asp-controller="Course" asp-action="GetAllUnVerifiedCourse">Pending Verifications</a></li>
                             <li><a asp-controller="Course" asp-action="GetAllInActive">Inactive Courses</a></li>
 
                             <li><a asp-controller="Course" asp-action="">Review Course</a></li>
@@ -101,13 +101,12 @@
                             <span>Manage students</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a asp-controller="Student" asp-action="RegisterStudent">Add new student</a></li>
 
-                            <li><a asp-controller="Student" asp-action="Inactivestudent">Active students</a></li>
-
-                            <li><a asp-controller="Student" asp-action="Activestudent">Inactive students</a></li>
-
-                            <li><a asp-controller="Student" asp-action="">students</a></li>
+                            <!--    <li><a asp-controller="Student" asp-action="RegisterStudent">Add new student</a></li> -->
+                            <li><a asp-controller="Student" asp-action="GetAllActiveStudent">Active students</a></li>
+                            <li><a asp-controller="Student" asp-action="GetAllInActiveStudent">Inactive students</a></li>
+                            <li><a asp-controller="Student" asp-action="GetAllUnverifiedStudent">Unverified students</a></li>
+                            <li><a asp-controller="Student" asp-action="GetAllStudents">All students</a></li>
 
 
 

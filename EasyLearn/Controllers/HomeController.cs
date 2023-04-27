@@ -30,13 +30,6 @@ namespace EasyLearn.Controllers
             //var pp = await _payStackService.VerifyTransaction(ff);
             return View();
         }
-
-        public async Task<IActionResult> ConfirmEmail(string emailToken)
-        {
-            await _userService.EmailVerification(emailToken);
-            return RedirectToAction("Index");
-        }
-
         //[Route("v{version:apiVersion}/[controller]")]
         //[Route("{Login}")]
         public IActionResult Login()
@@ -76,11 +69,6 @@ namespace EasyLearn.Controllers
             //};
             //var createrec = await _payStackService.CreateTransferRecipient(model);
             //var trans = await _payStackService.TransferMoneyToUser(createrec);
-
-
-
-
-
 
             if (User.Identity.IsAuthenticated)
             {

@@ -18,15 +18,10 @@ namespace EasyLearn.Controllers
         {
             return View();
         }
-
-
-
         public IActionResult RegisterStudent()
         {
             return View();
         }
-
-
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> RegisterStudent(CreateUserRequestModel model)
@@ -49,9 +44,6 @@ namespace EasyLearn.Controllers
             return RedirectToAction("index", "Course");
 
         }
-
-
-
         public async Task<IActionResult> Detail(string id)
         {
             var student = await _studentService.GetById(id);
@@ -64,10 +56,6 @@ namespace EasyLearn.Controllers
             TempData["success"] = student.Message;
             return View(student);
         }
-
-
-
-
         public async Task<IActionResult> DeletePreview(string id)
         {
             var student = await _studentService.GetById(id);
@@ -75,23 +63,19 @@ namespace EasyLearn.Controllers
             TempData["failed"] = student.Message;
             return RedirectToAction(nameof(Index), "Home");
         }
-
-
         public async Task<IActionResult> Delete(string id)
         {
             var student = await _studentService.Delete(id);
             if (student.Status)
             {
                 TempData["success"] = student.Message;
-                return RedirectToAction(nameof(GetAll));
+                return RedirectToAction("index", "Home");
             }
 
             TempData["failed"] = student.Message;
-            return RedirectToAction(nameof(GetAll));
+            return RedirectToAction("index", "Home");
         }
-
-
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllStudents()
         {
             var students = await _studentService.GetAllStudent();
             if (!students.Status)
@@ -103,10 +87,7 @@ namespace EasyLearn.Controllers
             TempData["success"] = students.Message;
             return View(students);
         }
-
-
-
-        public async Task<IActionResult> GetAllActive()
+        public async Task<IActionResult> GetAllActiveStudent()
         {
             var students = await _studentService.GetAllActive();
             if (!students.Status)
@@ -118,15 +99,25 @@ namespace EasyLearn.Controllers
             TempData["success"] = students.Message;
             return View(students);
         }
-
-
-        public async Task<IActionResult> GetAllInActive()
+        public async Task<IActionResult> GetAllInActiveStudent()
         {
             var students = await _studentService.GetAllInActive();
             if (!students.Status)
             {
                 TempData["failed"] = students.Message;
                 return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = students.Message;
+            return View(students);
+        }
+        public async Task<IActionResult> GetAllUnverifiedStudent()
+        {
+            var students = await _studentService.GetAllInActive();
+            if (!students.Status)
+            {
+                TempData["failed"] = students.Message;
+                return RedirectToAction("Index", "Home");
             }
 
             TempData["success"] = students.Message;

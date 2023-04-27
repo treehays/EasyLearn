@@ -104,7 +104,7 @@ namespace EasyLearn.Controllers
             if (!moderator.Status)
             {
                 TempData["failed"] = moderator.Message;
-                return RedirectToAction(nameof(Index), "Home");
+                return View();
             }
 
             TempData["success"] = moderator.Message;

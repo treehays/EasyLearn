@@ -14,10 +14,10 @@ public interface IInstructorService
     Task<InstructorsResponseModel> GetAllActive();
     Task<InstructorsResponseModel> GetAllInActive();
     Task<InstructorResponseModel> GetById(string id);
+    Task<InstructorResponseModel> GetByEmail(string email);
     Task<InstructorResponseModel> InstructorDetail(string instructorId);
 
     //Task<InstructorsResponseModel> GetByName(string name);
-    Task<InstructorResponseModel> GetByEmail(string email);
     Task<PaymentDetailRequestModel> GetByPaymentDetail(string id);
     Task<InstructorResponseModel> GetFullDetailById(string id);
     Task<PaymentsDetailRequestModel> GetListOfInstructorBankDetails(string userId);

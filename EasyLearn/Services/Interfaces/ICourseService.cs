@@ -7,14 +7,16 @@ namespace EasyLearn.Services.Interfaces;
 public interface ICourseService
 {
     Task<BaseResponse> Create(CreateCourseRequestModel model);
-    Task<CourseResponseModel> GetCourseByIdFull(string id);
+    Task<CourseResponseModel> GetFullDetailOfCourseById(string id);
     Task<BaseResponse> Delete(string id, string userId);
-    Task<CoursesResponseModel> GetAllInstructorCourse(string instructorId);
+    Task<CoursesResponseModel> GetAllCoursesByAnInstructor(string instructorId);
+    //Task<CoursesResponseModel> GetAllInstructorCourse(string instructorId);
     Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId);
     Task<CoursesEnrolledRequestModel> UnpaidCourse(string studentId);
     Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId);
     Task<CoursesEnrolledRequestModel> GetCompletedCourses(string studentId);
     Task<CoursesResponseModel> GetAllCourse();
+    Task<CoursesResponseModel> GetAllUnVerifiedCourse();
     Task<CoursesResponseModel> GetAllActiveCourse(string instructorId);
     Task<CoursesResponseModel> GetAllInActiveCourse();
     Task<CoursesResponseModel> GetAllInActiveCourse(string instructorId);

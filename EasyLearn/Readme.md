@@ -342,3 +342,14 @@ High School Exams (AP Exams, IB Exams)
 Civil Service Exams (Police Officer Exam, Firefighter Exam, Postal Service Exam)
 Medical Board Exams (USMLE, NCLEX)
 Foreign Language Proficiency (DELE, DELF, JLPT)
+
+
+
+
+
+
+
+
+
+#wallet 
+#enrolment confirmation

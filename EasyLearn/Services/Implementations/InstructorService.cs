@@ -413,6 +413,7 @@ public class InstructorService : IInstructorService
                 AccountType = instructor.AccountType,
                 BankName = instructor.BankCode,
                 UserId = instructor.UserId,
+                
             }
         };
         return instructorModel;

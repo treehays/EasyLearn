@@ -2,8 +2,11 @@
 using EasyLearn.GateWays.Email;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
+using EasyLearn.Models.DTOs.InstructorDTOs;
+using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
+using EasyLearn.Repositories.Implementations;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -13,23 +16,20 @@ namespace EasyLearn.Services.Implementations;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IFileManagerService _fileManagerService;
     private readonly ISendInBlueEmailService _emailService;
-    private readonly IModeratorRepository _moderatorRepository;
-    private readonly IInstructorRepository _instructorRepository;
-    private readonly IStudentRepository _studentRepository;
+    private readonly IPaymentDetailRepository _paymentDetailsRepository;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IAddressRepository _addressRepository;
 
-
-    public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IFileManagerService fileManagerService, ISendInBlueEmailService emailService, IModeratorRepository moderatorRepository, IInstructorRepository instructorRepository, IStudentRepository studentRepository)
+    public UserService(IUserRepository userRepository, IFileManagerService fileManagerService, ISendInBlueEmailService emailService, IHttpContextAccessor contextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository)
     {
         _userRepository = userRepository;
-        _httpContextAccessor = httpContextAccessor;
         _fileManagerService = fileManagerService;
         _emailService = emailService;
-        _moderatorRepository = moderatorRepository;
-        _instructorRepository = instructorRepository;
-        _studentRepository = studentRepository;
+        _contextAccessor = contextAccessor;
+        _paymentDetailsRepository = paymentDetailsRepository;
+        _addressRepository = addressRepository;
     }
 
 
@@ -59,7 +59,7 @@ public class UserService : IUserService
             IsActive = true,
             EmailToken = Guid.NewGuid().ToString().Replace('-', '0'),
             ProfilePicture = filePath,
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            CreatedBy = _contextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
         };
 
         var senderDetail = new EmailSenderDetails
@@ -69,25 +69,22 @@ public class UserService : IUserService
             ReceiverName = model.FirstName,
         };
         var emailSender = _emailService.EmailVerificationTemplate(senderDetail, baseUrl);
-
         var userAddress = new Address
         {
             Id = Guid.NewGuid().ToString(),
-            CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            CreatedBy = _contextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             UserId = user.Id,
         };
-
-
         var userPayment = new List<PaymentDetails>
-    {
-        new PaymentDetails
         {
-            Id = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            CreatedBy = user.CreatedBy,
-            CreatedOn = user.CreatedOn,
-        }
-    };
+          new PaymentDetails
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                CreatedBy = user.CreatedBy,
+                CreatedOn = user.CreatedOn,
+            }
+        };
 
 
         user.Address = userAddress;
@@ -100,7 +97,6 @@ public class UserService : IUserService
     public async Task<LoginRequestModel> Login(LoginRequestModel model)
     {
         var user = await _userRepository.GetFullDetails(x => x.UserName.ToUpper() == model.Email.ToUpper() || x.Email.ToUpper() == model.Email.ToUpper());
-
 
         if (user == null)
         {
@@ -137,7 +133,7 @@ public class UserService : IUserService
         var studentId = user.Student != null ? user.Student.Id : null;
         var loginModel = new LoginRequestModel
         {
-            Message = "You’ve successfully logged in to EasyLearn. Wellcome back soon!..",
+            Message = "You’ve successfully logged in to EasyLearn. Wellcome back!..",
             Status = true,
             Email = user.Email,
             Password = user.Password,
@@ -163,9 +159,84 @@ public class UserService : IUserService
     //        };
     //    }
     //}
+    public async Task<BaseResponse> ResetPassword(string email, string baseUrl)
+    {
+        var user = await _userRepository.GetAsync(x => x.Email.ToLower() == email.ToLower());
+        if (user == null)
+        {
+            return new BaseResponse
+            {
+                Status = false,
+                Message = "Link has been sent to the registerd email..",
+            };
+        }
 
+        user.EmailToken = Guid.NewGuid().ToString().Replace('-', 's');
+        user.EmailConfirmed = false;
+        user.ModifiedOn = DateTime.Now;
 
-    public async Task<BaseResponse> EmailVerification(string emailToken)
+        var senderDetail = new EmailSenderDetails
+        {
+            EmailToken = $"{baseUrl}/User/VerifyPasswordReset?emailToken={user.EmailToken}",
+            ReceiverEmail = user.Email,
+            ReceiverName = user.FirstName,
+        };
+        var emailSender = _emailService.EmailVerificationTemplate(senderDetail, baseUrl);
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Status = true,
+            Message = "Link has been sent to the registerd email..",
+        };
+    }
+
+    public async Task<BaseResponse> PasswordRessetConfirmation(string emailToken, string userId)
+    {
+        var user = await _userRepository.GetUserByTokenAsync(emailToken);
+        if (user == null)
+        {
+            return new BaseResponse
+            {
+                Message = "Wrong verification code...",
+                Status = false,
+            };
+        }
+        var resetDate = Convert.ToDateTime(user.ModifiedOn);
+        var expiryDate = resetDate.AddDays(1);
+
+        if (expiryDate < DateTime.Now)
+        {
+            return new BaseResponse
+            {
+                Message = "Link has expired kindly request for new reset link...",
+                Status = false,
+            };
+        }
+
+        //if (user.EmailConfirmed)
+        //{
+        //    return new BaseResponse
+        //    {
+        //        Message = "Account already verified, proceed to login...",
+        //        Status = false,
+        //    };
+        //}
+
+        //var date = DateTime.Now;
+        //var modifiedBy = userId;
+        //user.EmailConfirmed = true;
+        //user.ModifiedOn = date;
+        //user.ModifiedBy = modifiedBy;
+        //await _userRepository.UpdateAsync(user);
+        //await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "Token confirmed activated...",
+            Status = true,
+        };
+    }
+    
+    public async Task<BaseResponse> EmailVerification(string emailToken, string userId)
     {
         var user = await _userRepository.GetUserByTokenAsync(emailToken);
         if (user == null)
@@ -187,8 +258,7 @@ public class UserService : IUserService
         }
 
         var date = DateTime.Now;
-        var modifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+        var modifiedBy = userId;
         user.EmailConfirmed = true;
         user.ModifiedOn = date;
         user.ModifiedBy = modifiedBy;
@@ -201,10 +271,9 @@ public class UserService : IUserService
         };
     }
 
-
     public async Task<UserResponseModel> GetByIdAsync(string userId)
     {
-        var user = await _userRepository.GetAsync(x => x.Id == userId && !x.IsDeleted);
+        var user = await _userRepository.GetAsync(x => x.Id == userId && !x.IsDeleted && x.IsActive);
         if (user == null)
         {
             return new UserResponseModel
@@ -232,11 +301,9 @@ public class UserService : IUserService
         return userResponseModel;
     }
 
-
-
     public async Task<BaseResponse> UpgradeUser(UserUpgradeRequestModel model, string userId)
     {
-        var user = await _userRepository.GetAsync(x => x.Id == model.UserId);
+        var user = await _userRepository.GetFullDetails(x => x.Id == model.UserId);
         if (user == null)
         {
             return new BaseResponse
@@ -248,19 +315,22 @@ public class UserService : IUserService
 
         if (user.RoleId.ToLower() == "student")
         {
-            var student = await _studentRepository.GetAsync(x => x.UserId == model.UserId);
+            //var student = await _studentRepository.GetAsync(x => x.UserId == model.UserId);
             if (model.RoleId.ToLower() == "moderator")
             {
                 var moderatorUser = new Moderator
                 {
-                    Id = student.Id,
-                    UserId = student.UserId,
+                    Id = user.Student.Id,
+                    UserId = user.Id,
                     CreatedBy = userId,
                     CreatedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now,
+                    ModifiedBy = userId,
                 };
                 user.RoleId = "Moderator";
-                await _moderatorRepository.AddAsync(moderatorUser);
-                await _moderatorRepository.SaveChangesAsync();
+                user.Moderator = moderatorUser;
+                //await _userRepository.AddAsync(moderatorUser);
+                await _userRepository.SaveChangesAsync();
                 return new BaseResponse
                 {
                     Message = "User successfully upgraded to a moderator...",
@@ -272,14 +342,17 @@ public class UserService : IUserService
             {
                 var instructorUser = new Instructor
                 {
-                    Id = student.Id,
-                    UserId = student.UserId,
+                    Id = user.Student.Id,
+                    UserId = user.Id,
                     CreatedBy = userId,
                     CreatedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now,
+                    ModifiedBy = userId,
                 };
                 user.RoleId = "Moderator";
-                await _instructorRepository.AddAsync(instructorUser);
-                await _instructorRepository.SaveChangesAsync();
+                user.Instructor = instructorUser;
+                //await _instructorRepository.AddAsync(instructorUser);
+                await _userRepository.SaveChangesAsync();
                 return new BaseResponse
                 {
                     Message = "User successfully upgraded to an instructor...",
@@ -294,18 +367,19 @@ public class UserService : IUserService
         }
         if (user.RoleId.ToLower() == "instructor" && model.RoleId.ToLower() == "moderator")
         {
-            var instructor = await _instructorRepository.GetAsync(x => x.UserId == model.UserId);
-
+            //var instructor = await _instructorRepository.GetAsync(x => x.UserId == model.UserId);
             var moderatorUser = new Moderator
             {
-                Id = instructor.Id,
-                UserId = instructor.UserId,
+                Id = user.Instructor.Id,
+                UserId = user.Id,
                 CreatedBy = userId,
                 CreatedOn = DateTime.Now,
+                ModifiedOn= DateTime.Now,
+                ModifiedBy= userId,
             };
             user.RoleId = "Moderator";
-            await _moderatorRepository.AddAsync(moderatorUser);
-            await _moderatorRepository.SaveChangesAsync();
+            user.Moderator = moderatorUser;
+            await _userRepository.SaveChangesAsync();
             return new BaseResponse
             {
                 Message = "User successfully upgraded to a moderator...",
@@ -320,5 +394,184 @@ public class UserService : IUserService
             Status = false,
         };
 
+    }
+
+    public async Task<BaseResponse> UpdateProfile(UpdateUserProfileRequestModel model, string userId)
+    {
+        var user = await _userRepository.GetAsync(x => x.Id == model.Id);
+        if (user == null)
+        {
+            return new BaseResponse
+            {
+                Message = "User not found.",
+                Status = false,
+            };
+        }
+        user.FirstName = model.FirstName ?? user.FirstName;
+        user.LastName = model.LastName ?? user.LastName;
+        user.ProfilePicture = model.ProfilePicture ?? user.ProfilePicture;
+        user.Biography = model.Biography ?? user.Biography;
+        user.Skill = model.Skill ?? user.Skill;
+        user.Interest = model.Interest ?? user.Interest;
+        user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
+        user.StudentshipStatus = model.StudentshipStatus;
+        user.ModifiedOn = DateTime.Now;
+        user.ModifiedBy = userId;
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "User updated successfully..",
+            Status = true,
+        };
+    }
+
+    public async Task<PaymentsDetailRequestModel> ListOfUserBankDetails(string userId)
+    {
+        var admins = await _paymentDetailsRepository.GetListAsync(x => x.UserId == userId && !x.IsDeleted);
+
+        if (admins == null)
+        {
+            return new PaymentsDetailRequestModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var adminModel = new PaymentsDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = admins.Select(x => new PaymentDetailDTO
+            {
+                Id = x.Id,
+                BankName = x.BankCode,
+                AccountName = x.AccountName,
+                AccountNumber = x.AccountNumber,
+                AccountType = x.AccountType,
+            }),
+        };
+        return adminModel;
+    }
+
+    public async Task<PaymentDetailRequestModel> GetPaymentDetailPaymentId(string paymentId, string userId)
+    {
+
+        var user = await _paymentDetailsRepository.GetAsync(x => x.Id == paymentId && !x.IsDeleted);
+
+        if (user == null)
+        {
+            return new PaymentDetailRequestModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+        var instructorModel = new PaymentDetailRequestModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new PaymentDetailDTO
+            {
+                Id = user.Id,
+                AccountName = user.AccountName,
+                AccountNumber = user.AccountNumber,
+                AccountType = user.AccountType,
+                BankName = user.BankCode,
+                UserId = user.UserId,
+
+            }
+        };
+        return instructorModel;
+    }
+
+    public async Task<BaseResponse> UpdateBankDetail(UpdateUserBankDetailRequestModel model, string userId)
+    {
+        var user = await _paymentDetailsRepository.GetAsync(x => x.UserId == model.Id);
+        if (user == null)
+        {
+            return new BaseResponse
+            {
+                Message = "User not found.",
+                Status = false,
+            };
+        }
+
+        user.BankCode = model.BankName;
+        user.AccountNumber = model.AccountNumber;
+        user.AccountName = model.AccountName;
+        user.AccountType = model.AccountType;
+        user.ModifiedOn = DateTime.Now;
+        user.ModifiedBy = userId;
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "User updated successfully..",
+            Status = true,
+        };
+    }
+
+    public async Task<UserResponseModel> GetFullDetailById(string id)
+    {
+        var user = await _userRepository.GetAsync(x => x.RoleId == "Instructor" && x.Id == id && x.IsActive && !x.IsDeleted);
+        if (user == null)
+        {
+            return new UserResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+        var instructorModel = new UserResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = new UserDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Password = user.Password,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                Skill = user.Skill,
+                Interest = user.Interest,
+                PhoneNumber = user.PhoneNumber,
+                Gender = user.Gender,
+                StudentshipStatus = user.StudentshipStatus,
+                RoleId = user.RoleId,
+
+            }
+        };
+        return instructorModel;
+
+    }
+
+    public async Task<BaseResponse> UpdateAddress(UpdateUserAddressRequestModel model, string userId)
+    {
+        var user = await _addressRepository.GetAsync(x => x.Id == model.Id && !x.IsDeleted);
+        if (user == null)
+        {
+            return new BaseResponse
+            {
+                Message = "User not found.",
+                Status = false,
+            };
+        }
+
+        user.Country = model.Country;
+        user.State = model.State;
+        user.City = model.City;
+        user.Language = model.Language;
+        user.ModifiedOn = DateTime.Now;
+        user.ModifiedBy = userId;
+        await _userRepository.SaveChangesAsync();
+
+        return new BaseResponse
+        {
+            Message = "User status changed successfully...",
+            Status = true,
+        };
     }
 }

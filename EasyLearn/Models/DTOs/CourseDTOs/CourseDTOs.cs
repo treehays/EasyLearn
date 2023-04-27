@@ -11,6 +11,7 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public string Description { get; set; }
         public CourseLanguage CourseLanguage { get; set; }
         public DifficultyLevel DifficultyLevel { get; set; }
+        public int NumbersOfEnrollment { get; set; }
         //public string Rating { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }

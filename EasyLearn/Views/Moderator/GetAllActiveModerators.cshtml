@@ -44,32 +44,40 @@
                             @{
                                 var serialNumber = 1;
                             }
-
-                            @foreach (var item in Model.Data)
+                            @if (Model != null)
                             {
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="customercheck1">
-                                            <label class="form-check-label mb-0" for="customercheck1">&nbsp;</label>
-                                        </div>
-                                    </td>
 
-                                    <td> @serialNumber</td>
-                                    
-                                    <td>@item.FirstName</td>
-                                    <td>@item.LastName</td>
-                                    <td>@item.Email</td>
 
-                                    <td>
-                                        @item.CreatedOn
-                                    </td>
-                                    <td id="tooltip-container1">
-                                        <a href="javascript:void(0);" class="me-3 text-primary" data-bs-container="#tooltip-container1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="mdi mdi-pencil font-size-18"></i></a>
-                                        <a href="javascript:void(0);" class="text-danger" data-bs-container="#tooltip-container1" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"><i class="mdi mdi-trash-can font-size-18"></i></a>
-                                    </td>
-                                </tr>
-                                @(serialNumber++);
+                                @foreach (var item in Model.Data)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="customercheck1">
+                                                <label class="form-check-label mb-0" for="customercheck1">&nbsp;</label>
+                                            </div>
+                                        </td>
+
+                                        <td> @serialNumber</td>
+
+                                        <td>@item.FirstName</td>
+                                        <td>@item.LastName</td>
+                                        <td>@item.Email</td>
+
+                                        <td>
+                                            @item.CreatedOn
+                                        </td>
+                                        <td id="tooltip-container1">
+                                            <a href="javascript:void(0);" class="me-3 text-primary" data-bs-container="#tooltip-container1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="mdi mdi-pencil font-size-18"></i></a>
+                                            <a href="javascript:void(0);" class="text-danger" data-bs-container="#tooltip-container1" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"><i class="mdi mdi-trash-can font-size-18"></i></a>
+                                        </td>
+                                    </tr>
+                                    @(
+                                        serialNumber++
+                                        )
+                                    ;
+                                }
+
                             }
 
                         </tbody>

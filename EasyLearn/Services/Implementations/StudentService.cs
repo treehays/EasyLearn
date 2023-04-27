@@ -111,7 +111,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentsResponseModel> GetAllActive()
     {
-        var student = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && x.RoleId == "Student");
+        var student = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && x.EmailConfirmed && x.RoleId == "Student");
 
         if (student == null)
         {
@@ -130,6 +130,30 @@ public class StudentService : IStudentService
         };
 
         return studentModel;
+    }
+
+    public async Task<StudentsResponseModel> GetAllUnverifiedStudent()
+    {
+        var student = await _userRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && !x.EmailConfirmed && x.RoleId == "Student");
+
+        if (student == null)
+        {
+            return new StudentsResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var studentModel = new StudentsResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = student.Select(x => ConvertToStudentResponseModel(x)),
+        };
+
+        return studentModel;
+
     }
 
     public async Task<StudentsResponseModel> GetAllInActive()
@@ -395,8 +419,6 @@ public class StudentService : IStudentService
         };
     }
 
-
-
     public StudentDto ConvertToStudentResponseModel(User user)
     {
         var studentModel = new StudentDto
@@ -417,6 +439,5 @@ public class StudentService : IStudentService
         };
         return studentModel;
     }
-
 
 }

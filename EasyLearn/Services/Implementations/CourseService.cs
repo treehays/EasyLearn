@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.Mappers.CourseMappers;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.DTOs.CourseDTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
@@ -19,8 +20,9 @@ public class CourseService : ICourseService
     private readonly IUserRepository _userRepository;
     private readonly IEnrolmentRepository _enrolmentRepository;
     private readonly IFileManagerService _fileManagerService;
+    private readonly ICourseMapperService _courseMapperService;
 
-    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ICategoryRepository categoryRepository, IFileManagerService fileManagerService, IEnrolmentRepository enrolmentRepository)
+    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ICategoryRepository categoryRepository, IFileManagerService fileManagerService, IEnrolmentRepository enrolmentRepository, ICourseMapperService courseMapperService)
     {
         _courseRepository = courseRepository;
         _httpContextAccessor = httpContextAccessor;
@@ -28,6 +30,7 @@ public class CourseService : ICourseService
         _categoryRepository = categoryRepository;
         _fileManagerService = fileManagerService;
         _enrolmentRepository = enrolmentRepository;
+        _courseMapperService = courseMapperService;
     }
 
     /// <summary>
@@ -113,7 +116,7 @@ public class CourseService : ICourseService
 
     }
 
-    public async Task<CoursesResponseModel> GetAllInstructorCourse(string instructorId)
+    public async Task<CoursesResponseModel> GetAllCoursesByAnInstructor(string instructorId)
     {
         var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId);
         if (courses == null)
@@ -129,18 +132,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                CourseLanguage = x.CourseLanguage,
-                DifficultyLevel = x.DifficultyLevel,
-                Requirement = x.Requirement,
-                CourseDuration = x.CourseDuration,
-                InstructorId = x.InstructorId,
-                Price = x.Price,
-            })
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
         };
         return coursesModel;
     }
@@ -309,18 +301,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                CourseLanguage = x.CourseLanguage,
-                DifficultyLevel = x.DifficultyLevel,
-                Requirement = x.Requirement,
-                CourseDuration = x.CourseDuration,
-                InstructorId = x.InstructorId,
-                Price = x.Price,
-            })
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
         };
         return coursesModel;
 
@@ -376,19 +357,7 @@ public class CourseService : ICourseService
             NumberOfCourse = courses.Count(),
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                CourseLanguage = x.CourseLanguage,
-                DifficultyLevel = x.DifficultyLevel,
-                Requirement = x.Requirement,
-                CourseDuration = x.CourseDuration,
-                InstructorId = x.InstructorId,
-                Price = x.Price,
-                CreatedOn = x.CreatedOn,
-            })
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
         };
         return coursesModel;
     }
@@ -410,23 +379,12 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                CourseLanguage = x.CourseLanguage,
-                DifficultyLevel = x.DifficultyLevel,
-                Requirement = x.Requirement,
-                CourseDuration = x.CourseDuration,
-                InstructorId = x.InstructorId,
-                Price = x.Price,
-            })
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
         };
         return coursesModel;
     }
 
-    public async Task<CourseResponseModel> GetCourseByIdFull(string id)
+    public async Task<CourseResponseModel> GetFullDetailOfCourseById(string id)
     {
         var course = await _courseRepository.GetCourseByIdWithInstructor(x => x.Id == id);
 
@@ -480,18 +438,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = new CourseDTO
-            {
-                Id = course.Id,
-                Title = course.Title,
-                Description = course.Description,
-                CourseLanguage = course.CourseLanguage,
-                DifficultyLevel = course.DifficultyLevel,
-                Requirement = course.Requirement,
-                CourseDuration = course.CourseDuration,
-                InstructorId = course.InstructorId,
-                Price = course.Price,
-            },
+            Data = _courseMapperService.ConvertToCourseResponseModel(course),
         };
         return courseModel;
     }
@@ -518,18 +465,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                CourseLanguage = x.CourseLanguage,
-                DifficultyLevel = x.DifficultyLevel,
-                Requirement = x.Requirement,
-                CourseDuration = x.CourseDuration,
-                //InstructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                Price = x.Price,
-            })
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
         };
         return coursesModel;
     }
@@ -608,19 +544,7 @@ public class CourseService : ICourseService
         {
             Status = true,
             Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                CourseLanguage = x.CourseLanguage,
-                DifficultyLevel = x.DifficultyLevel,
-                Requirement = x.Requirement,
-                CourseDuration = x.CourseDuration,
-                InstructorId = x.InstructorId,
-                Price = x.Price,
-                CourseLogo = x.CourseLogo,
-            })
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
         };
         return coursesModel;
     }
@@ -640,19 +564,7 @@ public class CourseService : ICourseService
             {
                 Status = true,
                 Message = "Course retrieved successfully ...",
-                Data = coursesResult.Select(x => new CourseDTO
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    CourseLanguage = x.CourseLanguage,
-                    DifficultyLevel = x.DifficultyLevel,
-                    Requirement = x.Requirement,
-                    CourseDuration = x.CourseDuration,
-                    InstructorId = x.InstructorId,
-                    Price = x.Price,
-                    CourseLogo = x.CourseLogo,
-                })
+                Data = coursesResult.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
             };
         }
 
@@ -660,10 +572,10 @@ public class CourseService : ICourseService
          x.RoleId == "Instructor"
          && x.IsActive
          && !x.IsDeleted
-         && x.FirstName.ToUpper().Contains(name.ToUpper())
-         && x.LastName.ToUpper().Contains(name.ToUpper())
-         && x.UserName.ToUpper().Contains(name.ToUpper())
-         && x.Interest.ToUpper().Contains(name.ToUpper()));
+         && x.FirstName.ToLower().Contains(name.ToLower())
+         || x.LastName.ToLower().Contains(name.ToLower())
+         || x.UserName.ToLower().Contains(name.ToLower())
+         || x.Interest.ToLower().Contains(name.ToLower()));
         var instructorResponse = new InstructorsResponseModel();
         if (instructorResult.Count() > 0)
         {
@@ -723,5 +635,46 @@ public class CourseService : ICourseService
 
         return globalResult;
     }
+
+    public async Task<CoursesResponseModel> GetAllUnVerifiedCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => !x.IsVerified && x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
+        };
+        return coursesModel;
+    }
+
 }
+//private CourseDTO ConvertToCourseResponseModel (Course course)
+//{
+//    var courseModel = new CourseDTO
+//    {
+//        Id = course.Id,
+//        Title = course.Title,
+//        Description = course.Description,
+//        CourseLanguage = course.CourseLanguage,
+//        DifficultyLevel = course.DifficultyLevel,
+//        Requirement = course.Requirement,
+//        CourseDuration = course.CourseDuration,
+//        InstructorId = course.InstructorId,
+//        Price = course.Price,
+//        CourseLogo = course.CourseLogo,
+//        NumbersOfEnrollment = course.NumbersOfEnrollment,
+//    };
+//    return courseModel;
+//}
+
 

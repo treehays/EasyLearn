@@ -1,5 +1,9 @@
 ﻿@model EasyLearn.Models.DTOs.ModulesDTOs.ModulesResponseModel
+@using System.Security.Claims;
 
+@{
+    var userRole = User.FindFirstValue(ClaimTypes.Role);
+}
 @{
     //ViewBag.Title = "title";
     Layout = "_Layout";
@@ -13,7 +17,12 @@
         <a asp-action="Create" asp-route-CourseId="@courseId">Create Module</a>
         }
         }*@
-        <h2><a asp-action="Create" asp-route-CourseId="@Model.CourseId">Create Module</a></h2>
+
+        @if (userRole.ToLower() == "instructor")
+        {
+            <h2><a asp-action="Create" asp-route-CourseId="@Model.CourseId">Create Module</a></h2>
+        }
+
         <div class="table-responsive">
 
             <table class="table table-hover table-striped table-bordered">

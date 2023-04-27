@@ -15,11 +15,62 @@ public class SendInBlueEmailService : ISendInBlueEmailService
         _configuration = configuration;
     }
 
-    //public Task<BaseResponse> SendEmailAttachment(EmailSenderAttachmentDTO model)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public async Task<BaseResponse> CourseCompletionEmailTemplate(EmailSenderDetails model, string baseUrl)
+    {
+        //var ddd = ;
+        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
+        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
+        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
 
+        Configuration.Default.ApiKey.Clear();
+        Configuration.Default.ApiKey.Add("api-key", key);
+        var apiInstance = new TransactionalEmailsApi();
+
+        var emailSender = new SendSmtpEmailSender(senderName, senderEmail);
+
+        var emailReciever = new SendSmtpEmailTo(model.ReceiverEmail, model.ReceiverName);
+
+        var emailRecievers = new List<SendSmtpEmailTo>
+        {
+            emailReciever
+        };
+
+        var replyTo = new SendSmtpEmailReplyTo("treehays90@gmail.com", "Do not reply");
+
+        var subject = $"Course Completion Notification";
+
+
+        var htmlContent = EmailTemplates.CourseCompletionEmailTemplate(model, baseUrl);
+        var sendSmtpEmail = new SendSmtpEmail
+        {
+            Sender = emailSender,
+            HtmlContent = htmlContent,
+            Subject = subject,
+            ReplyTo = replyTo,
+            To = emailRecievers,
+        };
+
+        try
+        {
+            var result = await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
+
+            return new BaseResponse
+            {
+                Status = true,
+                Message = "Email successfully sent..",
+            };
+        }
+        catch (Exception)
+        {
+
+            return new BaseResponse
+            {
+                Status = false,
+                Message = "Email not sent..",
+            };
+        }
+
+    }
     public async Task<BaseResponse> EmailVerificationTemplate(EmailSenderDetails model, string baseUrl)
     {
         //var ddd = ;
@@ -65,7 +116,7 @@ public class SendInBlueEmailService : ISendInBlueEmailService
                 Message = "Email successfully sent..",
             };
         }
-        catch (Exception e)
+        catch (Exception)
         {
 
             return new BaseResponse
@@ -74,6 +125,63 @@ public class SendInBlueEmailService : ISendInBlueEmailService
                 Message = "Email not sent..",
             };
         }
+    }
+
+    public async Task<BaseResponse> EnrollmentEmailTemplate(EmailSenderDetails model, string baseUrl)
+    {
+        //var ddd = ;
+        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
+        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
+        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+
+        Configuration.Default.ApiKey.Clear();
+        Configuration.Default.ApiKey.Add("api-key", key);
+        var apiInstance = new TransactionalEmailsApi();
+
+        var emailSender = new SendSmtpEmailSender(senderName, senderEmail);
+
+        var emailReciever = new SendSmtpEmailTo(model.ReceiverEmail, model.ReceiverName);
+
+        var emailRecievers = new List<SendSmtpEmailTo>
+        {
+            emailReciever
+        };
+
+        var replyTo = new SendSmtpEmailReplyTo("treehays90@gmail.com", "Do not reply");
+
+        var subject = $"Course enrollment {DateTime.Now}";
+
+
+        var htmlContent = EmailTemplates.EnrollmentEmailTemplate(model, baseUrl);
+        var sendSmtpEmail = new SendSmtpEmail
+        {
+            Sender = emailSender,
+            HtmlContent = htmlContent,
+            Subject = subject,
+            ReplyTo = replyTo,
+            To = emailRecievers,
+        };
+
+        try
+        {
+            var result = await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
+
+            return new BaseResponse
+            {
+                Status = true,
+                Message = "Email successfully sent..",
+            };
+        }
+        catch (Exception)
+        {
+
+            return new BaseResponse
+            {
+                Status = false,
+                Message = "Email not sent..",
+            };
+        }
+
     }
 
     public async Task<BaseResponse> SendEmailWithoutAttachment(EmailSenderNoAttachmentDTO model)
@@ -131,7 +239,7 @@ public class SendInBlueEmailService : ISendInBlueEmailService
                 Message = "Email successfully sent..",
             };
         }
-        catch (Exception e)
+        catch (Exception)
         {
 
             return new BaseResponse
@@ -140,6 +248,63 @@ public class SendInBlueEmailService : ISendInBlueEmailService
                 Message = "Email not sent..",
             };
         }
+    }
+
+    public async Task<BaseResponse> WithdrawalConfirmationEmailTemplate(EmailSenderDetails model, string baseUrl)
+    {
+        //var ddd = ;
+        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
+        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
+        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+
+        Configuration.Default.ApiKey.Clear();
+        Configuration.Default.ApiKey.Add("api-key", key);
+        var apiInstance = new TransactionalEmailsApi();
+
+        var emailSender = new SendSmtpEmailSender(senderName, senderEmail);
+
+        var emailReciever = new SendSmtpEmailTo(model.ReceiverEmail, model.ReceiverName);
+
+        var emailRecievers = new List<SendSmtpEmailTo>
+        {
+            emailReciever
+        };
+
+        var replyTo = new SendSmtpEmailReplyTo("treehays90@gmail.com", "Do not reply");
+
+        var subject = $"Withdrawal confirmation{DateTime.Now}";
+
+
+        var htmlContent = EmailTemplates.WithdrawalComfirmationEmailTemplate(model, baseUrl);
+        var sendSmtpEmail = new SendSmtpEmail
+        {
+            Sender = emailSender,
+            HtmlContent = htmlContent,
+            Subject = subject,
+            ReplyTo = replyTo,
+            To = emailRecievers,
+        };
+
+        try
+        {
+            var result = await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
+
+            return new BaseResponse
+            {
+                Status = true,
+                Message = "Email successfully sent..",
+            };
+        }
+        catch (Exception)
+        {
+
+            return new BaseResponse
+            {
+                Status = false,
+                Message = "Email not sent..",
+            };
+        }
+
     }
 }
 

@@ -7,6 +7,9 @@ public interface ISendInBlueEmailService
 {
     Task<BaseResponse> SendEmailWithoutAttachment(EmailSenderNoAttachmentDTO model);
     Task<BaseResponse> EmailVerificationTemplate(EmailSenderDetails model, string baseUrl);
+    Task<BaseResponse> EnrollmentEmailTemplate(EmailSenderDetails model, string baseUrl);
+    Task<BaseResponse> CourseCompletionEmailTemplate(EmailSenderDetails model, string baseUrl);
+    Task<BaseResponse> WithdrawalConfirmationEmailTemplate(EmailSenderDetails model, string baseUrl);
     //Task<BaseResponse> SendEmailAttachment(EmailSenderAttachmentDTO model);
 
 }

@@ -20,4 +20,5 @@ public interface IStudentService
     Task<StudentsResponseModel> GetAllStudent();
     Task<StudentsResponseModel> GetAllActive();
     Task<StudentsResponseModel> GetAllInActive();
+    Task<StudentsResponseModel> GetAllUnverifiedStudent();
 }
