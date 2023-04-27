@@ -177,7 +177,7 @@ public class UserService : IUserService
 
         var senderDetail = new EmailSenderDetails
         {
-            EmailToken = $"{baseUrl}/User/VerifyPasswordReset?emailToken={user.EmailToken}",
+            EmailToken = $"{baseUrl}/User/ConfirmPasswordReset?emailToken={user.EmailToken}",
             ReceiverEmail = user.Email,
             ReceiverName = user.FirstName,
         };
@@ -235,7 +235,7 @@ public class UserService : IUserService
             Status = true,
         };
     }
-    
+
     public async Task<BaseResponse> EmailVerification(string emailToken, string userId)
     {
         var user = await _userRepository.GetUserByTokenAsync(emailToken);
@@ -374,8 +374,8 @@ public class UserService : IUserService
                 UserId = user.Id,
                 CreatedBy = userId,
                 CreatedOn = DateTime.Now,
-                ModifiedOn= DateTime.Now,
-                ModifiedBy= userId,
+                ModifiedOn = DateTime.Now,
+                ModifiedBy = userId,
             };
             user.RoleId = "Moderator";
             user.Moderator = moderatorUser;

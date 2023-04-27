@@ -36,9 +36,22 @@ namespace EasyLearn.Controllers
         public async Task<IActionResult> ConfirmPasswordReset(string emailToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-           var user = await _userService.PasswordRessetConfirmation(emailToken, userId);
-            ContinueStatementSyntax from this point you are try to reset password but actually your trying upgraADE student to instructor
-            return RedirectToAction("Index");
+            var user = await _userService.PasswordRessetConfirmation(emailToken, userId);
+            if (!user.Status)
+            {
+                TempData["failed"] = user.Message;
+                return RedirectToAction("Index");
+            }
+            TempData["success"] = user.Message;
+            return RedirectToAction("UpdateUserPasswordPage");
+        }
+        public IActionResult UpdateUserPasswordPage()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult UpdateUserPassword()
+        {
             return View();
         }
         public async Task<IActionResult> ConfirmEmail(string emailToken)
@@ -118,28 +131,28 @@ namespace EasyLearn.Controllers
                 return View();
             }
 
-            var user = await _userService.UpdateBankDetail(model,userid);
+            var user = await _userService.UpdateBankDetail(model, userid);
             if (user.Status)
             {
                 TempData["Success"] = user.Message;
                 return View(user);
             }
             TempData["failed"] = user.Message;
-            return RedirectToAction("index","Home");
+            return RedirectToAction("index", "Home");
         }
         public async Task<IActionResult> UpdateAddressDetail(string id)
         {
             var user = await _userService.GetFullDetailById(id);
             if (user.Status) return View(user);
             TempData["failed"] = user.Message;
-            return RedirectToAction("Index","home");
+            return RedirectToAction("Index", "home");
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> UpdateAddressDetail(UpdateUserAddressRequestModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var instructor = await _userService.UpdateAddress(model,userId);
+            var instructor = await _userService.UpdateAddress(model, userId);
             if (instructor.Status)
             {
                 TempData["Success"] = instructor.Message;
