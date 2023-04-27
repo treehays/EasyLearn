@@ -78,7 +78,7 @@ namespace EasyLearn.Controllers
 
         public async Task<IActionResult> Detail(string id)
         {
-            var course = await _courseService.GetCourseByIdFull(id);
+            var course = await _courseService.GetFullDetailOfCourseById(id);
             if (!course.Status)
             {
                 TempData["failed"] = course.Message;
@@ -132,7 +132,7 @@ namespace EasyLearn.Controllers
         public async Task<IActionResult> GetAllCoursesByInstructorId()
         {
             var instructorId = User.FindFirst(ClaimTypes.Actor)?.Value;
-            var course = await _courseService.GetAllInstructorCourse(instructorId);
+            var course = await _courseService.GetAllCoursesByAnInstructor(instructorId);
             if (!course.Status)
             {
                 TempData["failed"] = course.Message;
@@ -285,6 +285,21 @@ namespace EasyLearn.Controllers
                 return RedirectToAction(nameof(Index), "Home");
             }
 
+            TempData["success"] = courses.Message;
+            return View(courses);
+        }
+        
+
+        public async Task<IActionResult> GetAllUnVerifiedCourse()
+        {
+            //var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var courses = await _courseService.GetAllUnVerifiedCourse();
+            if (!courses.Status)
+            {
+                TempData["failed"] = courses.Message;
+                return View();
+            }
             TempData["success"] = courses.Message;
             return View(courses);
         }

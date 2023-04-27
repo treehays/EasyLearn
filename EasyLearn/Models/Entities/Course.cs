@@ -14,7 +14,9 @@ namespace EasyLearn.Models.Entities
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public double Price { get; set; }
+        public int NumbersOfEnrollment { get; set; }
         public bool IsActive { get; set; }
+        public bool IsVerified { get; set; }
         public string CourseLogo { get; set; }
         public string InstructorId { get; set; }
 

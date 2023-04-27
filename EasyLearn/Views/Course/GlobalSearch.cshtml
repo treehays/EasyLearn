@@ -67,10 +67,10 @@
 
 
                         <!--For courses result-->
-                        @if (Model.CoursesResponseModel != null)
+                        @if (Model.CoursesResponseModel.Data != null)
                         {
 
-                            @foreach (var item in Model.CoursesResponseModel?.Data)
+                            @foreach (var item in Model.CoursesResponseModel.Data)
                             {
                                 <div class="col-xl-4 col-sm-6">
                                     <div class="product-box">
@@ -85,7 +85,7 @@
                                                 </a>
                                             </div>
                                             @*<img src="~/assets/images/product/img-1.png" alt="img-1" class="img-fluid mx-auto d-block">*@
-                                            <img src="@item.CourseLogo" alt="img-1" class="img-fluid mx-auto d-block">
+                                            <img src="/uploads/images/course/@item.CourseLogo" alt="img-1" class="img-fluid mx-auto d-block">
                                         </div>
 
                                         <div class="text-center">
@@ -102,7 +102,7 @@
 
 
                         <!--For Category result-->
-                        @if (Model.CategoriesResponseModel != null)
+                        @if (Model.CategoriesResponseModel.Data != null)
                         {
 
 
@@ -121,7 +121,7 @@
                                                 </a>
                                             </div>
                                             @*<img src="~/assets/images/product/img-1.png" alt="img-1" class="img-fluid mx-auto d-block">*@
-                                            <img src="@item.CategoryImage" alt="img-1" class="img-fluid mx-auto d-block">
+                                            <img src="/uploads/images/categories/@item.CategoryImage" alt="img-1" class="img-fluid mx-auto d-block">
                                         </div>
 
                                         <div class="text-center">
@@ -155,7 +155,7 @@
                                                 </a>
                                             </div>
                                             @*<img src="~/assets/images/product/img-1.png" alt="img-1" class="img-fluid mx-auto d-block">*@
-                                            <img src="@item.ProfilePicture" alt="img-1" class="img-fluid mx-auto d-block">
+                                            <img src="/uploads/images/profilePictures/@item.ProfilePicture" alt="img-1" class="img-fluid mx-auto d-block">
                                         </div>
 
                                         <div class="text-center">

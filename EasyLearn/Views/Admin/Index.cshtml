@@ -199,31 +199,32 @@
 
                 <div data-simplebar style="max-height: 330px;">
                     <ul class="list-unstyled activity-wid">
-
-                        @foreach (var item in Model.Enrolments.Data)
+                        @if (Model.Enrolments.Data != null)
                         {
-                            <li class="activity-list">
-                                <div class="activity-icon avatar-xs">
-                                    <span class="avatar-title bg-soft-primary text-primary rounded-circle">
-                                        <i class="ri-edit-2-fill"></i>
-                                    </span>
-                                </div>
-                                <div>
-                                    <div>
-                                        <h5 class="font-size-13">
-                                            @item.CreatedOn.ToShortDateString()<small class="text-muted">@item.CreatedOn.ToShortTimeString()</small>
-                                        </h5>
+                            @foreach (var item in Model.Enrolments.Data)
+                            {
+                                <li class="activity-list">
+                                    <div class="activity-icon avatar-xs">
+                                        <span class="avatar-title bg-soft-primary text-primary rounded-circle">
+                                            <i class="ri-edit-2-fill"></i>
+                                        </span>
                                     </div>
-
                                     <div>
-                                        <p class="text-muted mb-0">@item.CourseTitle</p>
-                                        <p class="text-muted mb-0">@item.StudentName</p>
-                                    </div>
-                                </div>
-                            </li>
+                                        <div>
+                                            <h5 class="font-size-13">
+                                                @item.CreatedOn.ToShortDateString()<small class="text-muted">@item.CreatedOn.ToShortTimeString()</small>
+                                            </h5>
+                                        </div>
 
+                                        <div>
+                                            <p class="text-muted mb-0">@item.CourseTitle</p>
+                                            <p class="text-muted mb-0">@item.StudentName</p>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            }
                         }
-
 
                     </ul>
                 </div>

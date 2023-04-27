@@ -1,7 +1,9 @@
 ﻿using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
+using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using X.PagedList;
 
 namespace EasyLearn.Controllers;
@@ -9,11 +11,14 @@ namespace EasyLearn.Controllers;
 public class InstructorController : Controller
 {
     private readonly IInstructorService _instructorService;
+    private readonly INigerianBankService _nigerianBankService;
     //private readonly IPaymentDetailService _paymentDetailService;
 
-    public InstructorController(IInstructorService instructorService)
+
+    public InstructorController(IInstructorService instructorService, INigerianBankService nigerianBankService)
     {
         _instructorService = instructorService;
+        _nigerianBankService = nigerianBankService;
         //_paymentDetailService = paymentDetailService;
     }
 
@@ -264,6 +269,9 @@ public class InstructorController : Controller
     public async Task<IActionResult> UpdateBankDetail(string id)
     {
         var instructor = await _instructorService.GetByPaymentDetail(id);
+        var listOfBanks = await _nigerianBankService.FetchAllNigerianBanks();
+
+        ViewData["ListOfBanks"] = new SelectList(listOfBanks, "BankCode", "BankName");
         if (instructor.Status)
         {
             TempData["Success"] = instructor.Message;
@@ -319,6 +327,5 @@ public class InstructorController : Controller
         }
         TempData["failed"] = instructor.Message;
         return RedirectToAction(nameof(GetAllActive));
-        return View();
     }
 }

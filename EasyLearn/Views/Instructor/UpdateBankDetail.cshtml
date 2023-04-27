@@ -16,10 +16,24 @@
                 <form method="POST">
                     <p>Check the details carefully before clicking on the Update button</p>
                     <input name="Id" value="@Model.Data.Id" type="hidden" />
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Data.BankName, new {@class = "control-label"})
+                        <br />
+                        <select asp-for="Data.BankName" asp-items="ViewBag.ListOfBanks" required>
+                            <option value="" selected>--Select Bank--</option>
+                        </select>
+                        @Html.ValidationMessageFor(x => x.Data.BankName,"", new {@class="text-danger"})
+                    </div>
+
+
                     <div>
                         @Html.DisplayNameFor(x => x.Data.BankName)
                         <input name="BankName" value="@Model.Data.BankName" type="text" class="form-control" required />
                     </div>
+                    
+                    
                     <div>
                         <label asp-for="Data.AccountNumber" class="control-label"></label>
                         <input name="AccountNumber" value="@Model.Data.AccountNumber" type="text" class="form-control" required />
