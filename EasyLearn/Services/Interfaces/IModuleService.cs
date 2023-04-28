@@ -10,8 +10,10 @@ namespace EasyLearn.Services.Interfaces
         Task<BaseResponse> Delete(string id);
         Task<BaseResponse> Update(UpdateModuleRequestModel model);
         Task<ModuleResponseModel> GetById(string id);
-        Task<ModuleResponseModel> GetByCourse(string courseId, string moduleId);
-        Task<ModulesResponseModel> GetByCourse(string courseId);
+        Task<ModulesResponseModel> GetCourseContentsByCourseInstructor(string courseId, string instructorId);
+        Task<ModulesResponseModel> GetCourseContentsByEnrolledStudent(string courseId, string studentId);
+        Task<ModuleResponseModel> GetSingleModuleByStudent (string moduleId, string studentId);
+        //Task<ModulesResponseModel> GetCourseContents(string courseId);
         Task<ModulesResponseModel> GetAll();
         Task<ModulesResponseModel> GetNotDeleted();
     }

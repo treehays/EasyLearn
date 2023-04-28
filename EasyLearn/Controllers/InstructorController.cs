@@ -53,7 +53,7 @@ public class InstructorController : Controller
         }
 
         TempData["success"] = registerAdmin.Message;
-        return RedirectToAction("Login", "");
+        return RedirectToAction("Login", "Home");
     }
 
     public async Task<IActionResult> Detail(string id)

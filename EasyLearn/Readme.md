@@ -353,3 +353,7 @@ Foreign Language Proficiency (DELE, DELF, JLPT)
 
 #wallet 
 #enrolment confirmation
+
+
+
+https://localhost:7143/User/ConfirmPasswordReset?emailToken=650b525cs614ds48acs9995se3449f76518d

@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.Mappers.ModulesMappers;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.ModulesDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
@@ -12,12 +13,17 @@ namespace EasyLearn.Services.Implementations
         private readonly IModuleRepository _moduleRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IFileManagerService _fileManagerService;
-
-        public ModuleService(IModuleRepository moduleRepository, IHttpContextAccessor httpContextAccessor, IFileManagerService fileManagerService)
+        private readonly IModulesMapperService _modulesMapperService;
+        private readonly ICourseRepository _courseRepository;
+        private readonly IEnrolmentRepository _enrolmentRepository;
+        public ModuleService(IModuleRepository moduleRepository, IHttpContextAccessor httpContextAccessor, IFileManagerService fileManagerService, IModulesMapperService modulesMapperService, IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository)
         {
             _moduleRepository = moduleRepository;
             _httpContextAccessor = httpContextAccessor;
             _fileManagerService = fileManagerService;
+            _modulesMapperService = modulesMapperService;
+            _enrolmentRepository = enrolmentRepository;
+            _courseRepository = courseRepository;
         }
 
         public async Task<BaseResponse> Create(CreateModuleRequestModel model)
@@ -103,27 +109,14 @@ namespace EasyLearn.Services.Implementations
             {
                 Status = true,
                 Message = "modules retrieved successfuly..",
-                Data = modules.Select(x => new ModuleDTO
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    Resources = x.Resources,
-                    Prerequisites = x.Prerequisites,
-                    Objective = x.Objective,
-                    ModuleDuration = x.ModuleDuration,
-                    SequenceOfModule = x.SequenceOfModule,
-                    VideoPath = x.VideoPath,
-                    CourseId = x.CourseId,
-                }),
+                Data = modules.Select(x => _modulesMapperService.ConvertToModuleResponseModel(x)),
             };
             return modulesModel;
         }
 
-        public async Task<ModuleResponseModel> GetByCourse(string courseId, string moduleId)
+        public async Task<ModuleResponseModel> GetSingleModuleByStudent(string moduleId, string studentId)
         {
-            var module = await _moduleRepository.GetAsync(x => x.Id == courseId && x.Id == moduleId && !x.IsDeleted);
-
+            var module = await _moduleRepository.GetAsync(x => x.Id == moduleId && !x.IsDeleted);
             if (module == null)
             {
                 return new ModuleResponseModel
@@ -133,29 +126,57 @@ namespace EasyLearn.Services.Implementations
                 };
             }
 
+            var studentEnrollment = await _enrolmentRepository.GetAsync(x => x.StudentId == studentId && x.CourseId == module.CourseId && x.IsPaid);
+            if (studentEnrollment == null)
+            {
+                return new ModuleResponseModel
+                {
+                    Message = "Student has not enrolled for this course..",
+                    Status = false,
+                };
+            }
+
             var modulModel = new ModuleResponseModel
             {
                 Status = true,
                 Message = "modules retrieved successfuly..",
-                Data = new ModuleDTO
-                {
-                    Id = module.Id,
-                    Title = module.Title,
-                    Description = module.Description,
-                    Resources = module.Resources,
-                    Prerequisites = module.Prerequisites,
-                    Objective = module.Objective,
-                    ModuleDuration = module.ModuleDuration,
-                    SequenceOfModule = module.SequenceOfModule,
-                    VideoPath = module.VideoPath,
-                    CourseId = module.CourseId,
-                },
+                Data = _modulesMapperService.ConvertToModuleResponseModel(module),
             };
             return modulModel;
         }
 
+        public async Task<ModulesResponseModel> GetCourseContentsByCourseInstructor(string courseId, string instructorId)
+        {
+            var course = await _courseRepository.GetAsync(x => x.Id == courseId && !x.IsDeleted && x.InstructorId == instructorId);
+            if (course == null)
+            {
+                return new ModulesResponseModel
+                {
+                    Message = "Course not found..",
+                    Status = false,
+                };
+            }
+            var modules = await _moduleRepository.GetListAsync(x => x.CourseId == courseId && !x.IsDeleted && x.CreatedBy == instructorId);
 
-        public async Task<ModulesResponseModel> GetByCourse(string courseId)
+            if (modules.Count() == 0)
+            {
+                return new ModulesResponseModel
+                {
+                    Message = "Nothing has been added yet..",
+                    Status = true,
+                };
+            }
+
+            var modulesModel = new ModulesResponseModel
+            {
+                Status = true,
+                Message = "modules retrieved successfuly..",
+                Data = modules.Select(x => _modulesMapperService.ConvertToModuleResponseModel(x)),
+            };
+            return modulesModel;
+        }
+
+        public async Task<ModulesResponseModel> GetCourseContentsByEnrolledStudent(string courseId, string studentId)
         {
             var modules = await _moduleRepository.GetListAsync(x => x.CourseId == courseId && !x.IsDeleted);
 
@@ -172,23 +193,10 @@ namespace EasyLearn.Services.Implementations
             {
                 Status = true,
                 Message = "modules retrieved successfuly..",
-                Data = modules.Select(x => new ModuleDTO
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    Resources = x.Resources,
-                    Prerequisites = x.Prerequisites,
-                    Objective = x.Objective,
-                    ModuleDuration = x.ModuleDuration,
-                    SequenceOfModule = x.SequenceOfModule,
-                    VideoPath = x.VideoPath,
-                    CourseId = x.CourseId,
-                }),
+                Data = modules.Select(x => _modulesMapperService.ConvertToModuleResponseModel(x)),
             };
             return modulesModel;
         }
-
         public async Task<ModuleResponseModel> GetById(string id)
         {
             var module = await _moduleRepository.GetAsync(x => x.Id == id && !x.IsDeleted);
@@ -206,19 +214,7 @@ namespace EasyLearn.Services.Implementations
             {
                 Status = true,
                 Message = "modules retrieved successfuly..",
-                Data = new ModuleDTO
-                {
-                    Id = module.Id,
-                    Title = module.Title,
-                    Description = module.Description,
-                    Resources = module.Resources,
-                    Prerequisites = module.Prerequisites,
-                    Objective = module.Objective,
-                    ModuleDuration = module.ModuleDuration,
-                    SequenceOfModule = module.SequenceOfModule,
-                    VideoPath = module.VideoPath,
-                    CourseId = module.CourseId,
-                },
+                Data = _modulesMapperService.ConvertToModuleResponseModel(module),
             };
             return modulModel;
         }
@@ -238,19 +234,7 @@ namespace EasyLearn.Services.Implementations
             {
                 Status = true,
                 Message = "modules retrieved successfuly..",
-                Data = modules.Select(x => new ModuleDTO
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    Resources = x.Resources,
-                    Prerequisites = x.Prerequisites,
-                    Objective = x.Objective,
-                    ModuleDuration = x.ModuleDuration,
-                    SequenceOfModule = x.SequenceOfModule,
-                    VideoPath = x.VideoPath,
-                    CourseId = x.CourseId,
-                }),
+                Data = modules.Select(x => _modulesMapperService.ConvertToModuleResponseModel(x)),
             };
             return modulesModel;
         }
@@ -281,116 +265,6 @@ namespace EasyLearn.Services.Implementations
                 Status = true,
             };
         }
+
     }
 }
-
-/*
-public async Task<BaseResponse> Create(CreateModuleRequestModel model)
-{
-    if (model.FormFiles == null)
-    {
-        return new BaseResponse
-        {
-            Status = false,
-            Message = "No video has been uploaded...",
-        };
-    }
-
-    int i = 0;
-    string fileRelativePathx = null;
-    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "videos");
-    if (!Directory.Exists(uploadsFolder))
-    {
-        Directory.CreateDirectory(uploadsFolder);
-    }
-
-    var listOfModules = model.FormFiles.Select(async x => await (AddModule(model, x)));
-    var x = listOfModules;
-    //await Task.WhenAll(listOfModules);
-    await _moduleRepository.AddRangeAsync(x);
-    return new BaseResponse
-    {
-        Status = true,
-        Message = "video has been successfully uploaded...",
-    };
-}
-public async Task<Module> AddModule(CreateModuleRequestModel model, IFormFile x)
-{
-    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "videos");
-    if (!Directory.Exists(uploadsFolder))
-    {
-        Directory.CreateDirectory(uploadsFolder);
-    }
-
-    var fileName = Guid.NewGuid().ToString() + Path.GetFileName(x.FileName);
-    //fileRelativePathx = "/uploads/videos/" + fileName;
-    var filePath = Path.Combine(uploadsFolder, fileName);
-    using (var stream = new FileStream(filePath, FileMode.Create))
-    {
-        await x.CopyToAsync(stream);
-    }
-
-    var module = new Module
-    {
-        Id = Guid.NewGuid().ToString(),
-        Title = model.Title,
-        Description = model.Description,
-        Resources = model.Resources,
-        Prerequisites = model.Prerequisites,
-        Objective = model.Objective,
-        ModuleDuration = model.ModuleDuration,
-        SequenceOfModule = i++,
-        VideoPath = "/uploads/videos/" + Guid.NewGuid().ToString() + Path.GetFileName(x.FileName),
-        CourseId = model.CourseId,
-        CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-        CreatedOn = DateTime.Now,
-    };
-    return module;
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-                   var listOfModules1 = model.FormFiles.Select(async (x,index) => 
-                   {
-                      var fileName = Guid.NewGuid().ToString() + Path.GetFileName(x.FileName);
-                   //fileRelativePathx = "/uploads/videos/" + fileName;
-                   var filePath = Path.Combine(uploadsFolder, fileName);
-                   using (var stream = new FileStream(filePath, FileMode.Create))
-                   {
-                       await x.CopyToAsync(stream);
-                   }
-
-                           var module = new Module
-                           {
-                               Id = Guid.NewGuid().ToString(),
-                           Title = model.Title,
-                           Description = model.Description,
-                           Resources = model.Resources,
-                           Prerequisites = model.Prerequisites,
-                           Objective = model.Objective,
-                           ModuleDuration = model.ModuleDuration,
-                           SequenceOfModule = index + 1,
-                           VideoPath = "/uploads/videos/" + Guid.NewGuid().ToString() + Path.GetFileName(x.FileName),
-                           CourseId = model.CourseId,
-                           CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                           CreatedOn = DateTime.Now,
-                       };
-                       return module;
-                   });
-       */
-
-/*                await _moduleRepository.AddAsync(module);
-                await _moduleRepository.SaveChangesAsync();
-*/
