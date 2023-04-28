@@ -9,8 +9,10 @@ namespace EasyLearn.Services.Interfaces
     {
         Task<User> UserRegistration(CreateUserRequestModel model, string baseUrl);
         Task<BaseResponse> EmailVerification(string emailToken, string userId);
-        Task<BaseResponse> PasswordRessetConfirmation(string emailToken, string userId);
+        Task<UserResponseModel> PasswordRessetConfirmation(string emailToken, string userId);
         Task<BaseResponse> ResetPassword(string email, string baseUrl);
+        Task<BaseResponse> UpdateUserPassword(UpdateUserPasswordRequestModel model, string userId);
+
         //Task<BaseResponse> EmailReVerification(string emailToken);
         //Task<bool> Testing(string email, string OTPKey);
         Task<BaseResponse> UpdateAddress(UpdateUserAddressRequestModel model, string userId);
@@ -20,6 +22,7 @@ namespace EasyLearn.Services.Interfaces
         Task<PaymentsDetailRequestModel> ListOfUserBankDetails(string userId);
         Task<UserResponseModel> GetFullDetailById(string id);
         Task<BaseResponse> UpdateProfile(UpdateUserProfileRequestModel model, string userId);
+        Task<UsersResponseModel> GetByUsersNameOrEmail(string emailOrname);
         Task<BaseResponse> UpgradeUser(UserUpgradeRequestModel model, string userId);
         Task<UserResponseModel> GetByIdAsync(string userId);
     }

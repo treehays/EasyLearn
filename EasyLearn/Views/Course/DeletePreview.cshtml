@@ -66,8 +66,8 @@
 
         </table>
         <div>
-            <a asp-action="Delete" asp-route-id="@Model.Data.Id" class="btn btn-danger">Confirm Delete</a>
-            <a class="btn btn-info" asp-action="UpdateProfile" asp-route-id="@Model.Data.Id">Update</a>
+            <a asp-controller="Course" asp-action="Delete" asp-route-courseId="@Model.Data.Id" class="btn btn-danger">Confirm Delete</a>
+            <a class="btn btn-info" asp-controller="Course" asp-action="Update" asp-route-courseId="@Model.Data.Id">Update</a>
 
         </div>
     </div>

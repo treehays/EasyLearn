@@ -99,7 +99,13 @@ public class UpdateUserAddressRequestModel
 public class UpdateUserPasswordRequestModel
 {
     public string Id { get; set; }
+    [DataType(DataType.Password)]
+    [PasswordValidation]
     public string Password { get; set; }
+    [DataType(DataType.Password)]
+    [DisplayName("Re-enter Password")]
+    [Compare(nameof(Password), ErrorMessage = "Password not match")]
+    public string ConfirmPassword { get; set; }
 }
 
 

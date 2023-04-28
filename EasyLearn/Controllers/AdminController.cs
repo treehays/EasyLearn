@@ -78,18 +78,18 @@ public partial class AdminController : Controller
         return View(admin);
     }
 
-    public async Task<IActionResult> FindUser(string emailOrname)
-    {
-        var admin = await _adminService.GetByUsersNameOrEmail(emailOrname);
-        if (!admin.Status)
-        {
-            TempData["failed"] = admin.Message;
-            return RedirectToAction("index");
-        }
+    //public async Task<IActionResult> FindUser(string emailOrname)
+    //{
+    //    var admin = await _adminService.GetByUsersNameOrEmail(emailOrname);
+    //    if (!admin.Status)
+    //    {
+    //        TempData["failed"] = admin.Message;
+    //        return RedirectToAction("index");
+    //    }
 
-        TempData["success"] = admin.Message;
-        return View(admin);
-        }
+    //    TempData["success"] = admin.Message;
+    //    return View(admin);
+    //    }
     
     
     [Route("User/UserDetail")]
@@ -105,33 +105,33 @@ public partial class AdminController : Controller
         return View(admin);
     }
 
-    public async Task<IActionResult> UpgradeUser(string userId)
-    {
-        var user = await _userService.GetByIdAsync(userId);
-        if (!user.Status)
-        {
-            TempData["failed"] = user.Message;
-            return RedirectToAction("index");
-        }
-        var roles = await _roleService.GetAll();
-        ViewData["roles"] = new SelectList(roles.Data, "Id", "RoleName");
-        return View(user);
-    }
+    //public async Task<IActionResult> UpgradeUser(string userId)
+    //{
+    //    var user = await _userService.GetByIdAsync(userId);
+    //    if (!user.Status)
+    //    {
+    //        TempData["failed"] = user.Message;
+    //        return RedirectToAction("index");
+    //    }
+    //    var roles = await _roleService.GetAll();
+    //    ViewData["roles"] = new SelectList(roles.Data, "Id", "RoleName");
+    //    return View(user);
+    //}
 
-    [HttpPost]
-    public async Task<IActionResult> UpgradeUser(UserUpgradeRequestModel model)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _userService.UpgradeUser(model, userId);
-        if (!user.Status)
-        {
-            TempData["failed"] = user.Message;
-            return RedirectToAction("Index");
-        }
+    //[HttpPost]
+    //public async Task<IActionResult> UpgradeUser(UserUpgradeRequestModel model)
+    //{
+    //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    //    var user = await _userService.UpgradeUser(model, userId);
+    //    if (!user.Status)
+    //    {
+    //        TempData["failed"] = user.Message;
+    //        return RedirectToAction("Index");
+    //    }
 
-        TempData["success"] = user.Message;
-        return RedirectToAction("Index");
-    }
+    //    TempData["success"] = user.Message;
+    //    return RedirectToAction("Index");
+    //}
 
     public async Task<IActionResult> DeletePreview(string id)
     {

@@ -1,16 +1,20 @@
 ﻿using EasyLearn.Models.DTOs.ModulesDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using sib_api_v3_sdk.Model;
+using System.Security.Claims;
 
 namespace EasyLearn.Controllers
 {
     public class ModuleController : Controller
     {
         private readonly IModuleService _moduleService;
+        private readonly ICourseService _courseService;
 
-        public ModuleController(IModuleService moduleService)
+        public ModuleController(IModuleService moduleService, ICourseService courseService)
         {
             _moduleService = moduleService;
+            _courseService = courseService;
         }
 
         public IActionResult Index()
@@ -19,13 +23,21 @@ namespace EasyLearn.Controllers
         }
 
 
-        public IActionResult Create(string CourseId)
+        public async Task<IActionResult> Create(string courseId)
         {
-            var courseId = new CreateModuleRequestModel
+
+            var instructorId = User.FindFirstValue(ClaimTypes.Actor);
+            var course = await _courseService.GetById(courseId);
+            if (course.Data?.InstructorId != instructorId)
             {
-                CourseId = CourseId,
+                TempData["failed"] = course.Message;
+                return RedirectToAction("Index", "Home");
+            }
+            var courseIdModel = new CreateModuleRequestModel
+            {
+                CourseId = courseId,
             };
-            return View(courseId);
+            return View(courseIdModel);
         }
 
         [HttpPost]
@@ -47,24 +59,19 @@ namespace EasyLearn.Controllers
             TempData["failed"] = createModule.Message;
             return View(model);
         }
-
-        public async Task<IActionResult> GetAllByCourseId(string courseId)
+        /// <summary>
+        /// previous name GetAllByCourseId
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> GetCourseModulesByCourseInstructor(string courseId)
         {
-            if (courseId == null)
+            var instructorId = User.FindFirstValue(ClaimTypes.Actor);
+            var module = await _moduleService.GetCourseContentsByCourseInstructor(courseId, instructorId);
+            if (!module.Status)
             {
-                TempData["failed"] = "Course no found..";
-                return RedirectToAction(nameof(Index), "Home");
-            }
-            var module = await _moduleService.GetByCourse(courseId);
-            if (module.Status)
-            {
-                //module = new ModulesResponseModel
-                //{
-                module.CourseId = courseId;
-                //};
-                TempData["success"] = module.Message;
-                return View(module);
-                //return RedirectToAction(nameof(Index), "Home");
+                TempData["failed"] = module.Message;
+                return RedirectToAction("Index", "Home");
             }
 
             module.CourseId = courseId;
@@ -126,21 +133,6 @@ namespace EasyLearn.Controllers
             TempData["success"] = module.Message;
             return View(module);
         }
-
-
-        //public async Task<IActionResult> GetByCourse(string moduleId, string courseId)
-        //{
-        //    var module = await _moduleService.GetByCourse(courseId, moduleId);
-        //    if (!module.Status)
-        //    {
-        //        TempData["failed"] = module.Message;
-        //        return RedirectToAction(nameof(Index), "Home");
-        //    }
-
-        //    TempData["success"] = module.Message;
-        //    return View(module);
-        //}
-
 
 
         public async Task<IActionResult> DeletePreview(string id)

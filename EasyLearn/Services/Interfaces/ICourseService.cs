@@ -10,16 +10,15 @@ public interface ICourseService
     Task<CourseResponseModel> GetFullDetailOfCourseById(string id);
     Task<BaseResponse> Delete(string id, string userId);
     Task<CoursesResponseModel> GetAllCoursesByAnInstructor(string instructorId);
-    //Task<CoursesResponseModel> GetAllInstructorCourse(string instructorId);
+    Task<CoursesResponseModel> GetActiveCoursesOfAnInstructor(string instructorId);
+    Task<CoursesResponseModel> GetInActiveCoursesOfAnInstructor (string instructorId);
     Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId);
     Task<CoursesEnrolledRequestModel> UnpaidCourse(string studentId);
     Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId);
     Task<CoursesEnrolledRequestModel> GetCompletedCourses(string studentId);
     Task<CoursesResponseModel> GetAllCourse();
     Task<CoursesResponseModel> GetAllUnVerifiedCourse();
-    Task<CoursesResponseModel> GetAllActiveCourse(string instructorId);
     Task<CoursesResponseModel> GetAllInActiveCourse();
-    Task<CoursesResponseModel> GetAllInActiveCourse(string instructorId);
     Task<CoursesResponseModel> GetAllActiveCourse();
     Task<GlobalSearchResultViewModel> GlobalSearch(string name);
     Task<BaseResponse> Update(UpdateCourseRequestModel model);

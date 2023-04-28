@@ -76,9 +76,9 @@ namespace EasyLearn.Controllers
             return RedirectToAction(nameof(GetAllCoursesByInstructorId));
         }
 
-        public async Task<IActionResult> Detail(string id)
+        public async Task<IActionResult> Detail(string courseId)
         {
-            var course = await _courseService.GetFullDetailOfCourseById(id);
+            var course = await _courseService.GetFullDetailOfCourseById(courseId);
             if (!course.Status)
             {
                 TempData["failed"] = course.Message;
@@ -89,27 +89,29 @@ namespace EasyLearn.Controllers
             return View(course);
         }
 
-        public async Task<IActionResult> DeletePreview(string id)
+        public async Task<IActionResult> DeletePreview(string courseId)
         {
-            var course = await _courseService.GetById(id);
+            var course = await _courseService.GetById(courseId);
             if (course.Status) return View(course);
             TempData["failed"] = course.Message;
-            return RedirectToAction(nameof(Index), "Home");
+            return RedirectToAction("Index", "Home");
 
         }
 
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string courseId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var course = await _courseService.Delete(id, userId);
+            var course = await _courseService.Delete(courseId, userId);
             if (course.Status)
             {
                 TempData["success"] = course.Message;
-                return RedirectToAction(nameof(GetAll));
+                return RedirectToAction("Index", "Home");
+
             }
 
             TempData["failed"] = course.Message;
-            return RedirectToAction(nameof(GetAll));
+            return RedirectToAction("Index", "Home");
+
         }
 
         [Route("[controller]/ListAllCourses")]
@@ -133,6 +135,20 @@ namespace EasyLearn.Controllers
         {
             var instructorId = User.FindFirst(ClaimTypes.Actor)?.Value;
             var course = await _courseService.GetAllCoursesByAnInstructor(instructorId);
+            if (!course.Status)
+            {
+                TempData["failed"] = course.Message;
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            TempData["success"] = course.Message;
+            return View(course);
+        }
+
+        public async Task<IActionResult> GetActiveCoursesOfTheAuthInstructor()
+        {
+            var instructorId = User.FindFirst(ClaimTypes.Actor)?.Value;
+            var course = await _courseService.GetActiveCoursesOfAnInstructor(instructorId);
             if (!course.Status)
             {
                 TempData["failed"] = course.Message;
@@ -207,38 +223,6 @@ namespace EasyLearn.Controllers
         }
 
 
-        public async Task<IActionResult> GetByStatus(bool status)
-        {
-            var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var courses = await _courseService.GetAllInActiveCourse(instructorId);
-            if (!courses.Status)
-            {
-                TempData["failed"] = courses.Message;
-                return RedirectToAction(nameof(Index), "Home");
-            }
-
-            TempData["success"] = courses.Message;
-            return View(courses);
-        }
-
-
-        public async Task<IActionResult> GetByCategorys(bool status)
-        {
-            var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var courses = await _courseService.GetAllActiveCourse(instructorId);
-            if (!courses.Status)
-            {
-                TempData["failed"] = courses.Message;
-                return RedirectToAction(nameof(Index), "Home");
-            }
-
-            TempData["success"] = courses.Message;
-            return View(courses);
-        }
-
-
-
 
         public async Task<IActionResult> GetAllActive()
         {
@@ -258,11 +242,11 @@ namespace EasyLearn.Controllers
         }
 
 
-        public async Task<IActionResult> GetAllInActiveInstructorCourse()
+        public async Task<IActionResult> GetAllInActiveCoursesOfAuthInstructor()
         {
             var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var courses = await _courseService.GetAllInActiveCourse(instructorId);
+            var courses = await _courseService.GetInActiveCoursesOfAnInstructor(instructorId);
             if (!courses.Status)
             {
                 TempData["failed"] = courses.Message;
@@ -288,7 +272,7 @@ namespace EasyLearn.Controllers
             TempData["success"] = courses.Message;
             return View(courses);
         }
-        
+
 
         public async Task<IActionResult> GetAllUnVerifiedCourse()
         {
@@ -304,9 +288,9 @@ namespace EasyLearn.Controllers
             return View(courses);
         }
 
-        public async Task<IActionResult> Update(string id)
+        public async Task<IActionResult> Update(string courseId)
         {
-            var course = await _courseService.GetById(id);
+            var course = await _courseService.GetById(courseId);
             if (course.Status) return View(course);
             TempData["failed"] = course.Message;
             return RedirectToAction(nameof(Index));
@@ -339,9 +323,9 @@ namespace EasyLearn.Controllers
 
 
 
-        public async Task<IActionResult> UpdateActive(string id)
+        public async Task<IActionResult> UpdateActive(string courseId)
         {
-            var course = await _courseService.GetById(id);
+            var course = await _courseService.GetById(courseId);
             if (course.Status) return View(course);
             TempData["failed"] = course.Message;
             return RedirectToAction(nameof(Index), "Home");

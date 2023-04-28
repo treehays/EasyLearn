@@ -2,6 +2,7 @@ using EasyLearn.Data;
 using EasyLearn.GateWays.Email;
 using EasyLearn.GateWays.FileManager;
 using EasyLearn.GateWays.Mappers.CourseMappers;
+using EasyLearn.GateWays.Mappers.ModulesMappers;
 using EasyLearn.GateWays.Mappers.UserMappers;
 using EasyLearn.GateWays.Payments;
 using EasyLearn.Repositories.Implementations;
@@ -73,6 +74,7 @@ public class Program
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
         builder.Services.AddScoped<IUserMapperService, UserMapperService>();
+        builder.Services.AddScoped<IModulesMapperService, ModulesMapperService>();
         builder.Services.AddScoped<IPayStackService, PayStackService>();
 
         builder.Services.AddScoped<INigerianBankRepository, NigerianBankRepository>();

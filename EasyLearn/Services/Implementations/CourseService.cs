@@ -65,7 +65,7 @@ public class CourseService : ICourseService
             CreatedOn = DateTime.Now,
             CourseLogo = filePName,
             Price = model.Price,
-            IsActive = true,
+            //IsActive = true,
             //CourseCategories = dd,
         };
 
@@ -88,336 +88,6 @@ public class CourseService : ICourseService
             Status = true,
             Message = "Course Created successfully...",
         };
-    }
-
-
-    public async Task<BaseResponse> Delete(string id, string userId)
-    {
-        var course = await _courseRepository.GetAsync(x => x.Id == id);
-
-        if (course == null)
-        {
-            return new BaseResponse
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        course.IsDeleted = true;
-        course.DeletedOn = DateTime.Now;
-        course.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        await _courseRepository.SaveChangesAsync();
-        return new BaseResponse
-        {
-            Message = "Course successfully deleted...",
-            Status = true,
-        };
-
-    }
-
-    public async Task<CoursesResponseModel> GetAllCoursesByAnInstructor(string instructorId)
-    {
-        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId);
-        if (courses == null)
-        {
-            return new CoursesResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesResponseModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
-        };
-        return coursesModel;
-    }
-
-    public async Task<CoursesEnrolledRequestModel> UnpaidCourse(string studentId)
-    {
-        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && !y.IsPaid && y.StudentId == studentId);
-        if (courses == null)
-        {
-            return new CoursesEnrolledRequestModel
-            {
-                Message = "Course has not enrolled into any course yet...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesEnrolledRequestModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Course?.Id,
-                Title = x.Course?.Title,
-                Description = x.Course?.Description,
-                CourseLanguage = x.Course.CourseLanguage,
-                DifficultyLevel = x.Course.DifficultyLevel,
-                Requirement = x.Course?.Requirement,
-                CourseDuration = x.Course.CourseDuration,
-                InstructorId = x.Course?.InstructorId,
-                Price = x.Course.Price,
-                CourseLogo = x.Course?.CourseLogo,
-                ShortDescription = x.Course?.ShortDescription,
-                IsPaid = x.IsPaid,
-                CompletionStatus = x.CompletionStatus,
-            })
-        };
-        return coursesModel;
-
-    }
-
-    public async Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId)
-    {
-        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId);
-        if (courses == null)
-        {
-            return new CoursesEnrolledRequestModel
-            {
-                Message = "Course has not enrolled into any course yet...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesEnrolledRequestModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Course?.Id,
-                Title = x.Course?.Title,
-                Description = x.Course?.Description,
-                CourseLanguage = x.Course.CourseLanguage,
-                DifficultyLevel = x.Course.DifficultyLevel,
-                Requirement = x.Course?.Requirement,
-                CourseDuration = x.Course.CourseDuration,
-                InstructorId = x.Course?.InstructorId,
-                Price = x.Course.Price,
-                CourseLogo = x.Course?.CourseLogo,
-                ShortDescription = x.Course?.ShortDescription,
-                IsPaid = x.IsPaid,
-                CompletionStatus = x.CompletionStatus,
-            })
-        };
-        return coursesModel;
-
-    }
-
-    public async Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId)
-    {
-        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId && y.CompletionStatus == CompletionStatus.NotCompleted);
-        if (courses == null)
-        {
-            return new CoursesEnrolledRequestModel
-            {
-                Message = "Course has not enrolled into any course yet...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesEnrolledRequestModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Course?.Id,
-                Title = x.Course?.Title,
-                Description = x.Course?.Description,
-                CourseLanguage = x.Course.CourseLanguage,
-                DifficultyLevel = x.Course.DifficultyLevel,
-                Requirement = x.Course?.Requirement,
-                CourseDuration = x.Course.CourseDuration,
-                InstructorId = x.Course?.InstructorId,
-                Price = x.Course.Price,
-                CourseLogo = x.Course?.CourseLogo,
-                ShortDescription = x.Course?.ShortDescription,
-                IsPaid = x.IsPaid,
-                CompletionStatus = x.CompletionStatus,
-            })
-        };
-        return coursesModel;
-
-    }
-
-    public async Task<CoursesEnrolledRequestModel> GetCompletedCourses(string studentId)
-    {
-        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId && y.CompletionStatus == CompletionStatus.Completed);
-        if (courses == null)
-        {
-            return new CoursesEnrolledRequestModel
-            {
-                Message = "Course has not enrolled into any course yet...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesEnrolledRequestModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Course?.Id,
-                Title = x.Course?.Title,
-                Description = x.Course?.Description,
-                CourseLanguage = x.Course.CourseLanguage,
-                DifficultyLevel = x.Course.DifficultyLevel,
-                Requirement = x.Course?.Requirement,
-                CourseDuration = x.Course.CourseDuration,
-                InstructorId = x.Course?.InstructorId,
-                Price = x.Course.Price,
-                CourseLogo = x.Course?.CourseLogo,
-                ShortDescription = x.Course?.ShortDescription,
-                IsPaid = x.IsPaid,
-                CompletionStatus = x.CompletionStatus,
-            })
-        };
-        return coursesModel;
-
-    }
-
-    public async Task<CoursesResponseModel> GetAllActiveCourse()
-    {
-        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
-        if (courses == null)
-        {
-            return new CoursesResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesResponseModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
-        };
-        return coursesModel;
-
-    }
-
-    public async Task<CoursesResponseModel> GetAllActiveCourse(string instructorId)
-    {
-        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && x.InstructorId == instructorId);
-        if (courses == null)
-        {
-            return new CoursesResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesResponseModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => new CourseDTO
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                CourseLanguage = x.CourseLanguage,
-                DifficultyLevel = x.DifficultyLevel,
-                Requirement = x.Requirement,
-                CourseDuration = x.CourseDuration,
-                InstructorId = x.InstructorId,
-                Price = x.Price,
-            })
-        };
-        return coursesModel;
-
-    }
-
-    public async Task<CoursesResponseModel> GetAllInActiveCourse()
-    {
-        var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
-        if (courses == null)
-        {
-            return new CoursesResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesResponseModel
-        {
-            NumberOfCourse = courses.Count(),
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
-        };
-        return coursesModel;
-    }
-
-
-    public async Task<CoursesResponseModel> GetAllInActiveCourse(string instructorId)
-    {
-        var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted && x.InstructorId == instructorId);
-        if (courses == null)
-        {
-            return new CoursesResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesResponseModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
-        };
-        return coursesModel;
-    }
-
-    public async Task<CourseResponseModel> GetFullDetailOfCourseById(string id)
-    {
-        var course = await _courseRepository.GetCourseByIdWithInstructor(x => x.Id == id);
-
-        if (course == null)
-        {
-            return new CourseResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var categoruesName = course.CourseCategories.Select(x => x.Category.Name).ToList();
-        var courseModel = new CourseResponseModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = new CourseDTO
-            {
-                Id = course.Id,
-                Title = course.Title,
-                Description = course.Description,
-                CourseLanguage = course.CourseLanguage,
-                DifficultyLevel = course.DifficultyLevel,
-                Requirement = course.Requirement,
-                CourseDuration = course.CourseDuration,
-                InstructorId = course.InstructorId,
-                Price = course.Price,
-                InstructorName = $"{course.Instructor.User.FirstName} {course.Instructor.User.FirstName}",
-                CategoriesName = categoruesName,
-            },
-        };
-        return courseModel;
     }
 
 
@@ -469,6 +139,375 @@ public class CourseService : ICourseService
         };
         return coursesModel;
     }
+
+
+    public async Task<CoursesResponseModel> GetAllCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
+        };
+        return coursesModel;
+    }
+
+
+    public async Task<CoursesResponseModel> GetAllUnVerifiedCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => !x.IsVerified && x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
+        };
+        return coursesModel;
+    }
+
+
+    public async Task<CoursesResponseModel> GetAllActiveCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
+        };
+        return coursesModel;
+
+    }
+
+    public async Task<CoursesResponseModel> GetAllInActiveCourse()
+    {
+        var courses = await _courseRepository.GetListAsync(x => !x.IsActive && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            NumberOfCourse = courses.Count(),
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
+        };
+        return coursesModel;
+    }
+
+
+    public async Task<CoursesResponseModel> GetAllCoursesByAnInstructor(string instructorId)
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
+        };
+        return coursesModel;
+    }
+
+    public async Task<CoursesResponseModel> GetActiveCoursesOfAnInstructor(string instructorId)
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted && x.IsActive);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
+        };
+        return coursesModel;
+    }
+
+    public async Task<CoursesResponseModel> GetInActiveCoursesOfAnInstructor(string instructorId)
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted && x.IsActive);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
+        };
+        return coursesModel;
+    }
+
+
+    public async Task<BaseResponse> Delete(string id, string userId)
+    {
+        var course = await _courseRepository.GetAsync(x => x.Id == id);
+
+        if (course == null)
+        {
+            return new BaseResponse
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        course.IsDeleted = true;
+        course.DeletedOn = DateTime.Now;
+        course.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await _courseRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "Course successfully deleted...",
+            Status = true,
+        };
+
+    }
+
+    public async Task<CoursesEnrolledRequestModel> UnpaidCourse(string studentId)
+    {
+        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && !y.IsPaid && y.StudentId == studentId);
+        if (courses == null)
+        {
+            return new CoursesEnrolledRequestModel
+            {
+                Message = "Course has not enrolled into any course yet...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesEnrolledRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Course?.Id,
+                Title = x.Course?.Title,
+                Description = x.Course?.Description,
+                CourseLanguage = x.Course.CourseLanguage,
+                DifficultyLevel = x.Course.DifficultyLevel,
+                Requirement = x.Course?.Requirement,
+                CourseDuration = x.Course.CourseDuration,
+                InstructorId = x.Course?.InstructorId,
+                Price = x.Course.Price,
+                CourseLogo = x.Course?.CourseLogo,
+                ShortDescription = x.Course?.ShortDescription,
+                IsPaid = x.IsPaid,
+                CompletionStatus = x.CompletionStatus,
+                NumbersOfEnrollment = x.Course.NumbersOfEnrollment,
+            })
+        };
+        return coursesModel;
+
+    }
+
+    public async Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId)
+    {
+        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId);
+        if (courses == null)
+        {
+            return new CoursesEnrolledRequestModel
+            {
+                Message = "Course has not enrolled into any course yet...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesEnrolledRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Course?.Id,
+                Title = x.Course?.Title,
+                Description = x.Course?.Description,
+                CourseLanguage = x.Course.CourseLanguage,
+                DifficultyLevel = x.Course.DifficultyLevel,
+                Requirement = x.Course?.Requirement,
+                CourseDuration = x.Course.CourseDuration,
+                InstructorId = x.Course?.InstructorId,
+                Price = x.Course.Price,
+                CourseLogo = x.Course?.CourseLogo,
+                ShortDescription = x.Course?.ShortDescription,
+                IsPaid = x.IsPaid,
+                CompletionStatus = x.CompletionStatus,
+                NumbersOfEnrollment=x.Course.NumbersOfEnrollment,
+            })
+        };
+        return coursesModel;
+
+    }
+
+    public async Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId)
+    {
+        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId && y.CompletionStatus == CompletionStatus.NotCompleted);
+        if (courses == null)
+        {
+            return new CoursesEnrolledRequestModel
+            {
+                Message = "Course has not enrolled into any course yet...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesEnrolledRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Course?.Id,
+                Title = x.Course?.Title,
+                Description = x.Course?.Description,
+                CourseLanguage = x.Course.CourseLanguage,
+                DifficultyLevel = x.Course.DifficultyLevel,
+                Requirement = x.Course?.Requirement,
+                CourseDuration = x.Course.CourseDuration,
+                InstructorId = x.Course?.InstructorId,
+                Price = x.Course.Price,
+                CourseLogo = x.Course?.CourseLogo,
+                ShortDescription = x.Course?.ShortDescription,
+                IsPaid = x.IsPaid,
+                CompletionStatus = x.CompletionStatus,
+                NumbersOfEnrollment = x.Course.NumbersOfEnrollment
+            })
+        };
+        return coursesModel;
+
+    }
+
+    public async Task<CoursesEnrolledRequestModel> GetCompletedCourses(string studentId)
+    {
+        var courses = await _enrolmentRepository.GetStudentEnrolledCourses(y => !y.IsDeleted && y.IsPaid && y.StudentId == studentId && y.CompletionStatus == CompletionStatus.Completed);
+        if (courses == null)
+        {
+            return new CoursesEnrolledRequestModel
+            {
+                Message = "Course has not enrolled into any course yet...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesEnrolledRequestModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => new CourseDTO
+            {
+                Id = x.Course?.Id,
+                Title = x.Course?.Title,
+                Description = x.Course?.Description,
+                CourseLanguage = x.Course.CourseLanguage,
+                DifficultyLevel = x.Course.DifficultyLevel,
+                Requirement = x.Course?.Requirement,
+                CourseDuration = x.Course.CourseDuration,
+                InstructorId = x.Course?.InstructorId,
+                Price = x.Course.Price,
+                CourseLogo = x.Course?.CourseLogo,
+                ShortDescription = x.Course?.ShortDescription,
+                IsPaid = x.IsPaid,
+                CompletionStatus = x.CompletionStatus,
+                NumbersOfEnrollment = x.Course.NumbersOfEnrollment,
+            })
+        };
+        return coursesModel;
+
+    }
+
+
+    public async Task<CourseResponseModel> GetFullDetailOfCourseById(string id)
+    {
+        var course = await _courseRepository.GetCourseByIdWithInstructor(x => x.Id == id);
+
+        if (course == null)
+        {
+            return new CourseResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var categoruesName = course.CourseCategories.Select(x => x.Category.Name).ToList();
+        var courseModel = new CourseResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = new CourseDTO
+            {
+                Id = course.Id,
+                Title = course.Title,
+                Description = course.Description,
+                CourseLanguage = course.CourseLanguage,
+                DifficultyLevel = course.DifficultyLevel,
+                Requirement = course.Requirement,
+                CourseDuration = course.CourseDuration,
+                InstructorId = course.InstructorId,
+                Price = course.Price,
+                InstructorName = $"{course.Instructor.User.FirstName} {course.Instructor.User.FirstName}",
+                CategoriesName = categoruesName,
+            },
+        };
+        return courseModel;
+    }
+
 
     public async Task<BaseResponse> Update(UpdateCourseRequestModel model)
     {
@@ -526,27 +565,6 @@ public class CourseService : ICourseService
             Message = "Course updated successfully...",
             Status = true,
         };
-    }
-
-    public async Task<CoursesResponseModel> GetAllCourse()
-    {
-        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
-        if (courses == null)
-        {
-            return new CoursesResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesResponseModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
-        };
-        return coursesModel;
     }
 
     public async Task<GlobalSearchResultViewModel> GlobalSearch(string name)
@@ -636,45 +654,4 @@ public class CourseService : ICourseService
         return globalResult;
     }
 
-    public async Task<CoursesResponseModel> GetAllUnVerifiedCourse()
-    {
-        var courses = await _courseRepository.GetListAsync(x => !x.IsVerified && x.IsActive && !x.IsDeleted);
-        if (courses == null)
-        {
-            return new CoursesResponseModel
-            {
-                Message = "Course not Found...",
-                Status = false,
-            };
-        }
-
-        var coursesModel = new CoursesResponseModel
-        {
-            Status = true,
-            Message = "Course retrieved successfully ...",
-            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList(),
-        };
-        return coursesModel;
-    }
-
 }
-//private CourseDTO ConvertToCourseResponseModel (Course course)
-//{
-//    var courseModel = new CourseDTO
-//    {
-//        Id = course.Id,
-//        Title = course.Title,
-//        Description = course.Description,
-//        CourseLanguage = course.CourseLanguage,
-//        DifficultyLevel = course.DifficultyLevel,
-//        Requirement = course.Requirement,
-//        CourseDuration = course.CourseDuration,
-//        InstructorId = course.InstructorId,
-//        Price = course.Price,
-//        CourseLogo = course.CourseLogo,
-//        NumbersOfEnrollment = course.NumbersOfEnrollment,
-//    };
-//    return courseModel;
-//}
-
-

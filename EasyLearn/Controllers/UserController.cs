@@ -1,5 +1,6 @@
 ﻿using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
+using EasyLearn.Services.Implementations;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,12 +12,14 @@ namespace EasyLearn.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
         private readonly INigerianBankService _nigerianBankService;
 
-        public UserController(IUserService userService, INigerianBankService nigerianBankService)
+        public UserController(IUserService userService, INigerianBankService nigerianBankService, IRoleService roleService)
         {
             _userService = userService;
             _nigerianBankService = nigerianBankService;
+            _roleService = roleService;
         }
         public IActionResult Index()
         {
@@ -26,12 +29,14 @@ namespace EasyLearn.Controllers
         {
             return View();
         }
+
+        [HttpPost]
         public async Task<IActionResult> ResetPassword(string email)
         {
             var baseUrl = $"https://{Request.Host}";
             var user = await _userService.ResetPassword(email, baseUrl);
             TempData["success"] = user.Message;
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> ConfirmPasswordReset(string emailToken)
         {
@@ -40,19 +45,29 @@ namespace EasyLearn.Controllers
             if (!user.Status)
             {
                 TempData["failed"] = user.Message;
-                return RedirectToAction("Index");
+                return RedirectToAction("Index","Home");
             }
             TempData["success"] = user.Message;
-            return RedirectToAction("UpdateUserPasswordPage");
+            return View(user);
         }
-        public IActionResult UpdateUserPasswordPage()
-        {
-            return View();
-        }
+       
         [HttpPost]
-        public IActionResult UpdateUserPassword()
+        public async Task<IActionResult> UpdateUserPassword(UpdateUserPasswordRequestModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                TempData["success"] = "Enter a valid password,must be at least 8 characters long and contains uppercase letter, lowercase letter, number and symbol";
+                return View(model);
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.UpdateUserPassword(model, userId);
+            if (!user.Status)
+            {
+                TempData["success"] = user.Message;
+                return RedirectToAction("Index", "Home");
+            }
+            TempData["success"] = user.Message;
+            return RedirectToAction("Login","Home");
         }
         public async Task<IActionResult> ConfirmEmail(string emailToken)
         {
@@ -159,6 +174,49 @@ namespace EasyLearn.Controllers
                 return View(instructor);
             }
             TempData["failed"] = instructor.Message;
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        public async Task<IActionResult> FindUser(string emailOrname)
+        {
+            var admin = await _userService.GetByUsersNameOrEmail(emailOrname);
+            if (!admin.Status)
+            {
+                TempData["failed"] = admin.Message;
+                return RedirectToAction("index", "Home");
+            }
+
+            TempData["success"] = admin.Message;
+            return View(admin);
+        }
+
+
+        public async Task<IActionResult> UpgradeUser(string userId)
+        {
+            var user = await _userService.GetByIdAsync(userId);
+            if (!user.Status)
+            {
+                TempData["failed"] = user.Message;
+                return RedirectToAction("index","Home");
+            }
+            var roles = await _roleService.GetAll();
+            ViewData["roles"] = new SelectList(roles.Data, "Id", "RoleName");
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpgradeUser(UserUpgradeRequestModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.UpgradeUser(model, userId);
+            if (!user.Status)
+            {
+                TempData["failed"] = user.Message;
+                return RedirectToAction("Index","Home");
+            }
+
+            TempData["success"] = user.Message;
             return RedirectToAction("Index", "Home");
         }
     }

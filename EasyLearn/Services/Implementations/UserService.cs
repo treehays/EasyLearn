@@ -1,5 +1,6 @@
 ﻿using BCrypt.Net;
 using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.Mappers.UserMappers;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
@@ -21,8 +22,9 @@ public class UserService : IUserService
     private readonly IPaymentDetailRepository _paymentDetailsRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IAddressRepository _addressRepository;
+    private readonly IUserMapperService _userMapperService;
 
-    public UserService(IUserRepository userRepository, IFileManagerService fileManagerService, ISendInBlueEmailService emailService, IHttpContextAccessor contextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository)
+    public UserService(IUserRepository userRepository, IFileManagerService fileManagerService, ISendInBlueEmailService emailService, IHttpContextAccessor contextAccessor, IPaymentDetailRepository paymentDetailsRepository, IAddressRepository addressRepository, IUserMapperService userMapperService)
     {
         _userRepository = userRepository;
         _fileManagerService = fileManagerService;
@@ -30,6 +32,7 @@ public class UserService : IUserService
         _contextAccessor = contextAccessor;
         _paymentDetailsRepository = paymentDetailsRepository;
         _addressRepository = addressRepository;
+        _userMapperService = userMapperService;
     }
 
 
@@ -190,12 +193,12 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<BaseResponse> PasswordRessetConfirmation(string emailToken, string userId)
+    public async Task<UserResponseModel> PasswordRessetConfirmation(string emailToken, string userId)
     {
         var user = await _userRepository.GetUserByTokenAsync(emailToken);
         if (user == null)
         {
-            return new BaseResponse
+            return new UserResponseModel
             {
                 Message = "Wrong verification code...",
                 Status = false,
@@ -206,7 +209,7 @@ public class UserService : IUserService
 
         if (expiryDate < DateTime.Now)
         {
-            return new BaseResponse
+            return new UserResponseModel
             {
                 Message = "Link has expired kindly request for new reset link...",
                 Status = false,
@@ -229,10 +232,11 @@ public class UserService : IUserService
         //user.ModifiedBy = modifiedBy;
         //await _userRepository.UpdateAsync(user);
         //await _userRepository.SaveChangesAsync();
-        return new BaseResponse
+        return new UserResponseModel
         {
             Message = "Token confirmed activated...",
             Status = true,
+            Data = _userMapperService.ConvertToUserResponseModel(user),
         };
     }
 
@@ -273,7 +277,7 @@ public class UserService : IUserService
 
     public async Task<UserResponseModel> GetByIdAsync(string userId)
     {
-        var user = await _userRepository.GetAsync(x => x.Id == userId && !x.IsDeleted && x.IsActive);
+        var user = await _userRepository.GetAsync(x => (x.Id == userId || x.Email == userId) && !x.IsDeleted && x.IsActive);
         if (user == null)
         {
             return new UserResponseModel
@@ -286,17 +290,7 @@ public class UserService : IUserService
         {
             Status = true,
             Message = "Details successfully retrieved...",
-            Data = new UserDTO
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Password = user.Password,
-                ProfilePicture = user.ProfilePicture,
-                RoleId = user.RoleId,
-                UserName = user.UserName,
-            }
+            Data = _userMapperService.ConvertToUserResponseModel(user),
         };
         return userResponseModel;
     }
@@ -349,7 +343,7 @@ public class UserService : IUserService
                     ModifiedOn = DateTime.Now,
                     ModifiedBy = userId,
                 };
-                user.RoleId = "Moderator";
+                user.RoleId = "Instructor";
                 user.Instructor = instructorUser;
                 //await _instructorRepository.AddAsync(instructorUser);
                 await _userRepository.SaveChangesAsync();
@@ -574,4 +568,55 @@ public class UserService : IUserService
             Status = true,
         };
     }
+
+    public async Task<BaseResponse> UpdateUserPassword(UpdateUserPasswordRequestModel model,string userId)
+    {
+        var user = await _userRepository.GetAsync(x => x.Id == model.Id && !x.IsDeleted);
+        if (user == null)
+        {
+            return new BaseResponse
+            {
+                Message = "User not found.",
+                Status = false,
+            };
+        }
+
+        user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y); ;
+        user.ModifiedOn = DateTime.Now;
+        user.ModifiedBy = userId;
+        user.IsActive = true;
+        await _userRepository.SaveChangesAsync();
+        return new BaseResponse
+        {
+            Message = "User updated successfully..",
+            Status = true,
+        };
+    }
+
+    public async Task<UsersResponseModel> GetByUsersNameOrEmail(string emailOrname)
+    {
+        emailOrname = emailOrname.ToLower();
+        var user = await _userRepository.GetListAsync(x =>
+       (x.FirstName.ToLower() == emailOrname || x.LastName.ToLower() == emailOrname || x.Email == emailOrname)
+       && x.IsActive
+       && !x.IsDeleted);
+
+        if (user.Count() == 0)
+        {
+            return new UsersResponseModel
+            {
+                Message = "User not found..",
+                Status = false,
+            };
+        }
+
+        var userModel = new UsersResponseModel
+        {
+            Status = true,
+            Message = "Details successfully retrieved...",
+            Data = user.Select(x => _userMapperService.ConvertToUserResponseModel(x)).ToList(),
+        };
+        return userModel;
+    }
+
 }
