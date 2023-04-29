@@ -1,5 +1,4 @@
-﻿using EasyLearn.GateWays.Payments.PaymentGatewayDTOs;
-using EasyLearn.Models.Enums;
+﻿using EasyLearn.Models.Enums;
 
 namespace EasyLearn.Models.DTOs.EnrolmentDTOs
 {
@@ -26,7 +25,7 @@ namespace EasyLearn.Models.DTOs.EnrolmentDTOs
     public class CreateEnrolmentRequestModel
     {
         public string CourseId { get; set; }
-        public double AmountPaid { get; set; }
+        public decimal AmountPaid { get; set; }
         public string Coupon { get; set; }
         public string CourseName { get; set; }
         public bool Status { get; set; }

@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.Enums;
+﻿using EasyLearn.Models.DTOs.CategoryDTOs;
+using EasyLearn.Models.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EasyLearn.Models.DTOs.CourseDTOs
@@ -15,12 +16,12 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         //public string Rating { get; set; }
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public string CourseLogo { get; set; }
         public DateTime CreatedOn { get; set; }
         public string InstructorId { get; set; }
         public string InstructorName { get; set; }
-        public List<string> CategoriesName { get; set; }
+        public List<CategoryNameResponseModel> CategoriesName { get; set; }
         public CompletionStatus CompletionStatus { get; set; }
         public bool IsPaid { get; set; }
         public bool IsActive { get; set; }
@@ -38,7 +39,7 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public double CourseDuration { get; set; }
         public string InstructorId { get; set; }
         public List<string> CourseCategories { get; set; } = new List<string>();
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public IFormFile FormFile { get; set; }
         public MultiSelectList multiSelectList { get; set; }
         public bool IsActive { get; set; }
@@ -56,7 +57,7 @@ namespace EasyLearn.Models.DTOs.CourseDTOs
         public string Requirement { get; set; }
         public double CourseDuration { get; set; }
         public bool IsActive { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
     }
 

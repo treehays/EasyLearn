@@ -12,7 +12,7 @@ public class PaysatckInitializePayment
 
 public class InitializePaymentRequestModel
 {
-    public double CoursePrice { get; set; }
+    public decimal CoursePrice { get; set; }
     public string RefrenceNo { get; set; }
     public string Email { get; set; }
     public string CallbackUrl { get; set; }

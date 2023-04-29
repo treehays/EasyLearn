@@ -388,7 +388,7 @@ public class CourseService : ICourseService
                 ShortDescription = x.Course?.ShortDescription,
                 IsPaid = x.IsPaid,
                 CompletionStatus = x.CompletionStatus,
-                NumbersOfEnrollment=x.Course.NumbersOfEnrollment,
+                NumbersOfEnrollment = x.Course.NumbersOfEnrollment,
             })
         };
         return coursesModel;
@@ -474,7 +474,7 @@ public class CourseService : ICourseService
 
     public async Task<CourseResponseModel> GetFullDetailOfCourseById(string id)
     {
-        var course = await _courseRepository.GetCourseByIdWithInstructor(x => x.Id == id);
+        var course = await _courseRepository.GetCourseByIdWithInstructorDetail(x => x.Id == id && !x.IsDeleted);
 
         if (course == null)
         {
@@ -485,7 +485,9 @@ public class CourseService : ICourseService
             };
         }
 
-        var categoruesName = course.CourseCategories.Select(x => x.Category.Name).ToList();
+        //var categoruesName = course.CourseCategories.Select(x => x.Category.Name).ToList();
+        //var categoruesNamea = course.CourseCategories.Select(x => new { name = x.Category.Name , link = x.Category.Id}).ToList();
+        var categoruesName = course.CourseCategories.Select(x => new CategoryNameResponseModel { Name = x.Category.Name, Id = x.Category.Id }).ToList();
         var courseModel = new CourseResponseModel
         {
             Status = true,
@@ -503,6 +505,11 @@ public class CourseService : ICourseService
                 Price = course.Price,
                 InstructorName = $"{course.Instructor.User.FirstName} {course.Instructor.User.FirstName}",
                 CategoriesName = categoruesName,
+                CourseLogo = course.CourseLogo,
+                NumbersOfEnrollment = course.NumbersOfEnrollment,
+                ShortDescription = course.ShortDescription,
+                CreatedOn = course.CreatedOn,
+
             },
         };
         return courseModel;

@@ -25,6 +25,11 @@
         public string Description { get; set; }
         public string CategoryImage { get; set; }
     }
+    public class CategoryNameResponseModel
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
 
     public class CategoriesResponseModel : BaseResponse
     {

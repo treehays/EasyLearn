@@ -15,13 +15,15 @@ public class EnrolmentService : IEnrolmentService
     private readonly ICourseRepository _courseRepository;
     private readonly IPayStackService _payStackService;
     private readonly IPaymentRepository _paymentRepository;
+    private readonly IInstructorRepository _instructorRepository;
 
-    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IPayStackService payStackService, IPaymentRepository paymentRepository)
+    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IPayStackService payStackService, IPaymentRepository paymentRepository, IInstructorRepository instructorRepository)
     {
         _enrolmentRepository = enrolmentRepository;
         _courseRepository = courseRepository;
         _payStackService = payStackService;
         _paymentRepository = paymentRepository;
+        _instructorRepository = instructorRepository;
     }
 
     public async Task<InitializePaymentResponseModel> Create(CreateEnrolmentRequestModel model, string studentId, string userId, string email, string baseUrl)
@@ -102,9 +104,22 @@ public class EnrolmentService : IEnrolmentService
                 },
             };
         }
+        var courseInstructor = await _instructorRepository.GetInstructorFullDetailAsync(x => x.Id == coursea.InstructorId);
+        //var adminId = _companyInfo.AdminUserID;
+        var instructorWallet = new Wallet
+        {
+            Id = Guid.NewGuid().ToString(),
+            CreatedBy = userId,
+            CreatedOn = payment.CreatedOn,
+            Credit = coursea.Price,
+            Description = coursea.Id,
+            UserId = userId,
+        };
+        courseInstructor.User.Wallet = instructorWallet;
         payment.AuthorizationUri = proceedToPay.data.authorization_url;
         studentCourses.Add(studentCourse);
         coursea.StudentCourses = studentCourses;
+        coursea.NumbersOfEnrollment += 1;
         await _enrolmentRepository.AddAsync(enrolments);
         await _enrolmentRepository.SaveChangesAsync();
 

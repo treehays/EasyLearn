@@ -1,12 +1,15 @@
-﻿using EasyLearn.GateWays.Payments;
+﻿using EasyLearn.Data;
+using EasyLearn.GateWays.Payments;
 using EasyLearn.Models;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Security.Claims;
+using MediaInfo.DotNetWrapper;
 
 namespace EasyLearn.Controllers
 {
@@ -15,19 +18,24 @@ namespace EasyLearn.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService _userService;
         private readonly IPayStackService _payStackService;
+        private readonly CompanyInfoOption _companyInfoOption;
 
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService, IPayStackService payStackService)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IPayStackService payStackService, IOptions<CompanyInfoOption> companyInfoOption)
         {
             _logger = logger;
             _userService = userService;
             _payStackService = payStackService;
+            _companyInfoOption = companyInfoOption.Value;
         }
 
         public async Task<IActionResult> Index()
         {
             //var ff = new VerifyTransactionRequestModel { ReferenceNumber = "5cb18b3ay6e0ay442dyb89dy17e78e7596b0", };
             //var pp = await _payStackService.VerifyTransaction(ff);
+            var sdnnm = _companyInfoOption.CompanyName;
+            var sdnnmew = _companyInfoOption.CompanyName;
+
             return View();
         }
         //[Route("v{version:apiVersion}/[controller]")]
@@ -121,7 +129,7 @@ namespace EasyLearn.Controllers
             else if (user.RoleId == "Moderator")
             {
                 TempData["success"] = "Login successful";
-                return RedirectToAction("index", "Student");
+                return RedirectToAction("index", "Moderator");
             }
             else if (user.RoleId == "Student")
             {

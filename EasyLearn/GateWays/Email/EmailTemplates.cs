@@ -11,9 +11,7 @@ public static class EmailTemplates
 
                         <!DOCTYPE html
                 PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-            <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"
-                style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
-
+            <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
             <head>
                 <meta charset="UTF-8">
                 <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -474,7 +472,7 @@ public static class EmailTemplates
                                                                             <td align="left" style="padding:0;Margin:0">
                                                                                 <p
                                                                                     style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Imprima, Arial, sans-serif;line-height:27px;color:#2D3142;font-size:18px">
-                                                                                    Thanks,<br><br>EasyLearn CEO</p>
+                                                                                    Thanks,<br><br>Abdulsam, EasyLearn CEO</p>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -548,20 +546,10 @@ public static class EmailTemplates
                                                                         align="right"
                                                                         style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right">
                                                                         <tr>
-                                                                            <td align="center" valign="top"
-                                                                                style="padding:0;Margin:0;width:453px">
-                                                                                <table cellpadding="0" cellspacing="0" width="100%"
-                                                                                    role="presentation"
-                                                                                    style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-                                                                                    <tr>
-                                                                                        <td align="left" style="padding:0;Margin:0">
-                                                                                            <p
-                                                                                                style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Imprima, Arial, sans-serif;line-height:24px;color:#2D3142;font-size:16px">
-                                                                                                This link expire in 24 hours {{DateTime.Now.AddHours(24)}}. If you
-                                                                                                have questions, <a target="_blank"
-                                                                                                    style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#2D3142;font-size:16px"
-                                                                                                    href="{{baseUrl}}/6">we're
-                                                                                                    here to help</a></p>
+                                                                            <td align="center" valign="top" style="padding:0;Margin:0;width:453px"> <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                                                            <tr>
+                                                                            <td align="left" style="padding:0;Margin:0">
+                                                                                            <pstyle="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Imprima, Arial, sans-serif;line-height:24px;color:#2D3142;font-size:16px"> This link expire in 24 hours {{DateTime.Now.AddHours(24)}}. If you have questions, <a target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#2D3142;font-size:16px" href="{{baseUrl}}/6">we're here to help</a></p>
                                                                                         </td>
                                                                                     </tr>
                                                                                 </table>
@@ -656,7 +644,7 @@ public static class EmailTemplates
                                                                                     style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Imprima, Arial, sans-serif;line-height:21px;color:#2D3142;font-size:14px">
                                                                                     <a target="_blank" href=""
                                                                                         style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#2D3142;font-size:14px"></a>Copyright
-                                                                                    © 2023&nbsp;Company<a target="_blank" href=""
+                                                                                    © 2023&nbsp;EasyLearn <a target="_blank" href=""
                                                                                         style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#2D3142;font-size:14px"></a>
                                                                                 </p>
                                                                             </td>
