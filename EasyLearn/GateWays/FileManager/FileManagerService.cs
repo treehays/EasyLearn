@@ -1,4 +1,8 @@
-﻿using EasyLearn.Services.Interfaces;
+﻿
+//using Microsoft.WindowsAPICodePack.Shell;
+using EasyLearn.Services.Interfaces;
+using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 
 namespace EasyLearn.GateWays.FileManager;
 
@@ -70,6 +74,29 @@ public class FileManagerService : IFileManagerService
 
 
 
+                filePath = Path.Combine(filePath, fileName);
+
+                ShellObject shellObject = ShellObject.FromParsingName(filePath);
+                var durationProperty = shellObject.Properties.GetProperty(SystemProperties.System.Media.Duration);
+
+                if (durationProperty.ValueAsObject != null && durationProperty.ValueAsObject is ulong)
+                {
+                    ulong durationValue = (ulong)durationProperty.ValueAsObject;
+                    TimeSpan duration = TimeSpan.FromTicks((long)durationValue);
+                    Console.WriteLine("Duration: " + duration.ToString());
+                }
+                else
+                {
+                    Console.WriteLine("Duration information not available.");
+                }
+
+
+
+
+                //var file = Microsoft.WindowsAPICodePack.Shell.ShellFile.FromFilePath(pathhh);
+                //var title = file.Properties.System.Title.Value;
+                //var duration = file.Properties.GetProperty();
+                //var duration = file.Properties.Media.Duration.Value;
 
 
 

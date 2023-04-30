@@ -35,9 +35,8 @@
 		<PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.10" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
 		<PackageReference Include="sib_api_v3_sdk" Version="4.0.2" />
-		<PackageReference Include="TagLibSharp" Version="2.3.0" />
-		<PackageReference Include="X.PagedList" Version="8.4.7" />
-		<PackageReference Include="X.PagedList.Mvc.Core;" Version="8.4.7" />
+		<PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
+		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

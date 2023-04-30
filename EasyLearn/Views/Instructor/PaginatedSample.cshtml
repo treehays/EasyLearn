@@ -1,6 +1,6 @@
-﻿@using X.PagedList;
+﻿@* @using X.PagedList;
 @using X.PagedList.Mvc.Core;
-@model IPagedList<EasyLearn.Models.Entities.User>;
+@model IPagedList<EasyLearn.Models.Entities.User>; *@
 
 @{
     /*
@@ -173,12 +173,12 @@
 
         <div class="pagination" style="margin-left: 400px">
 
-            <h4>
+            @* <h4>
                 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
                 of @Model.PageCount
 
                 @Html.PagedListPager(Model, page => Url.Action("PaginatedSample", new { page  }))
-            </h4>
+            </h4> *@
 
         </div>
 
