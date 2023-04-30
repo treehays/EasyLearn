@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace EasyLearn.Controllers
+namespace EasyLearn.Controllers;
+
+public class PaymentController : Controller
 {
-    public class PaymentController : Controller
+    public IActionResult Index()
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        return View();
     }
 }

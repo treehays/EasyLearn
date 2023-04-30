@@ -1,5 +1,5 @@
 ﻿using EasyLearn.Models.DTOs.CourseDTOs;
-using EasyLearn.Models.DTOs.ModulesDTOs;
+using EasyLearn.Models.DTOs.ModuleDTOs;
 using EasyLearn.Models.Entities;
 
 namespace EasyLearn.GateWays.Mappers.ModulesMappers

@@ -1,6 +1,6 @@
 ﻿using EasyLearn.GateWays.Mappers.ModulesMappers;
 using EasyLearn.Models.DTOs;
-using EasyLearn.Models.DTOs.ModulesDTOs;
+using EasyLearn.Models.DTOs.ModuleDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
@@ -28,6 +28,14 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<BaseResponse> Create(CreateModuleRequestModel model)
         {
+
+
+            //calculating video time
+
+
+
+
+
             if (model.FormFiles.Count() == 0)
             {
                 return new BaseResponse
@@ -147,6 +155,30 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<ModulesResponseModel> GetCourseContentsByCourseInstructor(string courseId, string instructorId)
         {
+
+
+
+            //var mediaInfo = new MediaInfo.DotNetWrapper.MediaInfo();
+            //mediaInfo.Open(filePath);
+            //var duration = mediaInfo.Get(StreamKind.Video, 0, "Duration");
+            //var durationInSeconds = double.Parse(duration) / 1000;
+            //var videoDuration = TimeSpan.FromSeconds(durationInSeconds);
+
+
+            //Shell shl = new ShellClass();
+            //Folder fldr = shl.NameSpace(Path.GetDirectoryName(filename));
+            //FolderItem itm = fldr.ParseName(Path.GetFileName(filename));
+            //Dictionary<int, KeyValuePair<string, string>> fileProps = new Dictionary<int, KeyValuePair<string, string>>();
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    string propValue = fldr.GetDetailsOf(itm, i);
+            //    if (propValue != "")
+            //    {
+            //        fileProps.Add(i, new KeyValuePair<string, string>(fldr.GetDetailsOf(null, i), propValue));
+            //    }
+            //}
+
+
             var course = await _courseRepository.GetAsync(x => x.Id == courseId && !x.IsDeleted && x.InstructorId == instructorId);
             if (course == null)
             {

@@ -12,7 +12,7 @@ namespace EasyLearn.Models.Entities
         public DifficultyLevel DifficultyLevel { get; set; }
         //public string Rating { get; set; }
         public string Requirement { get; set; }
-        public double CourseDuration { get; set; }
+        public TimeSpan CourseDuration { get; set; }
         public decimal Price { get; set; }
         public int NumbersOfEnrollment { get; set; }
         public bool IsActive { get; set; }

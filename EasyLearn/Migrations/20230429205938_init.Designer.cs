@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    [Migration("20230427062955_verified")]
-    partial class verified
+    [Migration("20230429205938_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -195,8 +195,8 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Coupon")
                         .HasColumnType("longtext");
 
-                    b.Property<double>("CourseDuration")
-                        .HasColumnType("double");
+                    b.Property<TimeSpan>("CourseDuration")
+                        .HasColumnType("time(6)");
 
                     b.Property<int>("CourseLanguage")
                         .HasColumnType("int");
@@ -243,8 +243,8 @@ namespace EasyLearn.Migrations
                     b.Property<int>("NumbersOfEnrollment")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Requirement")
                         .HasColumnType("longtext");
@@ -734,8 +734,8 @@ namespace EasyLearn.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("PaymentAmount")
-                        .HasColumnType("double");
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
@@ -1027,6 +1027,9 @@ namespace EasyLearn.Migrations
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");

@@ -1,6 +1,6 @@
 ﻿using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.DTOs;
-using EasyLearn.Models.DTOs.ModulesDTOs;
+using EasyLearn.Models.DTOs.ModuleDTOs;
 
 namespace EasyLearn.Services.Interfaces
 {

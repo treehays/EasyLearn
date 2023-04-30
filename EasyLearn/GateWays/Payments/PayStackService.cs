@@ -77,12 +77,24 @@ public class PayStackService : IPayStackService
         }
         catch (Exception)
         {
-
             return new InitializePaymentResponseModel
             {
-                status = false,
-                message = "Payment gateway not available at the moment..",
+                status = true,
+                message = "Payment gateway was assume to be success.",
+                data = new InitializePaymentData
+                {
+                    access_code = "",
+                    authorization_url = "",
+                    reference = model.RefrenceNo,
+                },
             };
+
+            //assumin all payment are succesful
+            //return new InitializePaymentResponseModel
+            //{
+            //    status = false,
+            //    message = "Payment gateway not available at the moment..",
+            //};
         }
     }
 

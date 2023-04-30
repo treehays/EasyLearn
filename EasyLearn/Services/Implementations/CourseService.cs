@@ -1,43 +1,43 @@
-﻿using EasyLearn.GateWays.Mappers.CourseMappers;
+﻿using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.Mappers.CourseMappers;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.DTOs.CourseDTOs;
+using EasyLearn.Models.DTOs.EmailSenderDTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using EasyLearn.Models.ViewModels;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
-using System.Security.Claims;
 
 namespace EasyLearn.Services.Implementations;
 
 public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IUserRepository _userRepository;
     private readonly IEnrolmentRepository _enrolmentRepository;
+    private readonly ISendInBlueEmailService _emailService;
     private readonly IFileManagerService _fileManagerService;
     private readonly ICourseMapperService _courseMapperService;
 
-    public CourseService(ICourseRepository courseRepository, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, ICategoryRepository categoryRepository, IFileManagerService fileManagerService, IEnrolmentRepository enrolmentRepository, ICourseMapperService courseMapperService)
+    public CourseService(ICourseRepository courseRepository, IUserRepository userRepository, ICategoryRepository categoryRepository, IFileManagerService fileManagerService, IEnrolmentRepository enrolmentRepository, ICourseMapperService courseMapperService, ISendInBlueEmailService emailService)
     {
         _courseRepository = courseRepository;
-        _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
         _categoryRepository = categoryRepository;
         _fileManagerService = fileManagerService;
         _enrolmentRepository = enrolmentRepository;
         _courseMapperService = courseMapperService;
+        _emailService = emailService;
     }
 
     /// <summary>
     /// Same instructor can not create course with exactly the saqme name
-    public async Task<BaseResponse> Create(CreateCourseRequestModel model)
+    public async Task<BaseResponse> Create(CreateCourseRequestModel model, string instructorId)
     {
-        var instructorId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Actor)?.Value;
         var courseInstructor = await _courseRepository.GetAsync(x => x.Title == model.Title && x.InstructorId == instructorId);
         if (courseInstructor != null)
         {
@@ -65,7 +65,7 @@ public class CourseService : ICourseService
             CreatedOn = DateTime.Now,
             CourseLogo = filePName,
             Price = model.Price,
-            //IsActive = true,
+            IsActive = true,
             //CourseCategories = dd,
         };
 
@@ -187,7 +187,7 @@ public class CourseService : ICourseService
 
     public async Task<CoursesResponseModel> GetAllActiveCourse()
     {
-        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted);
+        var courses = await _courseRepository.GetListAsync(x => x.IsActive && !x.IsDeleted && x.IsVerified);
         if (courses == null)
         {
             return new CoursesResponseModel
@@ -309,7 +309,7 @@ public class CourseService : ICourseService
 
         course.IsDeleted = true;
         course.DeletedOn = DateTime.Now;
-        course.DeletedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        course.DeletedBy = userId;
         await _courseRepository.SaveChangesAsync();
         return new BaseResponse
         {
@@ -516,7 +516,7 @@ public class CourseService : ICourseService
     }
 
 
-    public async Task<BaseResponse> Update(UpdateCourseRequestModel model)
+    public async Task<BaseResponse> Update(UpdateCourseRequestModel model, string userId)
     {
         var course = await _courseRepository.GetAsync(x => x.Id == model.Id);
 
@@ -536,7 +536,7 @@ public class CourseService : ICourseService
         course.Requirement = model.Requirement ?? course.Requirement;
         course.CourseDuration = model.CourseDuration;
         course.Price = model.Price;
-        course.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        course.ModifiedBy = userId;
         course.ModifiedOn = DateTime.Now;
         course.IsActive = model.IsActive;
         await _courseRepository.SaveChangesAsync();
@@ -549,7 +549,7 @@ public class CourseService : ICourseService
 
     }
 
-    public async Task<BaseResponse> UpdateActiveStatus(UpdateCourseActiveStatusRequestModel model)
+    public async Task<BaseResponse> UpdateActiveStatus(UpdateCourseActiveStatusRequestModel model, string userId)
     {
         var course = await _courseRepository.GetAsync(x => x.Id == model.Id);
 
@@ -563,13 +563,75 @@ public class CourseService : ICourseService
         }
 
         course.IsActive = model.IsActive;
-        course.ModifiedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        course.ModifiedBy = userId;
         course.ModifiedOn = DateTime.Now;
         await _courseRepository.SaveChangesAsync();
 
         return new CourseResponseModel
         {
             Message = "Course updated successfully...",
+            Status = true,
+        };
+    }
+
+    public async Task<BaseResponse> RejectCourse(string courseId, string userId)
+    {
+        var course = await _courseRepository.GetAsync(x => x.Id == courseId);
+
+        if (course == null)
+        {
+            return new CourseResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        course.IsActive = true;
+        course.ModifiedBy = userId;
+        course.ModifiedOn = DateTime.Now;
+        await _courseRepository.SaveChangesAsync();
+        var senderDetail = new EmailSenderDetails
+        {
+            EmailToken = $"courselink",
+            ReceiverEmail = "treehays90@gmail.com",
+            ReceiverName = "Abdulsalam Ahmad",
+        };
+        var sendInstructorNotification = await _emailService.CourseVerificationTemplate(senderDetail, "courseurl");
+        return new CourseResponseModel
+        {
+            Message = "Course is now verified successfully...",
+            Status = true,
+        };
+    }
+    public async Task<BaseResponse> ApproveCourse(string courseId, string userId)
+    {
+        var course = await _courseRepository.GetAsync(x => x.Id == courseId);
+
+        if (course == null)
+        {
+            return new CourseResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        course.IsActive = true;
+        course.IsVerified = true;
+        course.ModifiedBy = userId;
+        course.ModifiedOn = DateTime.Now;
+        await _courseRepository.SaveChangesAsync();
+        var senderDetail = new EmailSenderDetails
+        {
+            EmailToken = $"courselink",
+            ReceiverEmail = "treehays90@gmail.com",
+            ReceiverName = "Abdulsalam Ahmad",
+        };
+        var sendInstructorNotification = await _emailService.CourseVerificationTemplate(senderDetail, "courseurl");
+        return new CourseResponseModel
+        {
+            Message = "Course is now verified successfully...",
             Status = true,
         };
     }

@@ -42,7 +42,7 @@ public class Program
 
         builder.Services
             .AddOptions<SendinblueOptions>()
-            .BindConfiguration("Sendinblue");
+            .BindConfiguration("SendinblueAPIKey");
 
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
         builder.Services.AddScoped<IAdminService, AdminService>();
@@ -192,7 +192,7 @@ public class Program
         //EasyLearnDbSeedingData.InitializeDb(app.Services.CreateScope().ServiceProvider);
         //seeding into databse first methos
 
-        //EasyLearnDbInitializer.Seed(app);
+        EasyLearnDbInitializer.Seed(app);
 
         app.MapControllerRoute(
             name: "default",

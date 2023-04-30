@@ -4,7 +4,7 @@
 
 namespace EasyLearn.Migrations
 {
-    public partial class Category : Migration
+    public partial class df : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

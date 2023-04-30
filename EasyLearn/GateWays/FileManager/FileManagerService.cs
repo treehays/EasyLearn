@@ -32,6 +32,15 @@ public class FileManagerService : IFileManagerService
                 await file.CopyToAsync(stream);
             }
 
+
+
+
+
+
+
+
+
+
             return fileName;
         }
         return null;
@@ -58,6 +67,21 @@ public class FileManagerService : IFileManagerService
                     await item.CopyToAsync(stream);
                 }
                 fileNames.Add(fileName);
+
+
+
+
+
+
+                ////get video duration
+                //// Retrieve the video duration
+                //var mediaInfo = new MediaInfo.DotNetWrapper.MediaInfo();
+                ////mediaInfo.Open($"{filePath}{}");
+                //var pathhh = Path.Combine(filePath, fileName);
+                //mediaInfo.Open(pathhh);
+                //var duration = mediaInfo.Get(StreamKind.Video, 0, "Duration");
+                //var durationInSeconds = double.Parse(duration) / 1000;
+                //var videoDuration = TimeSpan.FromSeconds(durationInSeconds);
             }
             return fileNames;
         }

@@ -2,17 +2,26 @@
 using EasyLearn.Models.Entities;
 using EasyLearn.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace EasyLearn.Data;
 
 public class EasyLearnDbSeedingData
 {
+    private readonly CompanyInfoOption _companyInfoOption;
+
+    public EasyLearnDbSeedingData(IOptions<CompanyInfoOption> companyInfoOption)
+    {
+        _companyInfoOption = companyInfoOption.Value;
+    }
+
     public static async void InitializeDb(IServiceProvider serviceProvider)
     {
-        var userId = Guid.NewGuid().ToString();
+        var userId = "USERID53D4EB9E-1C51-44A4-A012-25C98042E32A";
+        var AdminId = "ADMINID8726B43F-83F4-4586-AF5D-DF9DFF91ADBD";
         var admin = new Admin()
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = AdminId,
             IsDeleted = false,
             CreatedBy = "Auto Create",
             CreatedOn = DateTime.Now,
