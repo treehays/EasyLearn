@@ -1,6 +1,6 @@
 ﻿#Assumptions
     #assume all payment are successfull for testin  did it under try amdcattch
-    ❗🎊💹catch true 
+    catch true 
 
 
  Layout = "~/Views/Shared/Layouts/_layout_light_sidebar.cshtml"; // this is the ,  origianl sidebar layout (complre)

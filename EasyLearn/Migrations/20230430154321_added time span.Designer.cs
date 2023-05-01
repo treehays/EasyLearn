@@ -3,6 +3,7 @@ using System;
 using EasyLearn.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    partial class EasyLearnDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230430154321_added time span")]
+    partial class addedtimespan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -637,9 +639,6 @@ namespace EasyLearn.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("VideoPath")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VideoSequence")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

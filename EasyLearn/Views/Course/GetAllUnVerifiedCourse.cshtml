@@ -62,7 +62,7 @@
 
                                     <td>@item.Title</td>
                                     <td>@item.CourseLanguage</td>
-                                    <td>@item.Price</td>
+                                    <td>@Html.DisplayFor(x => @item.Price) </td>
                                     <td>@item.CreatedOn.ToShortDateString()</td>
                                     <td>@item.CreatedOn.ToShortTimeString()</td>
 

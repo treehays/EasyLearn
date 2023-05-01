@@ -1,5 +1,6 @@
 ﻿using BCrypt.Net;
 using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.FileManager;
 using EasyLearn.GateWays.Mappers.UserMappers;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;

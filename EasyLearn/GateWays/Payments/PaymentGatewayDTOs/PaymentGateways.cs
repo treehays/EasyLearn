@@ -123,6 +123,7 @@ public class CreateTransferRecipientData
     public uint id { get; set; }
     public int integration { get; set; }
     public string name { get; set; }
+    public int amount { get; set; }
     public string type { get; set; }
     public string recipient_code { get; set; }
     public DateTime updatedAt { get; set; }

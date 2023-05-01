@@ -12,6 +12,7 @@ public interface ICourseService
     Task<CoursesResponseModel> GetAllCoursesByAnInstructor(string instructorId);
     Task<CoursesResponseModel> GetActiveCoursesOfAnInstructor(string instructorId);
     Task<CoursesResponseModel> GetInActiveCoursesOfAnInstructor(string instructorId);
+    Task<CoursesResponseModel> GetUnverifiedCoursesOfAnInstructor(string instructorId);
     Task<CoursesEnrolledRequestModel> GetEnrolledCourses(string studentId);
     Task<CoursesEnrolledRequestModel> UnpaidCourse(string studentId);
     Task<CoursesEnrolledRequestModel> StudentActiveCourses(string studentId);

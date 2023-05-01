@@ -53,7 +53,7 @@ public class PayStackService : IPayStackService
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
         var content = new StringContent(JsonSerializer.Serialize(new
         {
-            amount = model.CoursePrice,
+            amount = model.CoursePrice * 100,
             email = model.Email,
             reference = model.RefrenceNo,
             currency = "NGN",
@@ -110,7 +110,7 @@ public class PayStackService : IPayStackService
         var response = await getHttpClient.PostAsJsonAsync(baseUri, new
         {
             recipient = model.data.recipient_code,
-            amount = 56000 * 100,
+            amount = model.data.amount * 100,
             reference = Guid.NewGuid().ToString().Replace('-', 'y'),
             currency = "NGN",
             source = "balance",

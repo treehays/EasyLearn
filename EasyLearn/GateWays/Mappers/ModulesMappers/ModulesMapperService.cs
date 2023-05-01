@@ -1,5 +1,4 @@
-﻿using EasyLearn.Models.DTOs.CourseDTOs;
-using EasyLearn.Models.DTOs.ModuleDTOs;
+﻿using EasyLearn.Models.DTOs.ModuleDTOs;
 using EasyLearn.Models.Entities;
 
 namespace EasyLearn.GateWays.Mappers.ModulesMappers
@@ -16,10 +15,12 @@ namespace EasyLearn.GateWays.Mappers.ModulesMappers
                 Resources = module.Resources,
                 Prerequisites = module.Prerequisites,
                 Objective = module.Objective,
-                ModuleDuration = module.ModuleDuration,
+                //ModuleDuration = module.ModuleDuration.ToString("hh\\:mm\\:ss") $"{module.ModuleDuration.Hours:00}h",
+                ModuleDuration = $"{module.ModuleDuration.Hours:00}h:{module.ModuleDuration.Minutes:00}m:{module.ModuleDuration.Seconds:00}s:",
                 SequenceOfModule = module.SequenceOfModule,
                 VideoPath = module.VideoPath,
                 CourseId = module.CourseId,
+                VideoSequence = module.VideoSequence,
             };
             return courseModel;
         }

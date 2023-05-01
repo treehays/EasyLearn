@@ -163,6 +163,39 @@ public class CourseController : Controller
 
 
 
+    public async Task<IActionResult> GetAllInActiveCoursesOfAuthInstructor()
+    {
+        var instructorId = User.FindFirst(ClaimTypes.Actor)?.Value;
+
+        var courses = await _courseService.GetInActiveCoursesOfAnInstructor(instructorId);
+        if (!courses.Status)
+        {
+            TempData["failed"] = courses.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
+        TempData["success"] = courses.Message;
+        return View(courses);
+    }
+
+
+    public async Task<IActionResult> GetAllUnverifiedCoursesOfAuthInstructor()
+    {
+        var instructorId = User.FindFirst(ClaimTypes.Actor)?.Value;
+
+        var courses = await _courseService.GetUnverifiedCoursesOfAnInstructor(instructorId);
+        if (!courses.Status)
+        {
+            TempData["failed"] = courses.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
+        TempData["success"] = courses.Message;
+        return View(courses);
+    }
+
+
+
     public async Task<IActionResult> GetEnrolledCourses()
     {
         var studentId = User.FindFirst(ClaimTypes.Actor)?.Value;
@@ -241,23 +274,6 @@ public class CourseController : Controller
         TempData["success"] = courses.Message;
         return View(courses);
     }
-
-
-    public async Task<IActionResult> GetAllInActiveCoursesOfAuthInstructor()
-    {
-        var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        var courses = await _courseService.GetInActiveCoursesOfAnInstructor(instructorId);
-        if (!courses.Status)
-        {
-            TempData["failed"] = courses.Message;
-            return RedirectToAction(nameof(Index), "Home");
-        }
-
-        TempData["success"] = courses.Message;
-        return View(courses);
-    }
-
 
     public async Task<IActionResult> GetAllInActive()
     {

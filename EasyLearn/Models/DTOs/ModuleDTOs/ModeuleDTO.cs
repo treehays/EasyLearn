@@ -8,11 +8,11 @@ public class ModuleDTO
     public string Resources { get; set; }
     public string Prerequisites { get; set; }
     public string Objective { get; set; }
-    public double ModuleDuration { get; set; }
+    public string ModuleDuration { get; set; }
+    public string VideoSequence { get; set; }
     public int SequenceOfModule { get; set; }
     public string VideoPath { get; set; }
     public string CourseId { get; set; }
-
 }
 
 
@@ -24,7 +24,7 @@ public class CreateModuleRequestModel
     public string Resources { get; set; }
     public string Prerequisites { get; set; }
     public string Objective { get; set; }
-    public double ModuleDuration { get; set; }
+    //public double ModuleDuration { get; set; }
     public int SequenceOfModule { get; set; }
     public List<IFormFile> FormFiles { get; set; }
     public string CourseId { get; set; }
@@ -39,7 +39,7 @@ public class UpdateModuleRequestModel
     public string Resources { get; set; }
     public string Prerequisites { get; set; }
     public string Objective { get; set; }
-    public double ModuleDuration { get; set; }
+    //public double ModuleDuration { get; set; }
     public IFormFile FormFile { get; set; }
     public int SequenceOfModule { get; set; }
 }

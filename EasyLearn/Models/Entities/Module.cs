@@ -12,8 +12,9 @@ namespace EasyLearn.Models.Entities
         /// </summary>
         public string Prerequisites { get; set; }
         public string Objective { get; set; }
-        public double ModuleDuration { get; set; }
+        public TimeSpan ModuleDuration { get; set; }
         public int SequenceOfModule { get; set; }
+        public string VideoSequence { get; set; }
         public string VideoPath { get; set; }
         public string CourseId { get; set; }
         public Course Course { get; set; }

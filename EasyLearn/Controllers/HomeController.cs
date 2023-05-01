@@ -25,7 +25,7 @@ public class HomeController : Controller
         _companyInfoOption = companyInfoOption.Value;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         //var ff = new VerifyTransactionRequestModel { ReferenceNumber = "5cb18b3ay6e0ay442dyb89dy17e78e7596b0", };
         //var pp = await _payStackService.VerifyTransaction(ff);

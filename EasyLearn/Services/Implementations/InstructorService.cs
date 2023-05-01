@@ -1,4 +1,5 @@
 ﻿using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.FileManager;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;

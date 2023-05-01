@@ -1,4 +1,5 @@
-﻿using EasyLearn.GateWays.Mappers.ModulesMappers;
+﻿using EasyLearn.GateWays.FileManager;
+using EasyLearn.GateWays.Mappers.ModulesMappers;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.ModuleDTOs;
 using EasyLearn.Models.Entities;
@@ -26,16 +27,8 @@ namespace EasyLearn.Services.Implementations
             _courseRepository = courseRepository;
         }
 
-        public async Task<BaseResponse> Create(CreateModuleRequestModel model)
+        public async Task<BaseResponse> Create(CreateModuleRequestModel model, string instructorId)
         {
-
-
-            //calculating video time
-
-
-
-
-
             if (model.FormFiles.Count() == 0)
             {
                 return new BaseResponse
@@ -44,10 +37,11 @@ namespace EasyLearn.Services.Implementations
                     Message = "No video has been uploaded....",
                 };
             }
-            int i = await _moduleRepository.GetLastElement() + 1;
-            var fileNames = await _fileManagerService.GetListOfFileName(model.FormFiles, "uploads", "Videos", "Modules");
+            int i = await _moduleRepository.GetLastElement(x => x.CourseId == model.CourseId) + 1;
+            var videoSequence = $"{model.CourseId}{i}";
+            var fileNamesAndDuration = await _fileManagerService.GetListOfVideoProperty(model.FormFiles, "uploads", "Videos", "Modules");
             var listOfModules = new List<Module>();
-            foreach (var item in fileNames)
+            foreach (var item in fileNamesAndDuration)
             {
                 var module = new Module
                 {
@@ -57,13 +51,15 @@ namespace EasyLearn.Services.Implementations
                     Resources = model.Resources,
                     Prerequisites = model.Prerequisites,
                     Objective = model.Objective,
-                    ModuleDuration = model.ModuleDuration,
+                    ModuleDuration = item.VideoDuration,
                     SequenceOfModule = i++,
-                    VideoPath = item,
+                    VideoSequence = videoSequence,
+                    VideoPath = item.FileName,
                     CourseId = model.CourseId,
-                    CreatedBy = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                    CreatedBy = instructorId,
                     CreatedOn = DateTime.Now,
                 };
+
                 listOfModules.Add(module);
             }
             await _moduleRepository.AddRangeAsync(listOfModules);
@@ -155,30 +151,6 @@ namespace EasyLearn.Services.Implementations
 
         public async Task<ModulesResponseModel> GetCourseContentsByCourseInstructor(string courseId, string instructorId)
         {
-
-
-
-            //var mediaInfo = new MediaInfo.DotNetWrapper.MediaInfo();
-            //mediaInfo.Open(filePath);
-            //var duration = mediaInfo.Get(StreamKind.Video, 0, "Duration");
-            //var durationInSeconds = double.Parse(duration) / 1000;
-            //var videoDuration = TimeSpan.FromSeconds(durationInSeconds);
-
-
-            //Shell shl = new ShellClass();
-            //Folder fldr = shl.NameSpace(Path.GetDirectoryName(filename));
-            //FolderItem itm = fldr.ParseName(Path.GetFileName(filename));
-            //Dictionary<int, KeyValuePair<string, string>> fileProps = new Dictionary<int, KeyValuePair<string, string>>();
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    string propValue = fldr.GetDetailsOf(itm, i);
-            //    if (propValue != "")
-            //    {
-            //        fileProps.Add(i, new KeyValuePair<string, string>(fldr.GetDetailsOf(null, i), propValue));
-            //    }
-            //}
-
-
             var course = await _courseRepository.GetAsync(x => x.Id == courseId && !x.IsDeleted && x.InstructorId == instructorId);
             if (course == null)
             {
@@ -232,6 +204,27 @@ namespace EasyLearn.Services.Implementations
         public async Task<ModuleResponseModel> GetById(string id)
         {
             var module = await _moduleRepository.GetAsync(x => x.Id == id && !x.IsDeleted);
+
+            if (module == null)
+            {
+                return new ModuleResponseModel
+                {
+                    Message = "module not found..",
+                    Status = false,
+                };
+            }
+
+            var modulModel = new ModuleResponseModel
+            {
+                Status = true,
+                Message = "modules retrieved successfuly..",
+                Data = _modulesMapperService.ConvertToModuleResponseModel(module),
+            };
+            return modulModel;
+        }
+        public async Task<ModuleResponseModel> GetByVideoSequesnce(string videoSequence)
+        {
+            var module = await _moduleRepository.GetAsync(x => x.VideoSequence == videoSequence && !x.IsDeleted);
 
             if (module == null)
             {

@@ -43,17 +43,18 @@ public class ModuleController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateModuleRequestModel model)
     {
+        var instructorId = User.FindFirstValue(ClaimTypes.Actor);
         if (!ModelState.IsValid)
         {
             TempData["failed"] = "Invalid inputs...";
             return View(model);
         }
 
-        var createModule = await _moduleService.Create(model);
+        var createModule = await _moduleService.Create(model, instructorId);
         if (createModule.Status)
         {
             TempData["success"] = createModule.Message;
-            return RedirectToAction("GetAll");
+            return RedirectToAction("GetActiveCoursesOfTheAuthInstructor", "Course");
         }
         TempData["failed"] = createModule.Message;
         return View(model);
@@ -109,6 +110,20 @@ public class ModuleController : Controller
     public async Task<IActionResult> GetById(string id)
     {
         var module = await _moduleService.GetById(id);
+        if (!module.Status)
+        {
+            TempData["failed"] = module.Message;
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
+        TempData["success"] = module.Message;
+        return View(module);
+    }
+
+
+    public async Task<IActionResult> GetByVideoSequesnce(string videoSequence)
+    {
+        var module = await _moduleService.GetByVideoSequesnce(videoSequence);
         if (!module.Status)
         {
             TempData["failed"] = module.Message;

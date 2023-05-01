@@ -1,4 +1,5 @@
 ﻿using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.FileManager;
 using EasyLearn.GateWays.Mappers.CourseMappers;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CategoryDTOs;
@@ -60,7 +61,6 @@ public class CourseService : ICourseService
             CourseLanguage = model.CourseLanguage,
             DifficultyLevel = model.DifficultyLevel,
             Requirement = model.Requirement,
-            CourseDuration = model.CourseDuration,
             CreatedBy = instructorId,
             CreatedOn = DateTime.Now,
             CourseLogo = filePName,
@@ -253,7 +253,7 @@ public class CourseService : ICourseService
 
     public async Task<CoursesResponseModel> GetActiveCoursesOfAnInstructor(string instructorId)
     {
-        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted && x.IsActive);
+        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted && x.IsActive && x.IsVerified);
         if (courses == null)
         {
             return new CoursesResponseModel
@@ -274,7 +274,28 @@ public class CourseService : ICourseService
 
     public async Task<CoursesResponseModel> GetInActiveCoursesOfAnInstructor(string instructorId)
     {
-        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted && x.IsActive);
+        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted && !x.IsActive);
+        if (courses == null)
+        {
+            return new CoursesResponseModel
+            {
+                Message = "Course not Found...",
+                Status = false,
+            };
+        }
+
+        var coursesModel = new CoursesResponseModel
+        {
+            Status = true,
+            Message = "Course retrieved successfully ...",
+            Data = courses.Select(x => _courseMapperService.ConvertToCourseResponseModel(x)).ToList()
+        };
+        return coursesModel;
+    }
+
+    public async Task<CoursesResponseModel> GetUnverifiedCoursesOfAnInstructor(string instructorId)
+    {
+        var courses = await _courseRepository.GetListAsync(x => x.InstructorId == instructorId && !x.IsDeleted && !x.IsVerified);
         if (courses == null)
         {
             return new CoursesResponseModel
@@ -534,7 +555,6 @@ public class CourseService : ICourseService
         course.CourseLanguage = model.CourseLanguage;
         course.DifficultyLevel = model.DifficultyLevel;
         course.Requirement = model.Requirement ?? course.Requirement;
-        course.CourseDuration = model.CourseDuration;
         course.Price = model.Price;
         course.ModifiedBy = userId;
         course.ModifiedOn = DateTime.Now;
