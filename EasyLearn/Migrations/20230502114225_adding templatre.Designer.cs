@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyLearn.Migrations
 {
     [DbContext(typeof(EasyLearnDbContext))]
-    [Migration("20230429205938_init")]
-    partial class init
+    [Migration("20230502114225_adding templatre")]
+    partial class addingtemplatre
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -611,6 +611,9 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -620,8 +623,8 @@ namespace EasyLearn.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("ModuleDuration")
-                        .HasColumnType("double");
+                    b.Property<TimeSpan>("ModuleDuration")
+                        .HasColumnType("time(6)");
 
                     b.Property<string>("Objective")
                         .HasColumnType("longtext");
@@ -635,10 +638,16 @@ namespace EasyLearn.Migrations
                     b.Property<int>("SequenceOfModule")
                         .HasColumnType("int");
 
+                    b.Property<string>("TemplateId")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
                     b.Property<string>("VideoPath")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VideoSequence")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

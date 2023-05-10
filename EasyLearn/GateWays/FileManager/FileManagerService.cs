@@ -1,8 +1,10 @@
 ﻿
 //using Microsoft.WindowsAPICodePack.Shell;
+using CsvHelper;
 using EasyLearn.Models.DTOs.FIleManagerDTOs;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using System.Globalization;
 
 namespace EasyLearn.GateWays.FileManager;
 
@@ -112,4 +114,69 @@ public class FileManagerService : IFileManagerService
         }
         return new TimeSpan();
     }
+
+
+    public CSVFileResponseModel ReadModuleUploader(string fileName)
+    {
+        var fileFolderh = Path.Combine(_webHostEnvironment.WebRootPath, "CsvFolder", "Uploads");
+        var fullPath = Path.Combine(fileFolderh, fileName);
+        if (!File.Exists(fullPath))
+        {
+            return new CSVFileResponseModel
+            {
+                Status = false,
+                Message = "File not found..",
+            };
+        }
+        var readFromCsv = new List<CSVFileManagerDTO>();
+        using (var reader = new StreamReader(fullPath))
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+            var records = csv.GetRecords<CSVFileManagerDTO>();
+            readFromCsv = records.ToList();
+        }
+        return new CSVFileResponseModel
+        {
+            Status = true,
+            Message = "Generating successfully..",
+            Data = readFromCsv,
+        };
+    }
+
+    public string GenerateModuleUploaderTemplate(ICollection<CSVFileManagerDTO> model)
+    {
+        //var count = 20;
+        //var flag = 0;
+        //var listOf = new List<CSVFileManagerDTO>();
+        //while (flag <= count)
+        //{
+        //    var hd = new CSVFileManagerDTO { Id = Guid.NewGuid().ToString()};
+        //    listOf.Add(hd);
+        //}
+
+
+
+        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "CsvFolder");
+        if (!Directory.Exists(filePath))
+        {
+            Directory.CreateDirectory(filePath);
+        }
+        var fileName = $"{Guid.NewGuid().ToString().Replace('-', 's')}.csv";
+        var fullPath = Path.Combine(filePath, fileName);
+        try
+        {
+            using (var writer = new StreamWriter(fullPath))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecords(model);
+            }
+            return fileName;
+        }
+        catch (Exception)
+        {
+            return null;
+
+        }
+    }
+
 }

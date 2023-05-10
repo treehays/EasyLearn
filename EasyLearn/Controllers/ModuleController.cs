@@ -1,6 +1,9 @@
-﻿using EasyLearn.Models.DTOs.ModuleDTOs;
+﻿using EasyLearn.GateWays.FileManager;
+using EasyLearn.Models.DTOs.FIleManagerDTOs;
+using EasyLearn.Models.DTOs.ModuleDTOs;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 
 namespace EasyLearn.Controllers;
@@ -9,11 +12,13 @@ public class ModuleController : Controller
 {
     private readonly IModuleService _moduleService;
     private readonly ICourseService _courseService;
+    private readonly IFileManagerService _fileManagerService;
 
-    public ModuleController(IModuleService moduleService, ICourseService courseService)
+    public ModuleController(IModuleService moduleService, ICourseService courseService, IFileManagerService fileManagerService)
     {
         _moduleService = moduleService;
         _courseService = courseService;
+        _fileManagerService = fileManagerService;
     }
 
     public IActionResult Index()
@@ -162,7 +167,8 @@ public class ModuleController : Controller
 
     public async Task<IActionResult> Delete(string id)
     {
-        var module = await _moduleService.Delete(id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var module = await _moduleService.Delete(id, userId);
         if (module.Status)
         {
             TempData["success"] = module.Message;
@@ -194,8 +200,8 @@ public class ModuleController : Controller
 
             return View();
         }
-
-        var update = await _moduleService.Update(model);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var update = await _moduleService.Update(model, userId);
         if (update.Status)
         {
             TempData["success"] = update.Message;
@@ -207,6 +213,37 @@ public class ModuleController : Controller
 
     }
 
+    public async Task<IActionResult> UploadCSVFile(IFormFile formFile, string courseId)
+    {
+
+        var instructorId = User.FindFirstValue(ClaimTypes.Actor);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var fileName = await _fileManagerService.GetFileName(formFile, "CsvFolder", "Uploads");
+        var uploadd = await _moduleService.ModuleUploaderTemplate(fileName, userId, email, courseId);
+        return RedirectToAction("GenerateCSVFile");
+    }
+
+    public async Task<IActionResult> GenerateCSVFile()
+    {
+        var instructorId = User.FindFirstValue(ClaimTypes.Actor);
+        var instructorCourse = await _courseService.GetActiveCoursesOfAnInstructor(instructorId);
+        ViewData["Courses"] = new SelectList(instructorCourse.Data, "Id", "Title");
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GenerateCSVFile(CSVFileRequestModel model)
+    {
+        var gg = AppDomain.CurrentDomain.BaseDirectory;
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var generate = await _moduleService.GenerateModuleUploaderTemplate(model, userId, email);
+        var baseUrl = $"https://{Request.Host}/CsvFolder/{generate.FileName}";
+        //return Redirect(generate.FullFilePath);
+        var filename = $"~/CsvFolder/{generate.FileName}";
+        return File(filename, "application/force-download", Path.GetFileName(filename));
+    }
 
 
 }

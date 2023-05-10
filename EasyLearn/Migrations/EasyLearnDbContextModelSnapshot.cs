@@ -609,6 +609,9 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -632,6 +635,9 @@ namespace EasyLearn.Migrations
 
                     b.Property<int>("SequenceOfModule")
                         .HasColumnType("int");
+
+                    b.Property<string>("TemplateId")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Title")
                         .HasColumnType("longtext");

@@ -21,10 +21,7 @@ public class SendInBlueEmailService : ISendInBlueEmailService
 
     public async Task<BaseResponse> CourseCompletionEmailTemplate(EmailSenderDetails model, string baseUrl)
     {
-        //var ddd = ;
-        //var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
-        //var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
-        //var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+
         var key = _sendinblueOptions.APIKey;
         var senderName = _sendinblueOptions.SenderName;
         var senderEmail = _sendinblueOptions.SenderEmail;

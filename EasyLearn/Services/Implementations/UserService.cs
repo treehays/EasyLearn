@@ -118,13 +118,23 @@ public class UserService : IUserService
             };
         }
 
-        var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
-
-        if (!verifyPassword)
+        try
+        {
+            var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+            if (!verifyPassword)
+            {
+                return new LoginRequestModel
+                {
+                    Message = "incorrect login detail...",
+                    Status = false,
+                };
+            }
+        }
+        catch (Exception)
         {
             return new LoginRequestModel
             {
-                Message = "incorrect login detail...",
+                Message = "Advice to reset your password...",
                 Status = false,
             };
         }

@@ -15,22 +15,90 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IUserService _userService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly CompanyInfoOption _companyInfoOption;
 
 
-    public HomeController(ILogger<HomeController> logger, IUserService userService, IOptions<CompanyInfoOption> companyInfoOption)
+    public HomeController(ILogger<HomeController> logger, IUserService userService, IOptions<CompanyInfoOption> companyInfoOption, IWebHostEnvironment webHostEnvironment)
     {
         _logger = logger;
         _userService = userService;
         _companyInfoOption = companyInfoOption.Value;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public IActionResult Index()
-    {
-        //var ff = new VerifyTransactionRequestModel { ReferenceNumber = "5cb18b3ay6e0ay442dyb89dy17e78e7596b0", };
-        //var pp = await _payStackService.VerifyTransaction(ff);
-        var sdnnm = _companyInfoOption.CompanyName;
-        var sdnnmew = _companyInfoOption.CompanyName;
+        {
+        ////var ff = new VerifyTransactionRequestModel { ReferenceNumber = "5cb18b3ay6e0ay442dyb89dy17e78e7596b0", };
+        ////var pp = await _payStackService.VerifyTransaction(ff);
+        //var sdnnm = _companyInfoOption.CompanyName;
+        //var sdnnmew = _companyInfoOption.CompanyName;
+
+        //var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "CsvFolder");
+        //if (!Directory.Exists(filePath))
+        //{
+        //    Directory.CreateDirectory(filePath);
+        //}
+        //var fileName = "test.csv";
+        //var fullPath = Path.Combine(filePath, fileName);
+
+        //var readFromCsv = new List<ReadFromCsvFile>();
+        //using (var reader = new StreamReader(fullPath))
+        //using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        //{
+        //    var records = csv.GetRecords<ReadFromCsvFile>();
+        //    readFromCsv = records.ToList();
+        //}
+        //var m = readFromCsv;
+
+
+        //var writeToCsv = new List<WriteToCsvFile>
+        //{
+
+        //    new WriteToCsvFile
+        //    {
+        //        Description = Guid.NewGuid().ToString(),
+        //        Objective= Guid.NewGuid().ToString(),
+        //         Prerequisites= Guid.NewGuid().ToString(),
+        //         Resources= Guid.NewGuid().ToString(),
+        //         Title= Guid.NewGuid().ToString(),
+        //         VideoName = Guid.NewGuid().ToString() ,
+        //    },
+
+        //    new WriteToCsvFile
+        //    {
+        //        Description = Guid.NewGuid().ToString()
+        //    },
+
+        //    new WriteToCsvFile
+        //    {
+        //        Description = Guid.NewGuid().ToString(),
+
+        //    },
+
+        //    new WriteToCsvFile
+        //    {
+        //        Description = Guid.NewGuid().ToString(),
+
+        //    },
+
+        //};
+
+        //var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "CsvFolder");
+        //if (!Directory.Exists(filePath))
+        //{
+        //    Directory.CreateDirectory(filePath);
+        //}
+        //var fileName = $"{Guid.NewGuid().ToString().Replace('-', 's')}.csv";
+        //var fullPath = Path.Combine(filePath, fileName);
+
+        //using (var writer = new StreamWriter(fullPath))
+        //using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        //{
+        //    csv.WriteRecords(writeToCsv);
+        //}
+
+
 
         return View();
     }

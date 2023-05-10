@@ -23,7 +23,7 @@ namespace EasyLearn.Models.Entities
         public string Coupon { get; set; }
         public Instructor Instructor { get; set; }
         public IEnumerable<StudentCourse> StudentCourses { get; set; } = new HashSet<StudentCourse>();
-        public IEnumerable<Module> Modules { get; set; } = new HashSet<Module>();
+        public ICollection<Module> Modules { get; set; } = new HashSet<Module>();
         public IEnumerable<Enrolment> Enrolments { get; set; }
         public List<CourseCategory> CourseCategories { get; set; } = new List<CourseCategory>();
         public IEnumerable<CourseReview> CourseReviews { get; set; } = new HashSet<CourseReview>();
