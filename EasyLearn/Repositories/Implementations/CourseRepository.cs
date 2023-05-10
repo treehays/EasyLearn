@@ -23,7 +23,7 @@ public class CourseRepository : BaseRepository<Course>, ICourseRepository
         return course;
     }
 
-    public async Task<Course> GetCourseByIdWithInstructor(Expression<Func<Course, bool>> expression)
+    public async Task<Course> GetCourseByIdWithInstructorDetail(Expression<Func<Course, bool>> expression)
     {
         var course = await _context.Courses.AsNoTracking()
             .Include(x => x.CourseCategories).ThenInclude(x => x.Category)
@@ -34,7 +34,8 @@ public class CourseRepository : BaseRepository<Course>, ICourseRepository
 
     public async Task<StudentCourse> StudentIsEnrolled(string courseId, string studentId)
     {
-        var studentCourse = await _context.StudentCourses.Include(x => x.Course).FirstOrDefaultAsync(x => x.StudentId == studentId && x.CourseId == courseId);
+        var studentCourse = await _context.StudentCourses.Include(x => x.Course)
+            .FirstOrDefaultAsync(x => x.StudentId == studentId && x.CourseId == courseId);
         return studentCourse;
     }
 

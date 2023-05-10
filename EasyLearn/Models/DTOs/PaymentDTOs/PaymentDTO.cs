@@ -7,7 +7,7 @@ public class PaymentDTO
 {
     public int Id { get; set; }
     public string ReferrenceNumber { get; set; }
-    public double PaymentAmount { get; set; }
+    public decimal PaymentAmount { get; set; }
     public PaymentMethods PaymentMethod { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public string CourseId { get; set; }

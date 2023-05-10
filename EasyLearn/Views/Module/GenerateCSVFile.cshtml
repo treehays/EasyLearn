@@ -1,0 +1,92 @@
+﻿@using EasyLearn.Models.Enums;
+@model EasyLearn.Models.DTOs.FIleManagerDTOs.CSVFileRequestModel;
+
+
+<partial name="_Notification" />
+
+
+@{
+    ViewData["Title"] = "Download Template";
+}
+
+<h1>Download Template</h1>
+
+<h4>Download Template</h4>
+<hr />
+<div class="row">
+    
+    <div class="col-md-4">
+        <form asp-controller="Module" asp-action="GenerateCSVFile" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="NumbersOfVideos" class="control-label"></label>
+                <input asp-for="NumbersOfVideos" class="form-control" />
+                <span asp-validation-for="NumbersOfVideos" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.CourseId, new {@class = "control-label"})
+                <br />
+
+
+
+                <select asp-for="CourseId" asp-items="ViewBag.Courses" required>
+                    <option value="" selected>--Course--</option>
+                </select>
+
+                @*
+                <select asp-for="CourseCategories" asp-items="ViewBag.Category" required multiple>
+                <option value="" selected>--Select Category--</option>
+                </select>
+
+
+                @Html.DropDownListFor(x => x.CourseCategories, new SelectList(Model.PCategory,"Data.CategoryCode","Data.Name"),"Select Category" ,new {@class = "form-control"})*@
+                @*
+                @Html.DropDownListFor(x => x.CourseCategories, Model.multiSelectList, new {@class = "form-control", @multiple = "multiple"})*@
+                @Html.ValidationMessageFor(x => x.CourseId,"", new {@class="text-danger"})
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+
+
+
+    <div class="col-md-4">
+        <form asp-controller="Module" asp-action="UploadCSVFile" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label for="file">Choose file</label>
+                <input type="file" name="formFile" id="formFile" accept=".csv" />
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.CourseId, new {@class = "control-label"})
+                <br />
+                <select asp-for="CourseId" asp-items="ViewBag.Courses" required>
+                    <option value="" selected>--Course--</option>
+                </select>
+                @Html.ValidationMessageFor(x => x.CourseId,"", new {@class="text-danger"})
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Upload" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

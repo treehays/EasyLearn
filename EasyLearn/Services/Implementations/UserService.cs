@@ -1,13 +1,12 @@
 ﻿using BCrypt.Net;
 using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.FileManager;
 using EasyLearn.GateWays.Mappers.UserMappers;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
-using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;
-using EasyLearn.Repositories.Implementations;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
@@ -67,7 +66,7 @@ public class UserService : IUserService
 
         var senderDetail = new EmailSenderDetails
         {
-            EmailToken = $"{baseUrl}/Home/ConfirmEmail?emailToken={user.EmailToken}",
+            EmailToken = $"{baseUrl}/User/ConfirmEmail?emailToken={user.EmailToken}",
             ReceiverEmail = user.Email,
             ReceiverName = model.FirstName,
         };
@@ -119,13 +118,23 @@ public class UserService : IUserService
             };
         }
 
-        var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
-
-        if (!verifyPassword)
+        try
+        {
+            var verifyPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+            if (!verifyPassword)
+            {
+                return new LoginRequestModel
+                {
+                    Message = "incorrect login detail...",
+                    Status = false,
+                };
+            }
+        }
+        catch (Exception)
         {
             return new LoginRequestModel
             {
-                Message = "incorrect login detail...",
+                Message = "Advice to reset your password...",
                 Status = false,
             };
         }
@@ -342,6 +351,9 @@ public class UserService : IUserService
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now,
                     ModifiedBy = userId,
+                    VerifyBy = userId,
+                    VerifyOn = DateTime.Now,
+
                 };
                 user.RoleId = "Instructor";
                 user.Instructor = instructorUser;
@@ -569,7 +581,7 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<BaseResponse> UpdateUserPassword(UpdateUserPasswordRequestModel model,string userId)
+    public async Task<BaseResponse> UpdateUserPassword(UpdateUserPasswordRequestModel model, string userId)
     {
         var user = await _userRepository.GetAsync(x => x.Id == model.Id && !x.IsDeleted);
         if (user == null)
@@ -581,10 +593,11 @@ public class UserService : IUserService
             };
         }
 
-        user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y); ;
+        user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password, SaltRevision.Revision2Y);
         user.ModifiedOn = DateTime.Now;
         user.ModifiedBy = userId;
         user.IsActive = true;
+        user.EmailConfirmed = true;
         await _userRepository.SaveChangesAsync();
         return new BaseResponse
         {

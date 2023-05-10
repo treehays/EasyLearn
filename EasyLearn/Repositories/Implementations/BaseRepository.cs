@@ -27,6 +27,13 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity, new()
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    public async Task<List<T>> UpdateRanges(List<T> entity)
+    {
+        //_context.Entry(entity).State = EntityState.Modified;
+        _context.Set<T>().UpdateRange(entity);
+
+        return await Task.FromResult(entity);
+    }
     public async Task<T> UpdateAsync(T entity)
     {
         _context.Entry(entity).State = EntityState.Modified;

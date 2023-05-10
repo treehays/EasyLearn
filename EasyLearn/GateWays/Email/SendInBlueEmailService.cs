@@ -1,5 +1,7 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.Data;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EmailSenderDTOs;
+using Microsoft.Extensions.Options;
 using sib_api_v3_sdk.Api;
 using sib_api_v3_sdk.Client;
 using sib_api_v3_sdk.Model;
@@ -8,19 +10,21 @@ namespace EasyLearn.GateWays.Email;
 
 public class SendInBlueEmailService : ISendInBlueEmailService
 {
-    private readonly IConfiguration _configuration;
+    //private readonly IConfiguration _configuration;
+    private readonly SendinblueOptions _sendinblueOptions;
 
-    public SendInBlueEmailService(IConfiguration configuration)
+    public SendInBlueEmailService(IOptions<SendinblueOptions> sendinblueOptions)
     {
-        _configuration = configuration;
+        //_configuration = configuration;
+        _sendinblueOptions = sendinblueOptions.Value;
     }
 
     public async Task<BaseResponse> CourseCompletionEmailTemplate(EmailSenderDetails model, string baseUrl)
     {
-        //var ddd = ;
-        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
-        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
-        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+
+        var key = _sendinblueOptions.APIKey;
+        var senderName = _sendinblueOptions.SenderName;
+        var senderEmail = _sendinblueOptions.SenderEmail;
 
         Configuration.Default.ApiKey.Clear();
         Configuration.Default.ApiKey.Add("api-key", key);
@@ -71,12 +75,67 @@ public class SendInBlueEmailService : ISendInBlueEmailService
         }
 
     }
+    public async Task<BaseResponse> CourseVerificationTemplate(EmailSenderDetails model, string baseUrl)
+    {
+        //var ddd = ;
+        var key = _sendinblueOptions.APIKey;
+        var senderName = _sendinblueOptions.SenderName;
+        var senderEmail = _sendinblueOptions.SenderEmail;
+
+        Configuration.Default.ApiKey.Clear();
+        Configuration.Default.ApiKey.Add("api-key", key);
+        var apiInstance = new TransactionalEmailsApi();
+
+        var emailSender = new SendSmtpEmailSender(senderName, senderEmail);
+
+        var emailReciever = new SendSmtpEmailTo(model.ReceiverEmail, model.ReceiverName);
+
+        var emailRecievers = new List<SendSmtpEmailTo>
+        {
+            emailReciever
+        };
+
+        var replyTo = new SendSmtpEmailReplyTo("treehays90@gmail.com", "Do not reply");
+
+        var subject = $"Email verification {DateTime.Now}";
+
+
+        var htmlContent = EmailTemplates.ConfirmationEmailTemplate(model, baseUrl);
+        var sendSmtpEmail = new SendSmtpEmail
+        {
+            Sender = emailSender,
+            HtmlContent = htmlContent,
+            Subject = subject,
+            ReplyTo = replyTo,
+            To = emailRecievers,
+        };
+
+        try
+        {
+            var result = await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
+
+            return new BaseResponse
+            {
+                Status = true,
+                Message = "Email successfully sent..",
+            };
+        }
+        catch (Exception)
+        {
+
+            return new BaseResponse
+            {
+                Status = false,
+                Message = "Email not sent..",
+            };
+        }
+    }
     public async Task<BaseResponse> EmailVerificationTemplate(EmailSenderDetails model, string baseUrl)
     {
         //var ddd = ;
-        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
-        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
-        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+        var key = _sendinblueOptions.APIKey;
+        var senderName = _sendinblueOptions.SenderName;
+        var senderEmail = _sendinblueOptions.SenderEmail;
 
         Configuration.Default.ApiKey.Clear();
         Configuration.Default.ApiKey.Add("api-key", key);
@@ -130,9 +189,9 @@ public class SendInBlueEmailService : ISendInBlueEmailService
     public async Task<BaseResponse> EnrollmentEmailTemplate(EmailSenderDetails model, string baseUrl)
     {
         //var ddd = ;
-        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
-        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
-        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+        var key = _sendinblueOptions.APIKey;
+        var senderName = _sendinblueOptions.SenderName;
+        var senderEmail = _sendinblueOptions.SenderEmail;
 
         Configuration.Default.ApiKey.Clear();
         Configuration.Default.ApiKey.Add("api-key", key);
@@ -186,9 +245,9 @@ public class SendInBlueEmailService : ISendInBlueEmailService
 
     public async Task<BaseResponse> SendEmailWithoutAttachment(EmailSenderNoAttachmentDTO model)
     {
-        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
-        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
-        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+        var key = _sendinblueOptions.APIKey;
+        var senderName = _sendinblueOptions.SenderName;
+        var senderEmail = _sendinblueOptions.SenderEmail;
 
         Configuration.Default.ApiKey.Clear();
         Configuration.Default.ApiKey.Add("api-key", key);
@@ -253,9 +312,9 @@ public class SendInBlueEmailService : ISendInBlueEmailService
     public async Task<BaseResponse> WithdrawalConfirmationEmailTemplate(EmailSenderDetails model, string baseUrl)
     {
         //var ddd = ;
-        var key = _configuration.GetSection("SendinblueAPIKey")["APIKey"];
-        var senderName = _configuration.GetSection("SendinblueAPIKey")["SenderName"];
-        var senderEmail = _configuration.GetSection("SendinblueAPIKey")["SenderEmail"];
+        var key = _sendinblueOptions.APIKey;
+        var senderName = _sendinblueOptions.SenderName;
+        var senderEmail = _sendinblueOptions.SenderEmail;
 
         Configuration.Default.ApiKey.Clear();
         Configuration.Default.ApiKey.Add("api-key", key);

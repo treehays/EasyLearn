@@ -4,7 +4,6 @@ using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using X.PagedList;
 
 namespace EasyLearn.Controllers;
 
@@ -167,21 +166,21 @@ public class InstructorController : Controller
     }
 
 
-    public async Task<IActionResult> PaginatedSample(int page)
-    {
-        // page = 1;
-        int recordPerPage = 5;
-        var instructors = await _instructorService.PaginatedSample();
-        var pagedList = instructors.ToPagedList(page, recordPerPage);
-        //if (!instructors.Status)
-        //{
-        //    TempData["failed"] = instructors.Message;
-        //    return RedirectToAction(nameof(Index), "Home");
-        //}
+    // public async Task<IActionResult> PaginatedSample(int page)
+    // {
+    //     // page = 1;
+    //     int recordPerPage = 5;
+    //     var instructors = await _instructorService.PaginatedSample();
+    //     var pagedList = instructors.ToPagedList(page, recordPerPage);
+    //     //if (!instructors.Status)
+    //     //{
+    //     //    TempData["failed"] = instructors.Message;
+    //     //    return RedirectToAction(nameof(Index), "Home");
+    //     //}
 
-        //TempData["success"] = instructors.Message;
-        return View(pagedList);
-    }
+    //     //TempData["success"] = instructors.Message;
+    //     return View(pagedList);
+    // }
 
 
 

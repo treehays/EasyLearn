@@ -23,4 +23,14 @@ public class InstructorRepository : BaseRepository<Instructor>, IInstructorRepos
               .FirstOrDefaultAsync(expression);
         return instructor;
     }
+
+    public async Task<Instructor> GetInstructorFullDetailAsync(Expression<Func<Instructor, bool>> expression)
+    {
+        var instructor = await _context.Instructors
+             .Include(a => a.User)
+             //.ThenInclude(b => b.PaymentDetails)
+             //.Include(b => b.User.Address)
+             .FirstOrDefaultAsync(expression);
+        return instructor;
+    }
 }

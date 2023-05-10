@@ -1,26 +1,128 @@
-﻿@model EasyLearn.Models.DTOs.ModulesDTOs.ModuleResponseModel
+﻿@using EasyLearn.Models.DTOs.ModuleDTOs;
+@model ModuleResponseModel
 
 
 @{
     var videoPath = $"/uploads/videos/modules/{Model.Data.VideoPath}";
-    <video width="320" height="240" controls>
-        <source src="@videoPath" type="video/mp4">
-        <source src="@videoPath" type="video/ogg">
-        Your browser does not support the video tag.
-    </video>
+    //<video width="320" height="240" controls>
+    //    <source src="@videoPath" type="video/mp4">
+    //    <source src="@videoPath" type="video/ogg">
+    //    Your browser does not support the video tag.
+    //</video>
 
 }
 
 
-@*
-<video width="320" height="240" controls>
-    <source src="~@Model.Data.VideoPath" ver type="video/mp4">
-    <source src="~@Model.Data.VideoPath" type="video/ogg">
-    Your browser does not support the video tag.
-</video>
 
-<video width="320" height="240" autoplay muted>
-    <source src="@Model.Data.VideoPath" type="video/mp4">
-    <source src="@Model.Data.VideoPath" type="video/ogg">
-Your browser does not support the video tag.
-</video>*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Video Website</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        /* Custom styles for the video player and controls */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+
+            .video-wrapper video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+        .video-list {
+            margin-top: 20px;
+        }
+
+            .video-list .list-group-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+            }
+
+                .video-list .list-group-item:hover {
+                    background-color: #f8f9fa;
+                }
+
+            .video-list .thumbnail {
+                flex: 0 0 120px;
+                margin-right: 10px;
+            }
+
+            .video-list .video-info {
+                flex: 1;
+            }
+
+            .video-list h5 {
+                margin-bottom: 5px;
+            }
+
+            .video-list p {
+                margin-bottom: 0;
+            }
+
+        .next-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="video-wrapper">
+                    <video id="video-player" controls>
+                        <source src="@videoPath" type="video/mp4">
+                    </video>
+                </div>
+                <button id="next-button" class="btn btn-primary next-button">Next Video</button>
+            </div>
+            <div class="col-lg-4">
+                <h4>Other Videos</h4>
+                <div class="video-list">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item">
+                            <div class="thumbnail">
+                                <img src="path/to/video1-thumbnail.jpg" alt="Video 1">
+                            </div>
+                            <div class="video-info">
+                                <h5>Video 1</h5>
+                                <p>Short description of Video 1</p>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <div class="thumbnail">
+                                <img src="path/to/video2-thumbnail.jpg" alt="Video 2">
+                            </div>
+                            <div class="video-info">
+                                <h5>Video 2</h5>
+                                <p>Short description of Video 2</p>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item">
+                            <div class="thumbnail">
+                                <img src="path/to/video3-thumbnail.jpg" alt="Video 3">
+                            </div>
+                            <div class="video-info">
+                                <h5>Video 3</h5>
+                                <p>Short description of Video 3</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+

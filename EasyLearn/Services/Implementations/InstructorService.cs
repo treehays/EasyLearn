@@ -1,4 +1,5 @@
 ﻿using EasyLearn.GateWays.Email;
+using EasyLearn.GateWays.FileManager;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.InstructorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
@@ -7,7 +8,7 @@ using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
 using EasyLearn.Services.Interfaces;
 using System.Security.Claims;
-using X.PagedList;
+// using X.PagedList;
 
 namespace EasyLearn.Services.Implementations;
 
@@ -167,7 +168,7 @@ public class InstructorService : IInstructorService
     public async Task<InstructorsResponseModel> GetAll()
     {
         var instructors = await _userRepository.GetListAsync(x => x.RoleId == "Instructor");
-        var pagedList = instructors.ToPagedList(instructors.Count(), 5);
+        // var pagedList = instructors.ToPagedList(instructors.Count(), 5);
         if (instructors == null)
         {
             return new InstructorsResponseModel

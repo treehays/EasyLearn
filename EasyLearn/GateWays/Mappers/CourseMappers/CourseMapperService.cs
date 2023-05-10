@@ -20,6 +20,7 @@ public class CourseMapperService : ICourseMapperService
             Price = course.Price,
             CourseLogo = course.CourseLogo,
             NumbersOfEnrollment = course.NumbersOfEnrollment,
+
         };
         return courseModel;
     }

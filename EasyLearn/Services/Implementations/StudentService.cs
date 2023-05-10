@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.FileManager;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.StudentDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;
 using EasyLearn.Models.Entities;

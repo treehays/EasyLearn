@@ -193,8 +193,8 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Coupon")
                         .HasColumnType("longtext");
 
-                    b.Property<double>("CourseDuration")
-                        .HasColumnType("double");
+                    b.Property<TimeSpan>("CourseDuration")
+                        .HasColumnType("time(6)");
 
                     b.Property<int>("CourseLanguage")
                         .HasColumnType("int");
@@ -241,8 +241,8 @@ namespace EasyLearn.Migrations
                     b.Property<int>("NumbersOfEnrollment")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Requirement")
                         .HasColumnType("longtext");
@@ -609,6 +609,9 @@ namespace EasyLearn.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -618,8 +621,8 @@ namespace EasyLearn.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("ModuleDuration")
-                        .HasColumnType("double");
+                    b.Property<TimeSpan>("ModuleDuration")
+                        .HasColumnType("time(6)");
 
                     b.Property<string>("Objective")
                         .HasColumnType("longtext");
@@ -633,10 +636,16 @@ namespace EasyLearn.Migrations
                     b.Property<int>("SequenceOfModule")
                         .HasColumnType("int");
 
+                    b.Property<string>("TemplateId")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
                     b.Property<string>("VideoPath")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VideoSequence")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -732,8 +741,8 @@ namespace EasyLearn.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("PaymentAmount")
-                        .HasColumnType("double");
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
@@ -1025,6 +1034,9 @@ namespace EasyLearn.Migrations
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");

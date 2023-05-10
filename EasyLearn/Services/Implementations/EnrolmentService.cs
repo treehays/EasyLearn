@@ -1,4 +1,5 @@
-﻿using EasyLearn.GateWays.Payments;
+﻿using EasyLearn.Data;
+using EasyLearn.GateWays.Payments;
 using EasyLearn.GateWays.Payments.PaymentGatewayDTOs;
 using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.EnrolmentDTOs;
@@ -15,13 +16,19 @@ public class EnrolmentService : IEnrolmentService
     private readonly ICourseRepository _courseRepository;
     private readonly IPayStackService _payStackService;
     private readonly IPaymentRepository _paymentRepository;
+    private readonly IInstructorRepository _instructorRepository;
+    private readonly CompanyInfoOption _companyInfoOption;
+    private readonly IUserRepository _userRepository;
 
-    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IPayStackService payStackService, IPaymentRepository paymentRepository)
+    public EnrolmentService(IEnrolmentRepository enrolmentRepository, ICourseRepository courseRepository, IPayStackService payStackService, IPaymentRepository paymentRepository, IInstructorRepository instructorRepository, CompanyInfoOption companyInfoOption, IUserRepository userRepository)
     {
         _enrolmentRepository = enrolmentRepository;
         _courseRepository = courseRepository;
         _payStackService = payStackService;
         _paymentRepository = paymentRepository;
+        _instructorRepository = instructorRepository;
+        _companyInfoOption = companyInfoOption;
+        _userRepository = userRepository;
     }
 
     public async Task<InitializePaymentResponseModel> Create(CreateEnrolmentRequestModel model, string studentId, string userId, string email, string baseUrl)
@@ -37,7 +44,6 @@ public class EnrolmentService : IEnrolmentService
                     status = false,
                 };
             }
-
             return new InitializePaymentResponseModel
             {
                 message = "You've enrolled but not paid, proceed to pay...",
@@ -102,9 +108,11 @@ public class EnrolmentService : IEnrolmentService
                 },
             };
         }
+
         payment.AuthorizationUri = proceedToPay.data.authorization_url;
         studentCourses.Add(studentCourse);
         coursea.StudentCourses = studentCourses;
+        coursea.NumbersOfEnrollment += 1;
         await _enrolmentRepository.AddAsync(enrolments);
         await _enrolmentRepository.SaveChangesAsync();
 
@@ -153,6 +161,39 @@ public class EnrolmentService : IEnrolmentService
             };
         }
         var payment = await _paymentRepository.GetAsync(x => x.ReferrenceNumber == refrenceNumber);
+        var course = await _courseRepository.GetAsync(x => x.Id == payment.CourseId);
+        var courseInstructor = await _instructorRepository.GetInstructorFullDetailAsync(x => x.Id == course.InstructorId);
+
+        var instructorWallet = new Wallet
+        {
+            Id = Guid.NewGuid().ToString(),
+            CreatedBy = paymentStatus.data.reference,
+            CreatedOn = paymentStatus.data.created_at,
+            Credit = payment.PaymentAmount * 0.10m,
+            Description = course.Id,
+            UserId = courseInstructor.UserId,
+        };
+
+
+        var adminWallet = new Wallet
+        {
+            Id = Guid.NewGuid().ToString(),
+            CreatedBy = instructorWallet.CreatedBy,
+            CreatedOn = instructorWallet.CreatedOn,
+            Credit = course.Price,
+            Description = course.Id,
+            UserId = _companyInfoOption.AdminUserID,
+        };
+
+        //var adminId = _companyInfo.AdminUserID;
+        var admin = await _userRepository.GetUserWithWalletDetails(x => x.RoleId.ToLower() == "admin");
+
+
+
+        admin.Wallet = adminWallet;
+        courseInstructor.User.Wallet = instructorWallet;
+
+        //var payment = await _paymentRepository.GetAsync(x => x.ReferrenceNumber == refrenceNumber);
         payment.IsPaid = true;
         payment.ModifiedOn = DateTime.Now;
         payment.ModifiedBy = "Auto";
@@ -168,4 +209,5 @@ public class EnrolmentService : IEnrolmentService
             Status = true,
         };
     }
+
 }

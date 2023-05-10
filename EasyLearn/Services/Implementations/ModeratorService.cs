@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.FileManager;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.ModeratorDTOs;
 using EasyLearn.Models.DTOs.PaymentDetailDTOs;
 using EasyLearn.Models.DTOs.UserDTOs;

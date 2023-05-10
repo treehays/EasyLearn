@@ -1,6 +1,5 @@
 ﻿@using System.Security.Claims;
 @{
-    var isTrue = true;
 
     var role = User.FindFirst(ClaimTypes.Role)?.Value.ToString() ?? "";
     <!-- ========== Left Sidebar Start ========== -->

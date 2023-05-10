@@ -28,7 +28,21 @@ public class Program
 
         builder.Services.AddDbContext<EasyLearnDbContext>(options => options.UseMySql(configuration, ServerVersion.AutoDetect(configuration)));
 
+        //builder.Services
+        //    .AddOptions<CompanyInfo>()
+        //    .BindConfiguration(nameof(CompanyInfo));
 
+        builder.Services
+            .AddOptions<CompanyInfoOption>()
+            .BindConfiguration("CompanyInfo");
+
+        builder.Services
+            .AddOptions<PaystackOptions>()
+            .BindConfiguration("Paystack");
+
+        builder.Services
+            .AddOptions<SendinblueOptions>()
+            .BindConfiguration("SendinblueAPIKey");
 
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
         builder.Services.AddScoped<IAdminService, AdminService>();
@@ -79,6 +93,9 @@ public class Program
 
         builder.Services.AddScoped<INigerianBankRepository, NigerianBankRepository>();
         builder.Services.AddScoped<INigerianBankService, NigerianBankService>();
+        builder.Services.AddScoped<CompanyInfoOption>();
+        builder.Services.AddScoped<SendinblueOptions>();
+        builder.Services.AddScoped<PaystackOptions>();
 
 
 

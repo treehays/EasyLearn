@@ -2,8 +2,6 @@
 using EasyLearn.Models.ViewModels;
 using EasyLearn.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Claims;
 
 namespace EasyLearn.Controllers;
 
@@ -90,8 +88,8 @@ public partial class AdminController : Controller
     //    TempData["success"] = admin.Message;
     //    return View(admin);
     //    }
-    
-    
+
+
     [Route("User/UserDetail")]
     public async Task<IActionResult> UserDetail(string id)
     {

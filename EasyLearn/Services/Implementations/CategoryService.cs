@@ -1,4 +1,5 @@
-﻿using EasyLearn.Models.DTOs;
+﻿using EasyLearn.GateWays.FileManager;
+using EasyLearn.Models.DTOs;
 using EasyLearn.Models.DTOs.CategoryDTOs;
 using EasyLearn.Models.Entities;
 using EasyLearn.Repositories.Interfaces;
@@ -147,11 +148,12 @@ namespace EasyLearn.Services.Implementations
                 };
             }
 
+            var orderedCat = categories.OrderBy(x => x.Name);
             var categoriesModel = new CategoriesResponseModel
             {
                 Status = true,
                 Message = "Categories successfully retrieved...",
-                Data = categories.Select(x => new CategoryDTO
+                Data = orderedCat.Select(x => new CategoryDTO
                 {
                     Id = x.Id,
                     Name = x.Name,

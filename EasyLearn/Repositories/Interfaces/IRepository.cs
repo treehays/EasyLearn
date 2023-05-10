@@ -8,6 +8,7 @@ namespace EasyLearn.Repositories.Interfaces
         Task<T> AddAsync(T entity);
         Task AddRangeAsync(List<T> entity);
         Task<T> UpdateAsync(T entity);
+        Task<List<T>> UpdateRanges(List<T> entity);
         Task<T> GetAsync(Expression<Func<T, bool>> expression);
         Task<ICollection<T>> GetAllAsync();
         Task DeleteAsync(T entity);
