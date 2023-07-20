@@ -35,7 +35,7 @@ public class PayStackService : IPayStackService
             description = model.Description,
         });
         var responseString = await response.Content.ReadAsStringAsync();
-        var responseObj = JsonSerializer.Deserialize<CreateTransferRecipientResponseModel>(responseString);
+        var responseObj = JsonSerializer.Deserialize<CreateTransferRecipientResponseModel>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         if (response.StatusCode == HttpStatusCode.OK)
         {
             return responseObj;
@@ -68,7 +68,7 @@ public class PayStackService : IPayStackService
         {
             var response = await client.PostAsync(endPoint, content);
             var resString = await response.Content.ReadAsStringAsync();
-            var responseObj = JsonSerializer.Deserialize<InitializePaymentResponseModel>(resString);
+            var responseObj = JsonSerializer.Deserialize<InitializePaymentResponseModel>(resString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return responseObj;
@@ -117,7 +117,7 @@ public class PayStackService : IPayStackService
         });
         var responseString = await response.Content.ReadAsStringAsync();
         //
-        var responseObj = JsonSerializer.Deserialize<TransferMoneyToUserResponseModel>(responseString);
+        var responseObj = JsonSerializer.Deserialize<TransferMoneyToUserResponseModel>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         if (response.StatusCode == HttpStatusCode.OK)
         {
             return responseObj;
@@ -137,7 +137,7 @@ public class PayStackService : IPayStackService
         new AuthenticationHeaderValue("Bearer", key);
         var response = await getHttpClient.GetAsync(getHttpClient.BaseAddress);
         var responseString = await response.Content.ReadAsStringAsync();
-        var responseObj = JsonSerializer.Deserialize<VerifyAccountNumberResponseModel>(responseString);
+        var responseObj = JsonSerializer.Deserialize<VerifyAccountNumberResponseModel>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         if (response.StatusCode == HttpStatusCode.OK)
         {
             return responseObj;
@@ -156,7 +156,7 @@ public class PayStackService : IPayStackService
         getHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
         var response = await getHttpClient.GetAsync(getHttpClient.BaseAddress);
         var responseString = await response.Content.ReadAsStringAsync();
-        var responseObj = JsonSerializer.Deserialize<VerifyTransactionResponseModel>(responseString);
+        var responseObj = JsonSerializer.Deserialize<VerifyTransactionResponseModel>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         if (response.StatusCode == HttpStatusCode.OK)
         {
             return responseObj;
