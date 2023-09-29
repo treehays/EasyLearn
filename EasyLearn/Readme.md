@@ -1,24 +1,4 @@
-﻿#Assumptions
-    #assume all payment are successfull for testin  did it under try amdcattch
-    catch true 
-
-
- Layout = "~/Views/Shared/Layouts/_layout_light_sidebar.cshtml"; // this is the ,  origianl sidebar layout (complre)
-
-
-
-
-
-#C:\Users\Abdul\source\repos\EasyLearn\EasyLearn\Views\Shared\Layouts\_layout_light_sidebar.cshtml  //this is the original side bar layout (( <partial name="~/Views/Shared/_sidebar.cshtml"/>))
-
-
-                    <partial name="~/Views/Shared/_page_title.cshtml"/>// this is used for thr breadcrumb
-
-                    
-
-#Images structure (/uploads/images/profilePictures/, /uploads/logos/, /uploads/videos/modules/)
-
-
+﻿#Assumption
 "Access Bank": "044",
   "Access Bank (Diamond)": "063",
   "ALAT by WEMA": "035A",
@@ -68,44 +48,8 @@
 
 
 
-
-
-
-
-  I am trying to develop online learning platfor and i need list of different categories that can be included
-Share Prompt
-Here are some categories that can be included in an online learning platform:
-
-Programming & Dev: This category can include courses on web development, mobile app development, programming languages, software engineering, and other related topics.
-
-Business & Finance: This category can include courses on entrepreneurship, finance, accounting, marketing, management, and other related topics.
-
-Design: This category can include courses on graphic design, web design, user interface design, animation, and other related topics.
-
-Creative Arts: This category can include courses on photography, writing, painting, music, dance, and other related topics.
-
-Health & Wellness: This category can include courses on nutrition, fitness, yoga, meditation, mental health, and other related topics.
-
-Language Learning: This category can include courses on learning a new language, such as Spanish, French, Mandarin, or other languages.
-
-Test Preparation: This category can include courses on preparing for standardized tests such as the SAT, GRE, GMAT, or other tests.
-
-Personal Development: This category can include courses on personal growth, time management, productivity, goal-setting, and other related topics.
-
-Science and Technology: This category can include courses on physics, chemistry, biology, astronomy, and other related topics.
-
-Social Sciences: This category can include courses on history, psychology, sociology, anthropology, and other related topics.
-
-These are just a few examples of categories that can be included in an online learning platform. The categories can be tailored to the specific needs and interests of the target audience.
-
-Share Prompt
-
-
-
-
-treehays90@gmail.com
 List of categoris that can be under Programming and Development
-Share Prompt
+
 Here are some categories that can be under Programming and Development:
 
 Web Development
@@ -347,18 +291,3 @@ High School Exams (AP Exams, IB Exams)
 Civil Service Exams (Police Officer Exam, Firefighter Exam, Postal Service Exam)
 Medical Board Exams (USMLE, NCLEX)
 Foreign Language Proficiency (DELE, DELF, JLPT)
-
-
-
-
-
-
-
-
-
-#wallet 
-#enrolment confirmation
-
-
-
-https://localhost:7143/User/ConfirmPasswordReset?emailToken=650b525cs614ds48acs9995se3449f76518d
